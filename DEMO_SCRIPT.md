@@ -1,89 +1,107 @@
-# Cloak Sting — Table Demo Script
+# Demo Script — Table Judging (≤5 minutes)
 
-**Target: <=5 minutes. Designed for Vivian to run under stress.**
+## Setup (before judges arrive)
 
----
-
-## Pre-demo setup (do before judges arrive)
-
-1. Chrome open with extension loaded (`chrome://extensions/` → Load unpacked → repo root).
-2. Two demo tabs pre-loaded but **not yet visited** with the extension active:
-   - `demo/fake-bank-login.html`
-   - `demo/fake-shipping-fee.html`
-3. Terminal open in the repo directory with `npm test` already passing (run it once to verify).
-4. Have `data/scam-cases.json` visible in a file explorer or editor tab — it should be empty or have previous demo cases.
+- Chrome open with extension loaded (unpacked from repo folder)
+- Two tabs pre-opened: `demo/fake-bank-login.html` and `demo/romance-scam.html`
+- Terminal open with repo directory ready
+- This script printed or on a second screen
 
 ---
 
-## Script
+## 0:00–0:30 — Hook
 
-### 0:00–0:30 — Hook (30 sec)
+> "Scammers win because the warning arrives after the money is gone. Cloak Sting catches the pattern and warns you before you type, pay, or trust."
 
-> "Scammers win because warnings come after the damage, and reporting is too hard. Cloak Sting is an ambient scam-defense layer that warns before the click becomes a crisis — and keeps the receipt."
-
-Show the extension icon in Chrome. It's quiet — no alerts on a safe page.
-
-### 0:30–1:30 — Demo 1: Fake bank login (60 sec)
-
-1. Navigate to the `fake-bank-login.html` tab.
-2. **Overlay appears automatically.** Point out:
-   - Risk score (should be high, 65+/100)
-   - Signal cards: urgency pressure, credential harvesting, isolation tactics, brand impersonation
-   - Advice text: "Pause. Do not pay, enter passwords, or call numbers on this page."
-3. Click **"Copy receipt"** — paste it into a text editor or notes app to show the structured receipt.
-4. Say: "Grandma sees this before she types her password. Not after."
-
-### 1:30–2:30 — Demo 2: Shipping fee scam (60 sec)
-
-1. Navigate to the `fake-shipping-fee.html` tab.
-2. **Overlay appears.** Point out:
-   - Different signal types: payment pressure (redelivery fee), USPS impersonation
-   - Score reflects the different scam pattern
-3. Say: "Different scam, same defense. Deterministic detection — no AI inference, no API latency, no hallucination."
-
-### 2:30–3:30 — Evidence pipeline (60 sec)
-
-1. Switch to terminal. Run:
-   ```bash
-   node scripts/save_case_demo.js
-   ```
-2. Show the output: case ID, backend (local-json or redis), dossier paths.
-3. Open the generated Markdown dossier in `dist/dossiers/`. Walk through:
-   - Case summary (risk, URL, suspected brand, jurisdiction)
-   - Observed scam signals (type, evidence, weight)
-   - Reporting channels (FTC, IC3, bank, brand abuse team)
-   - Safety boundary statement
-4. Say: "This is what you hand to your bank, or paste into an FTC report. Evidence, not just 'I got scammed.'"
-
-### 3:30–4:15 — Sponsor tech (45 sec)
-
-1. **Redis:** "Cases persist to Redis Cloud. If Redis isn't available, it falls back to local JSON — the demo always works." Point at the `data/scam-cases.json` file or mention Redis connection if configured.
-2. **Browserbase:** "Suspicious links can be inspected in an isolated Browserbase session — the user's browser never touches the scam page." Run (if Browserbase is configured):
-   ```bash
-   node scripts/inspect_link_demo.js
-   ```
-   Or show the code path and explain: isolated session → extract evidence → same receipt/case/dossier pipeline.
-3. **Planned sponsors (brief mention only):** "Anthropic Claude for grounded next-step explanations, Arize for safety eval, Deepgram for voice scam transcription — architected but not yet in code."
-
-### 4:15–4:45 — Impact + why now (30 sec)
-
-> "$3.4 billion lost by adults 60+ in 2023 to online scams. AI makes scams cheaper and more convincing. Families need AI-native defense. Cloak Sting catches the pattern before the mistake and preserves the proof after the attempt."
-
-### 4:45–5:00 — Close (15 sec)
-
-> "Cloak Sting: stop the scam before the click becomes a crisis."
-
-Offer to show the test suite, the code, or answer questions.
+Show Chrome on a normal page (google.com). Point out: no interruption, quiet watch mode.
 
 ---
 
-## Troubleshooting during demo
+## 0:30–1:30 — Live Demo: Fake Bank Login
 
-| Problem | Fix |
-|---|---|
-| Overlay doesn't appear | Reload the demo page. Check `chrome://extensions/` — extension must be enabled. |
-| `npm test` fails | Run `npm install` first. Check Node.js >= 18. |
-| `save_case_demo.js` errors on Redis | Expected if Redis isn't configured. Output will show `local-json` backend. That's fine. |
-| Extension popup shows "No receipt yet" | Visit a demo scam page first, then reopen the popup. |
-| Judges ask about voice/Deepgram | "Architected in the product plan, branch created, not yet merged. The detector accepts any text — voice transcripts feed the same pipeline." |
-| Judges ask about AI/LLM detection | "Deliberately deterministic for v1. Zero latency, zero cost, zero hallucination. Claude integration planned for grounded explanations, not detection." |
+Switch to `demo/fake-bank-login.html` tab.
+
+**What judges see:**
+- Page loads with a fake "Secure Bank Verification Center"
+- Cloak Sting overlay appears automatically (top-right corner)
+- Shows: HIGH RISK, score, specific signals found (urgency, credential grab, secrecy pressure)
+- Advice: "Pause. Do not pay, enter passwords, or call numbers on this page."
+
+**Say:**
+> "Grandma opens this page from a phishing link. Before she types her password, Cloak Sting catches 5+ scam signals and blocks visually. No API call, no delay — deterministic detection in the browser."
+
+Click "Copy receipt" → paste into a text editor to show the structured evidence output.
+
+---
+
+## 1:30–2:30 — Live Demo: Romance Scam
+
+Switch to `demo/romance-scam.html` tab.
+
+**What judges see:**
+- Different scam type, same detection engine
+- Overlay catches: gift card payment, wire transfer, secrecy pressure ("do not tell"), urgency
+
+**Say:**
+> "This isn't just phishing pages. Romance scams, crypto fraud, fake ransom calls — same engine, same receipt. We have 9 fixture types covering the most common scam categories."
+
+---
+
+## 2:30–3:30 — Evidence Dossier + Case Storage
+
+In terminal, run:
+```bash
+node scripts/save_case_demo.js
+```
+
+**What judges see:**
+- Case record created with full evidence, jurisdiction inference, reporting channels (FTC, IC3, bank)
+- Markdown dossier output
+
+**Say:**
+> "Every scam attempt becomes a case file. Structured for banks, FTC, IC3. Stored in Redis when available, local JSON otherwise. The family member doesn't need to explain what happened — the dossier does it."
+
+---
+
+## 3:30–4:15 — Sponsor Integration: Browserbase
+
+In terminal, run:
+```bash
+node scripts/inspect_link_demo.js
+```
+
+**What judges see:**
+- Script shows how Browserbase would open the suspicious link in isolation
+- Evidence extracted without exposing user's browser/device
+
+**Say:**
+> "If a link looks suspicious, Cloak opens it in a sandboxed Browserbase session. The user's device never touches the scam page. Evidence comes back as a receipt."
+
+**Mention Redis:**
+> "Cases persist in Redis Cloud — case memory means if the same scam domain hits another family member, we already have the dossier."
+
+---
+
+## 4:15–4:45 — Scope + Compliance
+
+**Say:**
+> "Built from scratch this hackathon, clean repo, no prior code. Deterministic detection — no ML needed for the core path. Anthropic Claude and Deepgram voice paths are in progress for grounded explanations and voicemail scam detection."
+
+---
+
+## 4:45–5:00 — Close
+
+> "Cloak Sting: stop the scam before the click becomes a crisis. Protect before the mistake, preserve proof after the attempt."
+
+---
+
+## If Judges Ask...
+
+| Question | Answer |
+|----------|--------|
+| "Why not just use ML?" | Deterministic is instant, private, and offline. ML layer (Claude) is planned for explanation, not detection. |
+| "How do you handle false positives?" | Threshold tuning + the overlay is dismissible. Low-risk pages never trigger. |
+| "What about non-English scams?" | Identified as P0 gap in QA report. Chinese fixture works because of bilingual content; pure non-English needs term expansion. |
+| "What's the Redis schema?" | Case record: id, url, hostname, risk, score, findings[], jurisdiction, reportingChannels[], timestamps. |
+| "Revenue model?" | Free for individuals. Premium family dashboard, bank API integrations, enterprise compliance feed. |
+| "Why Chrome extension?" | Fastest path to reading page DOM at the danger moment. Android Accessibility + iOS Safari planned next. |
