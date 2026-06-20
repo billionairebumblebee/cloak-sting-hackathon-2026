@@ -12,6 +12,8 @@ Suspicious page → deterministic scam signals → ambient warning overlay → l
 
 ## Run
 
+Full QA/demo handoff: [`docs/demo-handoff.md`](docs/demo-handoff.md)
+
 ```bash
 npm test
 npm run build
