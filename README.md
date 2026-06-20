@@ -30,10 +30,14 @@ Load this folder as an unpacked Chrome extension for demo.
 
 Open these locally in a browser after loading the extension:
 
-- `demo/fake-bank-login.html`
-- `demo/fake-shipping-fee.html`
+- `demo/fake-bank-login.html` — bank login credential theft
+- `demo/fake-shipping-fee.html` — shipping fee payment scam
+- `demo/crypto-seed-phrase-scam.html` — crypto seed phrase theft
+- `demo/marketplace-payment-scam.html` — marketplace escrow fee scam
+- `demo/irs-government-fee-scam.html` — IRS/government impersonation
+- `demo/safe-normal-page.html` — benign page (no false positive)
 
-The pages are intentionally fake scam fixtures for demo/testing.
+The pages are intentionally fake scam fixtures for demo/testing. No real phishing URLs.
 
 ## Case database / dossiers
 
@@ -131,3 +135,21 @@ SENTRY_DSN=https://key@o1.ingest.sentry.io/123 node -e "
   sendEnvelope({ message: 'test', level: 'info' }).then(console.log);
 "
 ```
+
+## Sponsor integration status
+
+| Sponsor | Status | Notes |
+|---|---|---|
+| **Anthropic** | Implemented / live demo works | Claude grounded explanation. Falls back locally without API key. |
+| **Browserbase** | Implemented / live session demo works | Isolated link inspection. Requires API key + project ID. |
+| **Deepgram** | Implemented / live only if audio proof lands | STT + voice pipeline. Falls back to sample transcripts without key. |
+| **Redis** | Implemented / local fallback unless live Redis configured | Case database with Redis Cloud client/REST. |
+| **Sentry** | Implemented / live only if DSN configured | Lightweight envelope capture, no `@sentry/node`. |
+| **Simular** | QA/testing | Fixture pages + test handoff doc for tester validation. |
+
+## Demo resources
+
+- [90-second demo script](docs/DEMO_SCRIPT_90s.md)
+- [Devpost submission draft](docs/DEVPOST_DRAFT.md)
+- [Demo/QA handoff](docs/demo-handoff.md)
+- [Simular test handoff](docs/SIMULAR_TEST_HANDOFF.md)
