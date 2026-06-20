@@ -114,3 +114,20 @@ node scripts/transcribe_voice_demo.js '' chinese         # Chinese embassy scam
 ```
 
 The demo falls back to mocked Deepgram responses when `DEEPGRAM_API_KEY` is not set. Produces full dossiers (Markdown + JSON) in `dist/dossiers/`.
+
+## Sentry lightweight envelope capture
+
+`src/sentry.js` sends scam-detection events to Sentry using the raw envelope wire format — no `@sentry/node` dependency. Reads `SENTRY_DSN` from env only; never hardcoded.
+
+- Parses DSN to extract project ID, public key, and ingest URL.
+- Builds a minimal Sentry envelope (event item) with sanitized tags/extra.
+- Redacts any context keys matching `key`, `token`, `secret`, `password`, `dsn`, `auth`, `bearer`, `credential`.
+- Sanitizes URLs by stripping query strings, fragments, and embedded credentials.
+- Falls back gracefully when `SENTRY_DSN` is not set.
+
+```bash
+SENTRY_DSN=https://key@o1.ingest.sentry.io/123 node -e "
+  const { sendEnvelope } = require('./src/sentry.js');
+  sendEnvelope({ message: 'test', level: 'info' }).then(console.log);
+"
+```
