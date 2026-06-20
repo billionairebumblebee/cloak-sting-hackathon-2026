@@ -5,7 +5,7 @@
   "description": "Clean hackathon build of Cloak Sting: ambient scam warning extension.",
   "scripts": {
     "test": "node --test tests/*.test.js",
-    "check": "node --check src/scamSignals.js && node --check src/content.js && node --check src/popup.js",
+    "check": "node --check src/scamSignals.js && node --check src/content.js && node --check src/popup.js && node --check src/caseStore.js && node --check src/dossier.js && node --check scripts/save_case_demo.js",
     "build": "npm run check && npm test && python3 scripts/package_extension.py"
   },
   "devDependencies": {}

@@ -8,6 +8,7 @@ INCLUDE = [
     "popup.html",
     "popup.css",
     "README.md",
+    "BRAND_AND_PITCH_BRIEF.md",
     "package.json",
 ]
 INCLUDE_DIRS = ["src", "demo"]

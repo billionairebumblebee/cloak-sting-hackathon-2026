@@ -15,6 +15,7 @@ Suspicious page → deterministic scam signals → ambient warning overlay → l
 ```bash
 npm test
 npm run build
+node scripts/save_case_demo.js
 ```
 
 Load this folder as an unpacked Chrome extension for demo.
@@ -27,3 +28,13 @@ Open these locally in a browser after loading the extension:
 - `demo/fake-shipping-fee.html`
 
 The pages are intentionally fake scam fixtures for demo/testing.
+
+## Case database / dossiers
+
+`src/caseStore.js` turns a threat receipt into an authority-safe scam case record.
+
+- If `REDIS_REST_URL` + `REDIS_API_KEY` are configured, it writes cases to Redis via REST.
+- If only `REDIS_API_KEY` is present or Redis REST details are unavailable, it falls back to `data/scam-cases.json` so the demo still works.
+- `src/dossier.js` exports the same case as JSON or Markdown for a family, bank, platform abuse team, FTC, or IC3 report.
+
+Safety boundary: Cloak Sting stores observed evidence and public technical indicators. It does not claim to identify private individuals or encourage vigilante action.
