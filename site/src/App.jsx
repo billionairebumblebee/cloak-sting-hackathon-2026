@@ -8,14 +8,20 @@ import Footer from "./components/Footer";
 
 export default function App() {
   return (
-    <div className="min-h-screen">
+    <div className="relative min-h-screen">
+      {/* Film grain / noise overlay */}
+      <div className="noise-overlay" />
+
       <Navbar />
       <main>
         <Hero />
-        <Problem />
-        <ProductFlow />
-        <InteractiveDemo />
-        <Architecture />
+        <div className="relative">
+          <div className="pointer-events-none absolute inset-0 bg-gradient-to-b from-transparent via-honey/[0.01] to-transparent" />
+          <Problem />
+          <ProductFlow />
+          <InteractiveDemo />
+          <Architecture />
+        </div>
       </main>
       <Footer />
     </div>

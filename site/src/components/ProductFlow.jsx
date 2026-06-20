@@ -1,4 +1,6 @@
 import { Link2, Search, ShieldCheck } from "lucide-react";
+import { motion } from "framer-motion";
+import { FadeIn, StaggerContainer, StaggerItem, SectionLabel } from "./Motion";
 
 const steps = [
   {
@@ -13,6 +15,7 @@ const steps = [
       "Login screens",
       "QR codes",
     ],
+    color: "#f5a623",
   },
   {
     num: "02",
@@ -27,6 +30,7 @@ const steps = [
       "Form behavior",
       "Impersonation patterns",
     ],
+    color: "#e6c200",
   },
   {
     num: "03",
@@ -40,62 +44,82 @@ const steps = [
       "Recommended next steps",
       "Shareable evidence receipt",
     ],
+    color: "#16a34a",
   },
 ];
 
 export default function ProductFlow() {
   return (
-    <section id="flow" className="relative px-6 py-24 sm:py-32">
+    <section id="flow" className="relative px-6 py-32 sm:py-40">
       <div className="mx-auto max-w-6xl">
-        <div className="mb-16 text-center">
-          <p className="mb-3 text-sm font-semibold tracking-widest text-honey uppercase">
-            How It Works
-          </p>
-          <h2 className="mb-4 text-3xl font-bold text-cream sm:text-4xl">
-            Three steps. Thirty seconds.
-          </h2>
-          <p className="mx-auto max-w-xl text-text-secondary">
-            Sting runs the same checks a security analyst would — then explains
-            the result so anyone can understand it.
-          </p>
+        <div className="mb-20 text-center">
+          <SectionLabel>How It Works</SectionLabel>
+          <FadeIn delay={0.1}>
+            <h2 className="mb-5 text-4xl font-bold tracking-tight text-cream sm:text-5xl">
+              Three steps.{" "}
+              <span className="text-text-secondary">Thirty seconds.</span>
+            </h2>
+          </FadeIn>
+          <FadeIn delay={0.2}>
+            <p className="mx-auto max-w-md text-base text-text-secondary">
+              The same checks a security analyst would run — explained so anyone
+              can understand.
+            </p>
+          </FadeIn>
         </div>
 
-        <div className="grid gap-8 lg:grid-cols-3">
+        <StaggerContainer className="grid gap-6 lg:grid-cols-3" stagger={0.12}>
           {steps.map((step, i) => (
-            <div key={step.num} className="relative">
-              {i < steps.length - 1 && (
-                <div className="absolute top-12 -right-4 hidden h-px w-8 bg-gradient-to-r from-honey/40 to-transparent lg:block" />
-              )}
-              <div className="rounded-2xl border border-border bg-surface-raised p-8 transition-all hover:border-honey/30">
-                <div className="mb-6 flex items-center gap-4">
-                  <span className="font-mono text-3xl font-bold text-honey/30">
+            <StaggerItem key={step.num}>
+              <motion.div
+                className="glass group relative rounded-2xl p-8 transition-all duration-500"
+                whileHover={{
+                  y: -4,
+                  transition: { duration: 0.3 },
+                }}
+              >
+                {/* Step connector line (desktop only) */}
+                {i < steps.length - 1 && (
+                  <div className="absolute -right-3 top-1/2 hidden h-px w-6 bg-gradient-to-r from-white/10 to-transparent lg:block" />
+                )}
+
+                {/* Number + icon */}
+                <div className="mb-8 flex items-center gap-4">
+                  <span className="font-mono text-4xl font-bold text-white/[0.04]">
                     {step.num}
                   </span>
-                  <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-honey/10 text-honey">
-                    <step.icon size={24} />
-                  </div>
+                  <motion.div
+                    className="flex h-12 w-12 items-center justify-center rounded-xl"
+                    style={{ backgroundColor: step.color + "10" }}
+                    whileHover={{ scale: 1.1, rotate: 5 }}
+                    transition={{ type: "spring", stiffness: 300 }}
+                  >
+                    <step.icon size={20} style={{ color: step.color }} strokeWidth={1.5} />
+                  </motion.div>
                 </div>
+
                 <h3 className="mb-3 text-xl font-bold text-cream">
                   {step.title}
                 </h3>
-                <p className="mb-6 text-sm leading-relaxed text-text-secondary">
+                <p className="mb-6 text-[13px] leading-relaxed text-text-secondary">
                   {step.desc}
                 </p>
-                <ul className="space-y-2">
+
+                {/* Detail chips */}
+                <div className="flex flex-wrap gap-2">
                   {step.details.map((d) => (
-                    <li
+                    <span
                       key={d}
-                      className="flex items-center gap-2 text-sm text-text-secondary"
+                      className="rounded-full border border-white/[0.04] bg-white/[0.02] px-3 py-1 text-[11px] text-text-muted transition-colors duration-300 group-hover:border-white/[0.08] group-hover:text-text-secondary"
                     >
-                      <span className="h-1 w-1 rounded-full bg-honey" />
                       {d}
-                    </li>
+                    </span>
                   ))}
-                </ul>
-              </div>
-            </div>
+                </div>
+              </motion.div>
+            </StaggerItem>
           ))}
-        </div>
+        </StaggerContainer>
       </div>
     </section>
   );
