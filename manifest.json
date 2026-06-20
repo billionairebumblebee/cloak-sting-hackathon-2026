@@ -1,0 +1,20 @@
+{
+  "manifest_version": 3,
+  "name": "cloak sting",
+  "version": "0.1.0",
+  "description": "Ambient scam-defense warnings and shareable evidence receipts.",
+  "permissions": ["storage", "activeTab", "scripting"],
+  "host_permissions": ["<all_urls>"],
+  "action": {
+    "default_title": "cloak sting",
+    "default_popup": "popup.html"
+  },
+  "content_scripts": [
+    {
+      "matches": ["<all_urls>"],
+      "js": ["src/scamSignals.js", "src/content.js"],
+      "run_at": "document_idle"
+    }
+  ],
+  "icons": {}
+}
