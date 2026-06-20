@@ -141,7 +141,55 @@ class RedisRestCaseStore {
   }
 }
 
+class RedisClientCaseStore {
+  constructor({
+    url = process.env.REDIS_URL,
+    username = process.env.REDIS_USERNAME || 'default',
+    password = process.env.REDIS_PASSWORD,
+    host = process.env.REDIS_HOST,
+    port = process.env.REDIS_PORT
+  } = {}) {
+    this.url = url;
+    this.username = username;
+    this.password = password;
+    this.host = host;
+    this.port = port ? Number(port) : undefined;
+  }
+
+  isConfigured() {
+    return Boolean(this.url || (this.host && this.port && this.password));
+  }
+
+  clientOptions() {
+    if (this.url) return { url: this.url };
+    return {
+      username: this.username,
+      password: this.password,
+      socket: { host: this.host, port: this.port }
+    };
+  }
+
+  async saveCase(caseRecord) {
+    if (!this.isConfigured()) {
+      throw new Error('Redis client is not configured; set REDIS_URL or REDIS_HOST/REDIS_PORT/REDIS_PASSWORD.');
+    }
+    const { createClient } = await import('redis');
+    const client = createClient(this.clientOptions());
+    client.on('error', () => {});
+    await client.connect();
+    try {
+      await client.set(`cloak:case:${caseRecord.id}`, JSON.stringify(caseRecord));
+      await client.sAdd('cloak:cases', caseRecord.id).catch(() => null);
+      return { backend: 'redis-client', case: caseRecord };
+    } finally {
+      await client.quit().catch(() => null);
+    }
+  }
+}
+
 function createCaseStore() {
+  const redisClient = new RedisClientCaseStore();
+  if (redisClient.isConfigured()) return redisClient;
   const redis = new RedisRestCaseStore();
   if (redis.isConfigured()) return redis;
   return new LocalCaseStore();
@@ -150,6 +198,7 @@ function createCaseStore() {
 module.exports = {
   LocalCaseStore,
   RedisRestCaseStore,
+  RedisClientCaseStore,
   createCaseStore,
   normalizeReceiptToCase,
   inferBrand,

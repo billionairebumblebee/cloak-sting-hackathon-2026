@@ -320,5 +320,170 @@
         "use": "Submit URL/domain evidence for takedown review"
       }
     ]
+  },
+  {
+    "id": "case_fd254afffc970464",
+    "source": "cloak-sting-extension",
+    "createdAt": "2026-06-20T20:50:46.530Z",
+    "updatedAt": "2026-06-20T20:50:46.530Z",
+    "url": "https://secure-bank-verify-account-login.example/session",
+    "hostname": "secure-bank-verify-account-login.example",
+    "title": "Secure Bank Verification Center",
+    "risk": "high",
+    "score": 100,
+    "advice": "Pause. Do not pay, enter passwords, or call numbers on this page. Verify through the official app or typed official website.",
+    "findings": [
+      {
+        "type": "domain",
+        "label": "Brand impersonation pattern",
+        "weight": 22,
+        "evidence": "secure-bank-verify-account-login.example"
+      },
+      {
+        "type": "domain",
+        "label": "Hyphen-stuffed domain",
+        "weight": 8,
+        "evidence": "secure-bank-verify-account-login.example"
+      },
+      {
+        "type": "copy",
+        "label": "Urgency pressure",
+        "weight": 12,
+        "evidence": "urgent"
+      },
+      {
+        "type": "copy",
+        "label": "Urgency pressure",
+        "weight": 12,
+        "evidence": "within 24 hours"
+      },
+      {
+        "type": "copy",
+        "label": "Urgency pressure",
+        "weight": 12,
+        "evidence": "verify now"
+      },
+      {
+        "type": "impersonation",
+        "label": "Trusted institution language",
+        "weight": 14,
+        "evidence": "verification center"
+      },
+      {
+        "type": "pressure",
+        "label": "Isolation / secrecy pressure",
+        "weight": 18,
+        "evidence": "do not contact"
+      },
+      {
+        "type": "pressure",
+        "label": "Isolation / secrecy pressure",
+        "weight": 18,
+        "evidence": "only through this page"
+      }
+    ],
+    "suspectedBrand": "Bank",
+    "jurisdiction": {
+      "country": "Unknown",
+      "confidence": "unknown",
+      "basis": "No reliable public jurisdiction clue"
+    },
+    "victimSafeNotes": "Demo fixture: no real victim data.",
+    "evidence": {
+      "observedOnly": true,
+      "screenshotPath": "",
+      "transcript": "",
+      "rawReceipt": {
+        "hostname": "secure-bank-verify-account-login.example",
+        "title": "Secure Bank Verification Center",
+        "url": "https://secure-bank-verify-account-login.example/session",
+        "text": "URGENT: Your account has been suspended. Verify now within 24 hours. Password one-time security code. Do not contact your branch. Only through this page.",
+        "product": "cloak sting",
+        "risk": "high",
+        "score": 100,
+        "findingCount": 8,
+        "findings": [
+          {
+            "type": "domain",
+            "label": "Brand impersonation pattern",
+            "weight": 22,
+            "evidence": "secure-bank-verify-account-login.example"
+          },
+          {
+            "type": "domain",
+            "label": "Hyphen-stuffed domain",
+            "weight": 8,
+            "evidence": "secure-bank-verify-account-login.example"
+          },
+          {
+            "type": "copy",
+            "label": "Urgency pressure",
+            "weight": 12,
+            "evidence": "urgent"
+          },
+          {
+            "type": "copy",
+            "label": "Urgency pressure",
+            "weight": 12,
+            "evidence": "within 24 hours"
+          },
+          {
+            "type": "copy",
+            "label": "Urgency pressure",
+            "weight": 12,
+            "evidence": "verify now"
+          },
+          {
+            "type": "impersonation",
+            "label": "Trusted institution language",
+            "weight": 14,
+            "evidence": "verification center"
+          },
+          {
+            "type": "pressure",
+            "label": "Isolation / secrecy pressure",
+            "weight": 18,
+            "evidence": "do not contact"
+          },
+          {
+            "type": "pressure",
+            "label": "Isolation / secrecy pressure",
+            "weight": 18,
+            "evidence": "only through this page"
+          }
+        ],
+        "advice": "Pause. Do not pay, enter passwords, or call numbers on this page. Verify through the official app or typed official website.",
+        "analyzedAt": "2026-06-20T20:50:46.530Z"
+      }
+    },
+    "safetyBoundary": "Evidence record only. Does not identify a private person or make legal conclusions.",
+    "status": "new",
+    "reportingChannels": [
+      {
+        "name": "FTC ReportFraud",
+        "url": "https://reportfraud.ftc.gov/",
+        "use": "US consumer fraud report"
+      },
+      {
+        "name": "FBI IC3",
+        "url": "https://www.ic3.gov/",
+        "use": "US internet crime report"
+      },
+      {
+        "name": "Bank/card issuer",
+        "url": "",
+        "use": "If payment/card credentials were entered or requested"
+      },
+      {
+        "name": "Impersonated brand abuse team",
+        "url": "",
+        "use": "Report brand impersonation: Bank"
+      },
+      {
+        "name": "Domain registrar / hosting abuse contact",
+        "url": "",
+        "use": "Submit URL/domain evidence for takedown review"
+      }
+    ]
   }
 ]

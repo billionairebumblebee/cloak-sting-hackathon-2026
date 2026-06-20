@@ -34,9 +34,19 @@ The pages are intentionally fake scam fixtures for demo/testing.
 
 `src/caseStore.js` turns a threat receipt into an authority-safe scam case record.
 
-- If `REDIS_REST_URL` + `REDIS_API_KEY` are configured, it writes cases to Redis via REST.
-- If only `REDIS_API_KEY` is present or Redis REST details are unavailable, it falls back to `data/scam-cases.json` so the demo still works.
+- If `REDIS_URL` is configured, or `REDIS_HOST` + `REDIS_PORT` + `REDIS_PASSWORD` are configured, it writes cases to Redis using the official Node client.
+- If `REDIS_REST_URL` + `REDIS_API_KEY` are configured, it can also write cases via Redis REST.
+- If Redis connection details are unavailable, it falls back to `data/scam-cases.json` so the demo still works.
 - `src/dossier.js` exports the same case as JSON or Markdown for a family, bank, platform abuse team, FTC, or IC3 report.
+
+Redis Cloud env shape:
+
+```bash
+REDIS_USERNAME=default
+REDIS_PASSWORD=...
+REDIS_HOST=...
+REDIS_PORT=...
+```
 
 Safety boundary: Cloak Sting stores observed evidence and public technical indicators. It does not claim to identify private individuals or encourage vigilante action.
 

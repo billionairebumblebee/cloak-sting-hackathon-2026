@@ -8,5 +8,7 @@
     "check": "node --check src/scamSignals.js && node --check src/content.js && node --check src/popup.js && node --check src/caseStore.js && node --check src/dossier.js && node --check src/browserbaseInspect.js && node --check scripts/save_case_demo.js && node --check scripts/inspect_link_demo.js",
     "build": "npm run check && npm test && python3 scripts/package_extension.py"
   },
-  "devDependencies": {}
+  "dependencies": {
+    "redis": "^6.0.0"
+  }
 }

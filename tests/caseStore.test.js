@@ -3,7 +3,7 @@ const assert = require('node:assert/strict');
 const fs = require('node:fs');
 const os = require('node:os');
 const path = require('node:path');
-const { LocalCaseStore, normalizeReceiptToCase, inferBrand, inferJurisdiction } = require('../src/caseStore.js');
+const { LocalCaseStore, RedisClientCaseStore, normalizeReceiptToCase, inferBrand, inferJurisdiction } = require('../src/caseStore.js');
 const { renderMarkdownDossier, renderJsonDossier } = require('../src/dossier.js');
 
 test('normalizes threat receipt into authority-safe case record', () => {
@@ -57,4 +57,19 @@ test('jurisdiction inference stays cautious when unknown', () => {
 
 test('brand inference avoids unsupported claims', () => {
   assert.equal(inferBrand({ hostname: 'unknown.example', findings: [] }), 'Unknown / needs review');
+});
+
+test('redis client store detects Redis Cloud host/port/password config', () => {
+  const store = new RedisClientCaseStore({
+    username: 'default',
+    password: 'not-a-real-secret',
+    host: 'redis.example.com',
+    port: '1234'
+  });
+  assert.equal(store.isConfigured(), true);
+  assert.deepEqual(store.clientOptions(), {
+    username: 'default',
+    password: 'not-a-real-secret',
+    socket: { host: 'redis.example.com', port: 1234 }
+  });
 });
