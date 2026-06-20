@@ -126,8 +126,21 @@ The demo falls back to mocked Deepgram responses when `DEEPGRAM_API_KEY` is not 
 - Falls back gracefully when `SENTRY_DSN` is not set.
 
 ```bash
-SENTRY_DSN=https://key@o1.ingest.sentry.io/123 node -e "
-  const { sendEnvelope } = require('./src/sentry.js');
-  sendEnvelope({ message: 'test', level: 'info' }).then(console.log);
-"
+# Smoke demo (self-test without DSN, or live send with DSN):
+node scripts/sentry_smoke_demo.js
+SENTRY_DSN=https://key@o1.ingest.sentry.io/123 node scripts/sentry_smoke_demo.js
+```
+
+## ASI:One / Agentverse scam analysis agent
+
+`src/asiOneWrapper.js` wraps the deterministic scam signal engine as an agent-callable endpoint compatible with Fetch.ai ASI:One / Agentverse protocol.
+
+- `GET /info` — returns agent metadata (name, protocol, capabilities).
+- `POST /analyze` — accepts `{ url, title, text }` and returns a threat receipt, case record summary, and dossier preview.
+- No ASI:One API key or Agentverse registration required for local demo.
+- Registration with Agentverse is a separate manual step (not yet completed).
+
+```bash
+node scripts/asi_agent_demo.js
+# Starts agent server on port 8199, runs sample requests, then stops.
 ```
