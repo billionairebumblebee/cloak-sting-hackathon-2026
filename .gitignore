@@ -4,3 +4,6 @@ build/
 .env
 .DS_Store
 *.log
+data/arize-eval-report.json
+data/arize-eval-dataset.json
+data/arize-eval-runs.json

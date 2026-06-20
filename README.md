@@ -22,6 +22,7 @@ node scripts/inspect_link_demo.js
 node scripts/explain_case_demo.js
 node scripts/voice_scam_demo.js
 node scripts/transcribe_voice_demo.js
+node scripts/arize_eval_demo.js
 ```
 
 Load this folder as an unpacked Chrome extension for demo.
@@ -126,8 +127,31 @@ The demo falls back to mocked Deepgram responses when `DEEPGRAM_API_KEY` is not 
 - Falls back gracefully when `SENTRY_DSN` is not set.
 
 ```bash
-SENTRY_DSN=https://key@o1.ingest.sentry.io/123 node -e "
-  const { sendEnvelope } = require('./src/sentry.js');
-  sendEnvelope({ message: 'test', level: 'info' }).then(console.log);
-"
+# Smoke demo (self-test without DSN, or live send with DSN):
+node scripts/sentry_smoke_demo.js
+SENTRY_DSN=https://key@o1.ingest.sentry.io/123 node scripts/sentry_smoke_demo.js
 ```
+
+## ASI:One / Agentverse scam analysis agent
+
+`src/asiOneWrapper.js` wraps the deterministic scam signal engine as an agent-callable endpoint compatible with Fetch.ai ASI:One / Agentverse protocol.
+
+- `GET /info` — returns agent metadata (name, protocol, capabilities).
+- `POST /analyze` — accepts `{ url, title, text }` and returns a threat receipt, case record summary, and dossier preview.
+- No ASI:One API key or Agentverse registration required for local demo.
+- Registration with Agentverse is a separate manual step (not yet completed).
+
+```bash
+node scripts/asi_agent_demo.js
+# Starts agent server on port 8199, runs sample requests, then stops.
+```
+
+## Arize eval/proof layer for AI explanations
+
+`scripts/arize_eval_demo.js` evaluates Cloak Sting's AI explanation quality (Anthropic or deterministic fallback) against four criteria: grounded in evidence, includes safe next action, no overclaiming, no secrets leaked.
+
+```bash
+node scripts/arize_eval_demo.js
+```
+
+Report output: `data/arize-eval-report.json`. If `ax` CLI is configured with a profile, the script uploads a dataset and experiment to Arize automatically. See [`docs/ARIZE_EVAL_PROOF.md`](docs/ARIZE_EVAL_PROOF.md) for details.
