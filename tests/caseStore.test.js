@@ -41,9 +41,17 @@ test('dossier renderers include reporting and safety sections', () => {
     score: 88,
     findings: [{ type: 'credential', label: 'Credential request', evidence: 'password and code', weight: 16 }]
   });
+  record.explanation = {
+    summary: 'High-risk credential pressure.',
+    whyItMatters: 'It asks for sensitive codes.',
+    safeNextSteps: 'Use official bank app.',
+    reportingNote: 'Attach URL and case ID.'
+  };
   const md = renderMarkdownDossier(record);
   const json = renderJsonDossier(record);
   assert.match(md, /Observed Scam Signals/);
+  assert.match(md, /Grounded Explanation/);
+  assert.match(md, /High-risk credential pressure/);
   assert.match(md, /Reporting Channels/);
   assert.match(md, /Safety Boundary/);
   assert.equal(JSON.parse(json).id, record.id);

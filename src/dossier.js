@@ -7,7 +7,16 @@ function renderMarkdownDossier(caseRecord) {
     .map((c) => `- **${c.name}**${c.url ? ` — ${c.url}` : ''}: ${c.use}`)
     .join('\n') || '- No reporting channels recorded.';
 
+  const explanation = caseRecord.explanation
+    ? `## Grounded Explanation\n\n` +
+      `- Summary: ${caseRecord.explanation.summary || ''}\n` +
+      `- Why it matters: ${caseRecord.explanation.whyItMatters || ''}\n` +
+      `- Safe next steps: ${caseRecord.explanation.safeNextSteps || ''}\n` +
+      `- Reporting note: ${caseRecord.explanation.reportingNote || ''}\n\n`
+    : '';
+
   return `# Cloak Sting Evidence Dossier\n\n` +
+    explanation +
     `## Case Summary\n\n` +
     `- Case ID: ${caseRecord.id}\n` +
     `- Created: ${caseRecord.createdAt}\n` +

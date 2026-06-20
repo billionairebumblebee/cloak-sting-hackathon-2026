@@ -3,6 +3,7 @@ const path = require('node:path');
 const { analyzeScamSurface } = require('../src/scamSignals.js');
 const { createCaseStore, normalizeReceiptToCase } = require('../src/caseStore.js');
 const { renderMarkdownDossier, renderJsonDossier } = require('../src/dossier.js');
+const { explainWithAnthropic } = require('../src/anthropicExplain.js');
 
 async function main() {
   const demo = {
@@ -13,6 +14,7 @@ async function main() {
   };
   const receipt = { ...demo, ...analyzeScamSurface(demo) };
   const caseRecord = normalizeReceiptToCase(receipt, { victimSafeNotes: 'Demo fixture: no real victim data.' });
+  caseRecord.explanation = await explainWithAnthropic(caseRecord);
   const result = await createCaseStore().saveCase(caseRecord);
 
   const outDir = path.join(process.cwd(), 'dist', 'dossiers');

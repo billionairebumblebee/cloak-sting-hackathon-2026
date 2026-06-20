@@ -17,6 +17,8 @@ npm test
 npm run build
 node scripts/save_case_demo.js
 node scripts/inspect_link_demo.js
+node scripts/explain_case_demo.js
+node scripts/voice_scam_demo.js
 ```
 
 Load this folder as an unpacked Chrome extension for demo.
@@ -49,6 +51,26 @@ REDIS_PORT=...
 ```
 
 Safety boundary: Cloak Sting stores observed evidence and public technical indicators. It does not claim to identify private individuals or encourage vigilante action.
+
+## Anthropic grounded receipt explanation
+
+`src/anthropicExplain.js` adds a Claude explanation layer on top of deterministic findings. It only sends a compact case JSON containing observed fields and falls back to a local deterministic explanation when `ANTHROPIC_API_KEY` is missing or the API fails.
+
+```bash
+ANTHROPIC_API_KEY=... node scripts/explain_case_demo.js
+```
+
+The explanation is stored inside the dossier under `Grounded Explanation` and is framed as safety guidance, not a detector of record.
+
+## Deepgram voice scam transcription
+
+`src/deepgramTranscribe.js` supports voicemail / fake-bank / family-emergency voice scam intake:
+
+```bash
+DEEPGRAM_API_KEY=*** node scripts/voice_scam_demo.js path/to/audio.wav
+```
+
+Deepgram returns the transcript; Cloak Sting runs the same deterministic detector, stores the case in Redis/local fallback, and exports a dossier. If the key is missing, the demo uses an explicit fallback transcript so booth QA can still exercise the pipeline without secrets.
 
 ## Browserbase isolated link inspection
 
