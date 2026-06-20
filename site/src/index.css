@@ -1,0 +1,97 @@
+@import "tailwindcss";
+
+@theme {
+  --color-honey: #f5a623;
+  --color-honey-light: #ffd666;
+  --color-honey-dark: #c7841a;
+  --color-acid: #e6c200;
+  --color-cream: #faf6ed;
+  --color-cream-dark: #f0e9d8;
+  --color-ink: #1a1a1a;
+  --color-ink-light: #2d2d2d;
+  --color-ink-muted: #6b6b6b;
+  --color-danger: #dc2626;
+  --color-danger-light: #fef2f2;
+  --color-safe: #16a34a;
+  --color-safe-light: #f0fdf4;
+  --color-warn: #f59e0b;
+  --color-warn-light: #fffbeb;
+  --color-surface: #0f0f0f;
+  --color-surface-raised: #1a1a1a;
+  --color-surface-overlay: #242424;
+  --color-border: #333333;
+  --color-text-primary: #faf6ed;
+  --color-text-secondary: #a3a3a3;
+  --font-sans: "Inter", system-ui, -apple-system, sans-serif;
+  --font-mono: "JetBrains Mono", "Fira Code", monospace;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  background-color: var(--color-surface);
+  color: var(--color-text-primary);
+  font-family: var(--font-sans);
+}
+
+@keyframes fade-in-up {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes pulse-glow {
+  0%, 100% {
+    box-shadow: 0 0 20px rgba(245, 166, 35, 0.15);
+  }
+  50% {
+    box-shadow: 0 0 40px rgba(245, 166, 35, 0.3);
+  }
+}
+
+@keyframes scan-line {
+  0% {
+    transform: translateY(-100%);
+  }
+  100% {
+    transform: translateY(400%);
+  }
+}
+
+.animate-fade-in-up {
+  animation: fade-in-up 0.6s ease-out forwards;
+}
+
+.animate-pulse-glow {
+  animation: pulse-glow 3s ease-in-out infinite;
+}
+
+.animate-scan-line {
+  animation: scan-line 2s ease-in-out infinite;
+}
+
+.stagger-1 { animation-delay: 0.1s; }
+.stagger-2 { animation-delay: 0.2s; }
+.stagger-3 { animation-delay: 0.3s; }
+.stagger-4 { animation-delay: 0.4s; }
+
+::-webkit-scrollbar {
+  width: 8px;
+}
+::-webkit-scrollbar-track {
+  background: var(--color-surface);
+}
+::-webkit-scrollbar-thumb {
+  background: var(--color-border);
+  border-radius: 4px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: var(--color-ink-muted);
+}
