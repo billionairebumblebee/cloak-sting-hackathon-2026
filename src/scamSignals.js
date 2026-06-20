@@ -19,6 +19,21 @@
     'only through this page', 'ignore other messages'
   ];
 
+  const HOSTAGE_RANSOM_TERMS = [
+    'ransom', 'kidnap', 'hostage', 'we have your', 'pay or else',
+    'wire the money', "don't call the police", 'do not call the police',
+    'your son', 'your daughter', 'your child', 'will be harmed',
+    'pay immediately or', 'we will hurt', 'bitcoin wallet',
+    'cash drop', 'unmarked bills'
+  ];
+
+  const CHINESE_SCAM_TERMS = [
+    '大使馆', '领事馆', '包裹', '快递', '警察', '公安',
+    '洗钱', '通缉', '拘留', '护照', '签证',
+    '银行账户', '转账', '冻结', '逮捕令', '资金安全',
+    '配合调查', '涉嫌犯罪'
+  ];
+
   function normalize(value) {
     return String(value || '').toLowerCase().replace(/\s+/g, ' ').trim();
   }
@@ -62,6 +77,12 @@
     }
     for (const term of containsAny(normalized, SECRET_PRESSURE_TERMS)) {
       findings.push({ type: 'pressure', label: 'Isolation / secrecy pressure', weight: 18, evidence: term });
+    }
+    for (const term of containsAny(normalized, HOSTAGE_RANSOM_TERMS)) {
+      findings.push({ type: 'ransom', label: 'Hostage / ransom threat', weight: 22, evidence: term });
+    }
+    for (const term of containsAny(text, CHINESE_SCAM_TERMS)) {
+      findings.push({ type: 'chinese_scam', label: 'Chinese-language scam signal', weight: 16, evidence: term });
     }
 
     const passwordFields = (text.match(/password|passcode|security code|one-time code|otp/g) || []).length;

@@ -21,6 +21,7 @@ node scripts/save_case_demo.js
 node scripts/inspect_link_demo.js
 node scripts/explain_case_demo.js
 node scripts/voice_scam_demo.js
+node scripts/transcribe_voice_demo.js
 ```
 
 Load this folder as an unpacked Chrome extension for demo.
@@ -85,3 +86,31 @@ node scripts/inspect_link_demo.js https://example.com/suspicious-page
 ```
 
 If Browserbase credentials are unavailable, the script still explains the missing setup instead of printing secrets.
+
+## Extended voice scam pipeline (deepgramSTT + voiceScamPipeline)
+
+`src/deepgramSTT.js` extends voice intake with URL-based transcription, word-level timing, full metadata extraction, and configurable query parameters (language, diarize, summarize).
+
+`src/voiceScamPipeline.js` wires STT output through the `scamSignals` analyzer and produces a case record + dossier through `caseStore` / `dossier`.
+
+### Extended scam signal coverage
+
+| Scenario | Language | Signal types |
+|---|---|---|
+| Fake hostage / ransom | English | `ransom`, `payment`, `pressure` |
+| Bank robocall | English | `copy`, `impersonation`, `payment` |
+| Chinese embassy scam | Chinese | `chinese_scam` |
+
+### Usage
+
+```bash
+# With Deepgram API key (live transcription from URL):
+DEEPGRAM_API_KEY=... node scripts/transcribe_voice_demo.js https://example.com/audio.wav
+
+# With sample transcripts (no API key needed):
+node scripts/transcribe_voice_demo.js                    # hostage/ransom scenario
+node scripts/transcribe_voice_demo.js '' bank            # bank robocall scenario
+node scripts/transcribe_voice_demo.js '' chinese         # Chinese embassy scam
+```
+
+The demo falls back to mocked Deepgram responses when `DEEPGRAM_API_KEY` is not set. Produces full dossiers (Markdown + JSON) in `dist/dossiers/`.
