@@ -129,11 +129,52 @@ async function sendEnvelope({ message, level = 'info', tags = {}, extra = {} }, 
   };
 }
 
+async function captureScamEvent(receipt, options = {}) {
+  const signalTypes = (receipt.findings || []).map((f) => f.type).filter(Boolean);
+  const topSignals = [...new Set(signalTypes)].slice(0, 5).join(',');
+
+  return sendEnvelope({
+    message: `scam-detected: ${receipt.risk} risk (${receipt.score}/100) on ${sanitizeUrl(receipt.url)}`,
+    level: receipt.risk === 'high' ? 'warning' : 'info',
+    tags: {
+      component: 'scam-detector',
+      risk: receipt.risk || 'unknown',
+      hostname: receipt.hostname || '',
+      source: receipt.sourceType || 'page'
+    },
+    extra: {
+      score: receipt.score || 0,
+      findingCount: receipt.findingCount || (receipt.findings || []).length,
+      signalTypes: topSignals,
+      title: (receipt.title || '').slice(0, 200),
+      url: sanitizeUrl(receipt.url),
+      caseId: receipt.id || ''
+    }
+  }, options);
+}
+
+async function captureError(error, context = {}, options = {}) {
+  return sendEnvelope({
+    message: `error: ${String(error.message || error).slice(0, 500)}`,
+    level: 'error',
+    tags: {
+      component: context.component || 'unknown',
+      errorType: error.name || 'Error'
+    },
+    extra: {
+      stack: String(error.stack || '').slice(0, 500),
+      ...context
+    }
+  }, options);
+}
+
 module.exports = {
   parseDsn,
   sentryConfigured,
   sanitizeUrl,
   sanitizeContext,
   buildEnvelope,
-  sendEnvelope
+  sendEnvelope,
+  captureScamEvent,
+  captureError
 };

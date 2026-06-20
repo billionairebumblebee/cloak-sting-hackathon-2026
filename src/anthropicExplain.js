@@ -67,10 +67,15 @@ async function explainWithAnthropic(caseRecord, { env = process.env, fetchImpl =
 
   if (!response.ok) {
     const text = await response.text().catch(() => '');
+    const errMsg = `Anthropic request failed: ${response.status} ${text}`.trim().slice(0, 300);
+    try {
+      const { captureError } = require('./sentry.js');
+      captureError(new Error(errMsg), { component: 'anthropic-explain', caseId: caseRecord.id }).catch(() => {});
+    } catch (_) {}
     return {
       ...buildGroundedExplanation(caseRecord),
       provider: 'deterministic-local-after-anthropic-error',
-      anthropicError: `Anthropic request failed: ${response.status} ${text}`.trim().slice(0, 300)
+      anthropicError: errMsg
     };
   }
 

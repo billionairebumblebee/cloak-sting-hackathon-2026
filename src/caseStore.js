@@ -128,7 +128,14 @@ class RedisRestCaseStore {
       headers: { Authorization: `Bearer ${this.token}`, 'Content-Type': 'application/json' },
       body: JSON.stringify(args)
     });
-    if (!response.ok) throw new Error(`Redis REST command failed: ${response.status}`);
+    if (!response.ok) {
+      const err = new Error(`Redis REST command failed: ${response.status}`);
+      try {
+        const { captureError } = require('./sentry.js');
+        captureError(err, { component: 'case-store-redis-rest' }).catch(() => {});
+      } catch (_) {}
+      throw err;
+    }
     return response.json();
   }
 

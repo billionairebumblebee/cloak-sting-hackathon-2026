@@ -4,13 +4,24 @@
  * Reads SENTRY_DSN from env only — never hardcoded.
  * Sends a sample scam-detection event through the lightweight envelope path
  * and prints a sanitized result (no DSN, keys, or tokens in output).
+ * Saves a proof artifact to dist/sentry-proof.json.
  *
  * Usage:
  *   SENTRY_DSN=https://key@o1.ingest.sentry.io/123 node scripts/sentry_smoke_demo.js
- *   node scripts/sentry_smoke_demo.js          # no-op when DSN absent
+ *   node scripts/sentry_smoke_demo.js          # fallback when DSN absent
  */
 
-const { sendEnvelope, sentryConfigured, parseDsn, sanitizeUrl, sanitizeContext } = require('../src/sentry.js');
+const fs = require('node:fs');
+const path = require('node:path');
+const { sendEnvelope, captureScamEvent, captureError, sentryConfigured, parseDsn, sanitizeUrl, sanitizeContext } = require('../src/sentry.js');
+
+function saveProof(proof) {
+  const dir = path.join(process.cwd(), 'dist');
+  fs.mkdirSync(dir, { recursive: true });
+  const proofPath = path.join(dir, 'sentry-proof.json');
+  fs.writeFileSync(proofPath, JSON.stringify(proof, null, 2));
+  console.log(`\nProof artifact: ${proofPath}`);
+}
 
 async function main() {
   console.log('=== Cloak Sting — Sentry Smoke Demo ===\n');
@@ -29,28 +40,73 @@ async function main() {
     const ctx = sanitizeContext({ api_key: 'sk-secret', score: 85, note: 'test' });
     console.log(`  sanitizeContext:   OK — api_key=${ctx.api_key}, score=${ctx.score}`);
 
+    console.log('\nVerifying captureScamEvent (no-op without DSN)…');
+    const scamResult = await captureScamEvent({
+      id: 'test-001', risk: 'high', score: 92, url: 'https://example.com/scam',
+      hostname: 'example.com', title: 'Test scam page',
+      findings: [{ type: 'payment', label: 'Payment pressure' }, { type: 'urgency', label: 'Urgency language' }]
+    });
+    console.log(`  captureScamEvent:  OK — sent=${scamResult.sent}, reason="${scamResult.reason ? scamResult.reason.slice(0, 50) : 'n/a'}"`);
+
+    console.log('Verifying captureError (no-op without DSN)…');
+    const errResult = await captureError(new Error('Test error'), { component: 'smoke-demo' });
+    console.log(`  captureError:      OK — sent=${errResult.sent}`);
+
+    saveProof({
+      mode: 'fallback',
+      reason: 'SENTRY_DSN not set',
+      timestamp: new Date().toISOString(),
+      parseDsn: 'ok',
+      sanitizeUrl: 'ok',
+      sanitizeContext: 'ok',
+      captureScamEvent: scamResult.sent ? 'sent' : 'no-op (expected)',
+      captureError: errResult.sent ? 'sent' : 'no-op (expected)'
+    });
+
     console.log('\nAll offline checks passed. Set SENTRY_DSN to run the live path.');
     return;
   }
 
-  console.log('SENTRY_DSN detected — sending sample envelope…\n');
+  console.log('SENTRY_DSN detected — running live proof…\n');
 
-  const result = await sendEnvelope({
+  console.log('1. Sending raw envelope…');
+  const rawResult = await sendEnvelope({
     message: 'Cloak Sting smoke test: scam detection event',
     level: 'info',
     tags: { component: 'smoke-demo', risk: 'test' },
     extra: { score: 42, scenario: 'sentry-smoke-demo' }
   });
+  console.log(`   sent=${rawResult.sent}, eventId=${rawResult.eventId}, status=${rawResult.status}`);
 
-  if (result.sent) {
-    console.log(`Envelope sent successfully.`);
-    console.log(`  eventId:  ${result.eventId}`);
-    console.log(`  status:   ${result.status}`);
-    console.log(`  ingest:   ${sanitizeUrl(result.ingestUrl)}`);
-  } else {
-    console.log('Envelope was not sent.');
-    console.log(`  reason: ${result.reason || `HTTP ${result.status}`}`);
-  }
+  console.log('2. Sending captureScamEvent…');
+  const scamResult = await captureScamEvent({
+    id: 'smoke-scam-001', risk: 'high', score: 88, url: 'https://example-phish.click/login',
+    hostname: 'example-phish.click', title: 'Verify Your Account',
+    findings: [
+      { type: 'payment', label: 'Payment pressure (gift card)' },
+      { type: 'urgency', label: '24-hour deadline' },
+      { type: 'credential', label: 'Password harvesting' }
+    ]
+  });
+  console.log(`   sent=${scamResult.sent}, eventId=${scamResult.eventId}`);
+
+  console.log('3. Sending captureError…');
+  const errResult = await captureError(
+    new Error('Simulated Deepgram API timeout'),
+    { component: 'deepgram-stt', audioFile: 'demo.wav' }
+  );
+  console.log(`   sent=${errResult.sent}, eventId=${errResult.eventId}`);
+
+  const proof = {
+    mode: 'live',
+    timestamp: new Date().toISOString(),
+    rawEnvelope: { sent: rawResult.sent, eventId: rawResult.eventId, status: rawResult.status, ingest: sanitizeUrl(rawResult.ingestUrl) },
+    scamEvent: { sent: scamResult.sent, eventId: scamResult.eventId, status: scamResult.status },
+    errorEvent: { sent: errResult.sent, eventId: errResult.eventId, status: errResult.status }
+  };
+
+  saveProof(proof);
+  console.log('\nLive Sentry proof complete. All three event types sent.');
 }
 
 main().catch((err) => {

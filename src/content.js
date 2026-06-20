@@ -106,6 +106,15 @@
     return lines.join('\n');
   }
 
+  function trySentryCaptureScam(receipt) {
+    try {
+      if (typeof require === 'function') {
+        const { captureScamEvent } = require('./sentry.js');
+        captureScamEvent(receipt).catch(() => {});
+      }
+    } catch (_) {}
+  }
+
   function run() {
     if (!globalThis.CloakScamSignals) return;
     const analysis = globalThis.CloakScamSignals.analyzeScamSurface({
@@ -117,6 +126,9 @@
     const receipt = buildReceipt(analysis);
     saveReceipt(receipt);
     renderOverlay(receipt);
+    if (receipt.risk === 'high' || receipt.risk === 'medium') {
+      trySentryCaptureScam(receipt);
+    }
   }
 
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', run, { once: true });
