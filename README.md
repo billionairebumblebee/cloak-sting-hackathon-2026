@@ -16,6 +16,7 @@ Suspicious page → deterministic scam signals → ambient warning overlay → l
 npm test
 npm run build
 node scripts/save_case_demo.js
+node scripts/inspect_link_demo.js
 ```
 
 Load this folder as an unpacked Chrome extension for demo.
@@ -38,3 +39,15 @@ The pages are intentionally fake scam fixtures for demo/testing.
 - `src/dossier.js` exports the same case as JSON or Markdown for a family, bank, platform abuse team, FTC, or IC3 report.
 
 Safety boundary: Cloak Sting stores observed evidence and public technical indicators. It does not claim to identify private individuals or encourage vigilante action.
+
+## Browserbase isolated link inspection
+
+`src/browserbaseInspect.js` creates a Browserbase session using `BROWSERBASE_API_KEY` + `BROWSERBASE_PROJECT_ID`, then turns suspicious-link evidence into the same Cloak receipt/case/dossier shape.
+
+Demo:
+
+```bash
+node scripts/inspect_link_demo.js https://example.com/suspicious-page
+```
+
+If Browserbase credentials are unavailable, the script still explains the missing setup instead of printing secrets.
