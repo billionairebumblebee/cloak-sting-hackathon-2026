@@ -14,7 +14,7 @@ STING is a Chrome extension + voice analysis pipeline that spots scams in real t
 git clone https://github.com/billionairebumblebee/cloak-sting-hackathon-2026.git
 cd cloak-sting-hackathon-2026
 npm install
-npm test          # 197 tests pass — zero keys required
+npm test          # 213 tests pass — zero keys required
 npm run build     # packages extension ZIP
 ```
 
@@ -54,26 +54,27 @@ node scripts/scammer_profile_demo.js
 
 ## Sponsor integrations — honest status
 
-Every sponsor technology is integrated with real code, real tests, and graceful fallbacks. **Nothing requires an API key to demo.**
+Devpost sponsor chips are only the entry point, so this README is the detailed proof surface. Every claimed sponsor maps to a real stage of the STING scam-defense pipeline, with code paths, scripts, or explicit support-tool usage. **Nothing requires an API key to demo the core product.**
 
-| Sponsor | What it does | Without key | With key | Proof |
-|---------|-------------|-------------|----------|-------|
-| **Deepgram** | Voice STT → scam pattern matching | Local audio fixtures + transcript fallback | Live real-time transcription | `npm run demo` voice path |
-| **Anthropic** | Plain-English explanation of findings | Deterministic template engine (same structure) | Claude generates grounded verdicts | `scripts/explain_case_demo.js` |
-| **Browserbase** | Isolated URL detonation | Local DOM analysis only | Sandboxed cloud browser inspection | `scripts/inspect_link_demo.js` |
-| **Redis** | Case persistence + pattern retrieval | Local JSON storage (automatic) | Cloud persistence via Upstash/Redis | `scripts/save_case_demo.js` |
-| **Sentry** | Error + event monitoring | Local event log | Cloud envelope delivery | `scripts/sentry_smoke_demo.js` |
-| **Fetch.ai / ASI:One** | Agent coordination (4 endpoints) | Local wrapper, no registration | Agentverse-registered agent | `scripts/asi_agent_demo.js` |
-| **Arize / Phoenix** | 5-criteria eval pipeline | Local eval report generation | Cloud observability traces | `scripts/arize_eval_demo.js` |
-| **Token Company** | Risk-preserving evidence compression | Local deterministic (66% reduction) | N/A | `scripts/token_compress_demo.js` |
-| **Simular** | Autonomous cloud QA testing | Used for testing only — not in runtime | N/A | QA_REPORT.md |
-| **OpenAI Codex** | AI pair programming | Development tool | N/A | — |
-| **Devin (Cognition)** | Full-stack engineering agent | Development tool | N/A | — |
-| **Pika / Midjourney** | Visual design support | Logo + site design assistance | N/A | Site assets |
+| Sponsor / chip | How STING uses it | Runtime status | Proof |
+|---|---|---|---|
+| **Deepgram** | Voice scam pipeline: voicemail/call audio → transcript → voice scam pattern detection → evidence handoff packet. Used for bank impersonation, fake emergency, tech support, romance, crypto, kidnapping/grandparent, lottery, and utility scam scripts. | Live STT when `DEEPGRAM_API_KEY` is set; local audio fixtures + transcript fallback without keys. | `src/deepgramTranscribe.js`, `src/deepgramSTT.js`, `src/voiceScamPipeline.js`, `scripts/voice_scam_demo.js`, `scripts/transcribe_voice_demo.js`, `demo/voicemail-quarantine.html` |
+| **Anthropic / Claude** | Plain-English explanation layer over deterministic evidence. Claude is not the detector; it turns findings into calm, grounded next steps for vulnerable users and families. | Live Claude when `ANTHROPIC_API_KEY` is set; deterministic template fallback otherwise. | `src/anthropicExplain.js`, `scripts/explain_case_demo.js` |
+| **Browserbase** | Isolated suspicious-link inspection: a “bomb squad browser” path for opening risky URLs away from the user’s device, extracting page evidence, then feeding STING’s local detector. | Live Browserbase session when keys are set; local DOM/fetch fallback otherwise. | `src/browserbaseInspect.js`, `scripts/inspect_link_demo.js`, `dist/browserbase/` proof artifact |
+| **Redis** | Scam memory and case database: saves evidence receipts, repeated scam indicators, and clustered suspected scam infrastructure profiles. Supports community blacklist/network-effect story. | Redis/Upstash when configured; automatic local JSON fallback for demos. | `src/caseStore.js`, `src/scammerProfile.js`, `scripts/save_case_demo.js`, `scripts/scammer_profile_demo.js`, `data/cluster-profiles-demo.json` |
+| **Sentry** | Reliability + abuse-signal monitoring for protection software. STING sends scam-detection and integration-failure events so failures are visible when warnings, voice analysis, or AI explanation paths break. | Live Sentry project exists; local envelope/log fallback when `SENTRY_DSN` is absent. | `src/sentry.js`, `scripts/sentry_smoke_demo.js`, Sentry org: https://cloak-qr.sentry.io, project: `cloak-sting-extension`, issues: https://cloak-qr.sentry.io/issues/?project=cloak-sting-extension&query=is%3Aunresolved |
+| **Fetch.ai / ASI:One** | Local agent-wrapper interface for STING as an anti-scam agent: analyze a suspicious page/voice/report request and return structured scam findings in an agent-style request/response shape. | Local wrapper implemented; no claim of Agentverse registration unless manually completed. | `src/asiOneWrapper.js`, `scripts/asi_agent_demo.js` |
+| **Arize / Phoenix** | Evaluation layer for AI-generated scam explanations: checks whether explanations are grounded in evidence, safe, clear for nontechnical users, and avoid overclaiming. | Local eval report generation; cloud traces/observability if configured. | `src/arizeEvalCriteria.js`, `scripts/arize_eval_demo.js`, `docs/ARIZE_EVAL_PROOF.md`, `data/arize-eval-*.json` |
+| **Token Company** | Risk-preserving evidence compression: noisy scam page/voice/report evidence → compact structured block that preserves URL, brand, score, exact scam quotes, indicators, and safe next steps. | Local deterministic compressor; demonstrates 66% reduction while preserving critical fields. | `src/tokenCompress.js`, `scripts/token_compress_demo.js`, `data/token-compress-proof.json` |
+| **Simular / Sai** | Vulnerable-user simulation, not generic QA: Sai is framed as an older/nontechnical scam-victim persona testing whether STING’s warning, family rescue button, and scammer handoff packet are understandable under pressure. | Sponsor support/evaluation tool; not runtime product infrastructure. | Simular/Sai proof should show personas tested, screenshots/logs, findings, and fixes; see `docs/SPONSOR_STATUS.md` and site sponsor proof. |
+| **OpenAI Codex** | AI coding agent used for implementation acceleration across tests, scripts, extension logic, and docs during a one-day hackathon sprint. | Development tool, not runtime product dependency. | Git history / generated implementation artifacts |
+| **Devin (Cognition)** | Full-stack agent handoffs for parallel implementation: family rescue mode, scammer profile network, reporting routes, accessible inbox roadmap, sponsor proof audits. | Development tool, not runtime product dependency. | `docs/DEVIN_FAMILY_RESCUE_MODE_7_SUBAGENTS.md`, `docs/DEVIN_STING_ROADMAP_ACCESSIBLE_INBOX_SPRINT.md` |
+| **Pika / Midjourney** | Visual design support for Devpost/Chrome Web Store/pitch assets: STING logo/thumbnail/listing-style graphics and launch support materials. | Support/polish only; not claimed as runtime product infrastructure. | `site/public/sting-logo.svg`, Devpost/extension listing assets |
 
 ### Key distinction
-- **Core detection is 100% local** — `scamSignals.js`, `typosquatDetector.js`, `formAnalyzer.js`, `voicePatterns.js` run entirely in-browser with zero API calls.
-- **Sponsor APIs are enhancement layers** — explanation quality (Anthropic), voice transcription (Deepgram), URL sandboxing (Browserbase), persistence (Redis), monitoring (Sentry), coordination (ASI), eval (Arize).
+- **Core detection is 100% local** — `scamSignals.js`, `typosquatDetector.js`, `formAnalyzer.js`, `voicePatterns.js`, `familyRescue.js`, `reportingRoute.js`, and `scammerProfile.js` run without external API calls.
+- **Sponsor APIs are enhancement layers** — explanation quality (Anthropic), voice transcription (Deepgram), URL sandboxing (Browserbase), persistence (Redis), monitoring (Sentry), coordination (ASI), eval (Arize), compression (Token Company).
+- **Support sponsors are labeled honestly** — Simular/Sai tests vulnerable-user comprehension; Codex/Devin accelerate implementation; Pika/Midjourney provide visual polish. They are not described as hidden runtime infrastructure.
 - **Every path has a working fallback** — the demo runs fully offline, judges see real protection behavior without any credentials.
 
 ---
@@ -92,7 +93,7 @@ Every sponsor technology is integrated with real code, real tests, and graceful 
 | 8 | History tab shows past scans | Switch to History in popup | LIVE |
 | 9 | Voice pipeline processes fixture | `npm run demo` (voice section) | LIVE |
 | 10 | Threat export generates STIX/CSV | `npm run demo` (export section) | LIVE |
-| 11 | All 197 tests pass | `npm test` | LIVE |
+| 11 | All 213 tests pass | `npm test` | LIVE |
 | 12 | Eval criteria script runs | `node scripts/arize_eval_demo.js` | LIVE |
 | 13 | Sentry smoke test passes | `node scripts/sentry_smoke_demo.js` | LIVE |
 | 14 | Link pre-scan tooltip appears | Hover a link on any page | LIVE |
@@ -121,7 +122,7 @@ Open in browser after loading the extension:
 
 ## Test coverage
 
-197 tests across 19 test files covering:
+213 tests across 22 test files covering:
 - Scam signal detection (page + voice)
 - Typosquat / homoglyph analysis
 - Form credential harvesting
@@ -132,6 +133,9 @@ Open in browser after loading the extension:
 - Screenshot capture
 - ASI agent wrapper
 - Arize eval criteria
+- Family rescue handoff packet generation
+- Scam infrastructure profile clustering
+- Official reporting route packets
 
 ---
 
