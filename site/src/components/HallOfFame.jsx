@@ -119,7 +119,7 @@ export default function HallOfFame() {
           </FadeIn>
           <FadeIn delay={0.2}>
             <p className="mx-auto max-w-lg text-[16px] leading-[1.7] text-text-secondary">
-              Every scam sting catches becomes shared memory. These are real
+              Every scam STING catches becomes shared memory. These are real
               patterns from our detection pipeline.
             </p>
           </FadeIn>

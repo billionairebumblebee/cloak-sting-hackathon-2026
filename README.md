@@ -1,8 +1,8 @@
-# sting — UC Berkeley AI Hackathon 2026
+# cloak STING — UC Berkeley AI Hackathon 2026
 
-**Ambient scam-defense that protects the people who need it most.**
+**STING = Scam Tracking & Intelligence Network Guard**
 
-sting is a Chrome extension + voice analysis pipeline that detects scams in real time — fake bank pages, crypto seed phrase harvesting, IRS impersonation calls, grandparent scams, romance fraud, and more. It generates evidence dossiers shareable with banks, law enforcement, and family members.
+STING is a Chrome extension + voice analysis pipeline that spots scams in real time — fake bank pages, crypto seed phrase harvesting, IRS impersonation calls, grandparent scams, romance fraud, and more. It links scam signals into readable profiles and generates evidence dossiers shareable with banks, authorities, and family members.
 
 > *"Scammers picked the wrong target."*
 
@@ -173,10 +173,10 @@ scamSignals.js ──→ typosquatDetector.js     ← 100% local, no API
 
 This repository is intentionally separate from prior Cloak extension repos. Built from scratch for the hackathon submission window.
 
-Safety boundary: sting stores observed evidence and public technical indicators. It does not claim to identify private individuals or encourage vigilante action.
+Safety boundary: STING stores observed evidence and public technical indicators. It does not claim to identify private individuals or encourage vigilante action.
 
 ---
 
 ## Platform note
 
-Chrome MV3 extensions are desktop-only. sting does not run on mobile Chrome (Android/iOS). This is a Chrome platform limitation, not a bug.
+Chrome MV3 extensions are desktop-only. STING does not run on mobile Chrome (Android/iOS). This is a Chrome platform limitation, not a bug.

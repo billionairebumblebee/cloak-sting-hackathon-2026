@@ -15,7 +15,7 @@ export default function Footer() {
             >
               <StingLogo size={22} />
               <span className="text-[14px] font-bold tracking-[-0.01em] text-text-primary">
-                sting
+                STING
               </span>
             </a>
             <div className="flex flex-col items-center gap-1.5 text-center sm:items-end sm:text-right">

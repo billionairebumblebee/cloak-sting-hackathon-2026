@@ -131,7 +131,7 @@ export default function Hero() {
             transition: "opacity 0.8s ease 0.5s, transform 0.8s ease 0.5s",
           }}
         >
-          We hunt scams so you don&apos;t have to.
+          <span className="font-semibold text-honey/80">Scam Tracking &amp; Intelligence Network Guard.</span>
           <br className="hidden sm:block" />
           Voice calls. Links. Messages. Zero mercy for fraud.
         </p>

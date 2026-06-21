@@ -242,7 +242,7 @@ export default function VoiceScanner() {
           <FadeIn delay={0.2}>
             <p className="mx-auto max-w-lg text-[16px] leading-[1.7] text-text-secondary">
               Upload a recording or tap a scenario below. Deepgram transcribes
-              the call (with API key), then sting analyzes every word for scam
+              the call (with API key), then STING analyzes every word for scam
               signals. Demo uses fixture transcripts.
             </p>
           </FadeIn>

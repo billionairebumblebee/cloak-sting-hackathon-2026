@@ -1,5 +1,5 @@
 /**
- * Sound effects for the sting site using Web Audio API.
+ * Sound effects for the STING site using Web Audio API.
  * No external audio files — all sounds are synthesized.
  */
 

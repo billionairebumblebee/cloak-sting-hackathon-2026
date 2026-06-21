@@ -1,8 +1,8 @@
-# sting
+# cloak STING
 
 **Catch the scam before it catches you.**
 
-sting is an AI safety layer that inspects suspicious links, messages, and web pages, then gives normal people a plain-English warning, evidence trail, and next step before they get scammed.
+STING is an AI safety layer that inspects suspicious links, messages, and web pages, then gives normal people a plain-English warning, evidence trail, and next step before they get scammed.
 
 Built for [UC Berkeley AI Hackathon 2026](https://www.berkeleyaihackathon.com/).
 
@@ -31,7 +31,7 @@ The static output lands in `site/dist/` — deploy to Vercel, Netlify, or any st
 
 ## Demo Script (60 seconds)
 
-1. **Open the site** — the hero explains what sting does in one line.
+1. **Open the site** — the hero explains what STING does in one line.
 2. **Scroll to "How It Works"** — three-step flow: paste, inspect, verdict.
 3. **Click "Run a demo scan"** or scroll to the Interactive Demo section.
 4. **Select a case**: Fake Package SMS, Fake AI Store, or Fake Bank Login.
@@ -86,7 +86,7 @@ site/
 
 ## Sponsor Technologies Used / Planned
 
-| Sponsor | Role in sting | Status |
+| Sponsor | Role in STING | Status |
 |---------|---------------|--------|
 | **Browserbase** | Isolated cloud browser for safe page inspection | Architecture planned |
 | **Anthropic / Claude** | Grounded plain-English explanations + safe next steps | Architecture planned, deterministic fallback implemented |
@@ -111,11 +111,11 @@ All implementation, code, assets, logos, visual design, and content in this repo
 
 ### Elevator Pitch
 
-sting is an AI second opinion for suspicious links and messages. Paste a sketchy URL or forward a phishing SMS, and sting inspects it, explains the danger in plain English, and tells you exactly what to do next — with a downloadable evidence receipt you can share with your bank, your family, or law enforcement.
+STING is an AI second opinion for suspicious links and messages. Paste a sketchy URL or forward a phishing SMS, and STING inspects it, explains the danger in plain English, and tells you exactly what to do next — with a downloadable evidence receipt you can share with your bank, your family, or law enforcement.
 
 ### What It Does
 
-sting analyzes suspicious web pages, messages, and links using a combination of deterministic signal detection and AI-powered explanation. It checks domain age, pressure tactics, impersonation patterns, form behavior, and pricing anomalies. Then it produces a risk score, signal breakdown, plain-English verdict, recommended next steps, and a structured evidence receipt.
+STING analyzes suspicious web pages, messages, and links using a combination of deterministic signal detection and AI-powered explanation. It checks domain age, pressure tactics, impersonation patterns, form behavior, and pricing anomalies. Then it produces a risk score, signal breakdown, plain-English verdict, recommended next steps, and a structured evidence receipt.
 
 ### How We Built It
 

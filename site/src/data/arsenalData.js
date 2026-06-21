@@ -21,7 +21,7 @@ export const arsenalSponsors = [
     fallbackStatus:
       "Without key: fixture transcript/audio fallback. Demo uses pre-recorded scam call fixtures (bank robocall, Chinese embassy, hostage ransom) to demonstrate the full voice pipeline.",
     whyDeservesPrize:
-      "sting expands scam defense beyond web pages into voice scams, where Deepgram is the critical unlock. We use transcription to catch pressure tactics, ransom language, urgency, secrecy, OTP requests, and multilingual scam patterns before a victim acts. Not a novelty — voice is where the most harmful scams live.",
+      "STING expands scam defense beyond web pages into voice scams, where Deepgram is the critical unlock. We use transcription to catch pressure tactics, ransom language, urgency, secrecy, OTP requests, and multilingual scam patterns before a victim acts. Not a novelty — voice is where the most harmful scams live.",
     doNotClaim: [
       "Do not say live STT works without a Deepgram API key",
       "Do not imply the extension itself does real-time call recording",
@@ -84,7 +84,7 @@ export const arsenalSponsors = [
     tagline: "Scam memory — one person's warning becomes everyone's protection",
     role: "Threat Memory",
     whatItDoes:
-      "Stores scam cases, evidence records, and attack signatures. Lets sting remember repeat domains/patterns. Local fallback uses JSON, Redis path uses cloud persistence via Upstash or native Redis client.",
+      "Stores scam cases, evidence records, and attack signatures. Lets STING remember repeat domains/patterns. Local fallback uses JSON, Redis path uses cloud persistence via Upstash or native Redis client.",
     codePaths: [
       "src/caseStore.js",
       "scripts/save_case_demo.js",
@@ -165,7 +165,7 @@ export const arsenalSponsors = [
     tagline: "Scam analysis as an agent-callable service",
     role: "Agent Coordination",
     whatItDoes:
-      "Wraps sting analysis as an agent-callable HTTP interface. Provides /status, /chat, /analyze-threat endpoints. Lets other agents call sting as a scam-analysis service. Agent-to-agent protocol is wired.",
+      "Wraps STING analysis as an agent-callable HTTP interface. Provides /status, /chat, /analyze-threat endpoints. Lets other agents call STING as a scam-analysis service. Agent-to-agent protocol is wired.",
     codePaths: [
       "src/asiOneWrapper.js",
       "agents/sting-agent.mjs",
@@ -178,7 +178,7 @@ export const arsenalSponsors = [
     fallbackStatus:
       "Local agent wrapper runs without any registration. All 4 endpoints functional. 8 tests pass. Agentverse registration is future work.",
     whyDeservesPrize:
-      "sting is naturally agentic: one agent can inspect a page, another can analyze evidence, another can compile a dossier. The local wrapper proves the product can plug into an agent ecosystem where scam defense becomes a composable service.",
+      "STING is naturally agentic: one agent can inspect a page, another can analyze evidence, another can compile a dossier. The local wrapper proves the product can plug into an agent ecosystem where scam defense becomes a composable service.",
     doNotClaim: [
       "Do not claim Agentverse registration unless actually registered",
       "Do not say 'registered agent' — say 'local wrapper, Agentverse-ready'",
@@ -215,7 +215,7 @@ export const arsenalSponsors = [
     tagline: "Risk-preserving compression — fewer tokens, same safety quality",
     role: "Token Compression",
     whatItDoes:
-      "sting compresses messy scam evidence into a smaller LLM context while preserving decision-critical risk facts: URL, hostname, impersonated brand, urgency/payment/credential signals, exact scam quotes, risk score, and safe next steps. Then we compare raw vs compressed explanations with Arize evals to prove quality is maintained.",
+      "STING compresses messy scam evidence into a smaller LLM context while preserving decision-critical risk facts: URL, hostname, impersonated brand, urgency/payment/credential signals, exact scam quotes, risk score, and safe next steps. Then we compare raw vs compressed explanations with Arize evals to prove quality is maintained.",
     codePaths: [
       "src/tokenCompress.js",
       "scripts/token_compress_demo.js",
@@ -227,7 +227,7 @@ export const arsenalSponsors = [
     fallbackStatus:
       "Always local — this is a deterministic function, not an API integration. The demo harness generates proof JSON showing reduction metrics and Arize eval comparison.",
     whyDeservesPrize:
-      "sting does risk-preserving compression for scam evidence: raw messy evidence → compressed risk-preserving payload → LLM explanation → same/better eval score. Demo proves ~66% token reduction while maintaining 5/5 on all Arize eval criteria (grounded, safeAction, noOverclaim, noSecrets, clarity). The angle is not generic compression — it is domain-specific risk preservation where the compressor knows which fields are decision-critical for safety.",
+      "STING does risk-preserving compression for scam evidence: raw messy evidence → compressed risk-preserving payload → LLM explanation → same/better eval score. Demo proves ~66% token reduction while maintaining 5/5 on all Arize eval criteria (grounded, safeAction, noOverclaim, noSecrets, clarity). The angle is not generic compression — it is domain-specific risk preservation where the compressor knows which fields are decision-critical for safety.",
     doNotClaim: [
       "Do not claim this is a general-purpose compression algorithm",
       "Do not imply it outperforms dedicated compression models on arbitrary text",

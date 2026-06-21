@@ -37,7 +37,7 @@ const threats = [
   {
     icon: Bot,
     title: "AI-powered deception",
-    desc: "Scammers weaponize the same AI you trust. Their fakes are getting undetectable. sting sees through them.",
+    desc: "Scammers weaponize the same AI you trust. Their fakes are getting undetectable. STING sees through them.",
   },
 ];
 
@@ -60,7 +60,7 @@ export default function Problem() {
           <FadeIn delay={0.2}>
             <p className="max-w-lg text-[16px] leading-[1.7] text-text-secondary">
               They look flawless. They sound real. They fool smart people every
-              day. You need a weapon, not a warning — sting gives you a
+              day. You need a guard, not a warning — STING gives you a
               plain-English verdict in seconds.
             </p>
           </FadeIn>

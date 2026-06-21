@@ -73,7 +73,7 @@ const integrations = [
     color: "#3b82f6",
     status: "LOCAL",
     role: "Agent Coordination",
-    detail: "Exposes sting as an agent-callable service. Other agents can request scam analysis without building their own detector.",
+    detail: "Exposes STING as an agent-callable service. Other agents can request scam analysis without building their own detector.",
     files: ["src/asiOneWrapper.js"],
   },
   {
@@ -109,7 +109,7 @@ const integrations = [
     color: "#ff6b35",
     status: "DEV TOOL",
     role: "AI Software Engineer",
-    detail: "Built site, extension, CI pipeline, sponsor integrations, and 197 tests. The engineering backbone of this project.",
+    detail: "Built site, extension, CI pipeline, sponsor integrations, and 197 tests. The engineering backbone of STING.",
     files: ["(whole project)"],
   },
 ];
