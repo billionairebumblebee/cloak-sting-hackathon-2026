@@ -3,16 +3,175 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>cloak sting</title>
-  <link rel="stylesheet" href="popup.css">
+  <title>Sting</title>
+  <style>
+    *{box-sizing:border-box;margin:0;padding:0}
+    body{width:380px;max-height:500px;overflow-y:auto;font-family:'Inter',system-ui,-apple-system,sans-serif;background:#030303;color:#e8e8e8;font-size:13px;line-height:1.4;position:relative}
+    body::-webkit-scrollbar{width:5px}
+    body::-webkit-scrollbar-track{background:transparent}
+    body::-webkit-scrollbar-thumb{background:#222;border-radius:3px}
+    body::-webkit-scrollbar-thumb:hover{background:#333}
+
+    /* Noise overlay */
+    body::before{content:'';position:fixed;inset:0;z-index:9999;pointer-events:none;opacity:.025;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E")}
+
+    /* Ambient orbs */
+    .ambient-bg{position:fixed;inset:0;overflow:hidden;pointer-events:none;z-index:0}
+    .orb{position:absolute;border-radius:50%;filter:blur(40px);opacity:0;animation:orbFloat 12s ease-in-out infinite}
+    .orb-1{width:120px;height:120px;background:radial-gradient(circle,rgba(245,166,35,.15),transparent 70%);top:10%;left:5%;animation-delay:0s;opacity:.4}
+    .orb-2{width:90px;height:90px;background:radial-gradient(circle,rgba(147,51,234,.12),transparent 70%);top:50%;right:8%;animation-delay:-4s;opacity:.35}
+    .orb-3{width:70px;height:70px;background:radial-gradient(circle,rgba(245,166,35,.1),transparent 70%);bottom:20%;left:30%;animation-delay:-8s;opacity:.3}
+    @keyframes orbFloat{0%,100%{transform:translate(0,0) scale(1);opacity:.3}25%{transform:translate(10px,-15px) scale(1.1);opacity:.45}50%{transform:translate(-8px,10px) scale(.95);opacity:.35}75%{transform:translate(12px,8px) scale(1.05);opacity:.4}}
+
+    /* Header */
+    .header{position:relative;display:flex;align-items:center;gap:10px;padding:16px 18px 12px;z-index:1}
+    .header::after{content:'';position:absolute;bottom:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,#f5a623 30%,#9333ea 70%,transparent)}
+    .header svg{width:28px;height:28px;flex-shrink:0;filter:drop-shadow(0 0 6px rgba(245,166,35,.5))}
+    .header h1{font-size:16px;font-weight:700;letter-spacing:-.02em;color:#f5a623;text-shadow:0 0 12px rgba(245,166,35,.3)}
+
+    /* Tabs */
+    .tabs{display:flex;border-bottom:1px solid rgba(255,255,255,.04);position:relative;z-index:1}
+    .tab{flex:1;padding:10px 0;text-align:center;font-size:12px;font-weight:600;letter-spacing:.04em;text-transform:uppercase;color:#555;cursor:pointer;border-bottom:2px solid transparent;transition:color .3s,border-color .3s,text-shadow .3s}
+    .tab.active{color:#f5a623;border-bottom-color:#f5a623;text-shadow:0 0 8px rgba(245,166,35,.3)}
+    .tab:hover{color:#aaa}
+
+    /* Panel transitions */
+    .panel{display:none;padding:16px 18px;position:relative;z-index:1;animation:panelFadeIn .3s ease}
+    .panel.active{display:block}
+    @keyframes panelFadeIn{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:translateY(0)}}
+
+    /* Loading state */
+    .loading{display:flex;flex-direction:column;align-items:center;justify-content:center;padding:40px 18px;text-align:center;color:#555}
+    .loading .spinner{width:32px;height:32px;border:2px solid #1a1a1a;border-top-color:#f5a623;border-radius:50%;animation:spin .8s linear infinite;margin-bottom:12px;box-shadow:0 0 12px rgba(245,166,35,.2)}
+    @keyframes spin{to{transform:rotate(360deg)}}
+
+    /* Empty state */
+    .empty-state{text-align:center;padding:30px 18px;color:#555}
+    .empty-state svg{width:48px;height:48px;margin-bottom:12px;opacity:.3}
+    .empty-state p{font-size:13px;line-height:1.5}
+
+    /* Safe state */
+    .safe-state{text-align:center;padding:30px 18px}
+    .safe-state .checkmark{width:48px;height:48px;border-radius:50%;background:#0f2e1a;display:flex;align-items:center;justify-content:center;margin:0 auto 12px;box-shadow:0 0 20px rgba(74,222,128,.15)}
+    .safe-state .checkmark svg{width:24px;height:24px}
+    .safe-state h3{color:#4ade80;font-size:15px;margin-bottom:6px;text-shadow:0 0 8px rgba(74,222,128,.25)}
+    .safe-state p{color:#666;font-size:12px}
+
+    /* Risk badge */
+    .risk-header{margin-bottom:14px}
+    .risk-badge{display:inline-flex;align-items:center;gap:6px;padding:5px 10px;border-radius:999px;font-size:11px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;text-shadow:0 0 6px currentColor}
+    .risk-badge.critical{background:rgba(255,68,68,.12);color:#ff4444;border:1px solid rgba(255,68,68,.25);box-shadow:0 0 12px rgba(255,68,68,.15)}
+    .risk-badge.high{background:rgba(255,140,66,.1);color:#ff8c42;border:1px solid rgba(255,140,66,.2);box-shadow:0 0 12px rgba(255,140,66,.12)}
+    .risk-badge.medium{background:rgba(255,196,46,.08);color:#ffc42e;border:1px solid rgba(255,196,46,.18);box-shadow:0 0 12px rgba(255,196,46,.1)}
+    .risk-badge.low{background:rgba(74,222,128,.08);color:#4ade80;border:1px solid rgba(74,222,128,.18);box-shadow:0 0 12px rgba(74,222,128,.1)}
+    .risk-badge.safe{background:rgba(74,222,128,.08);color:#4ade80;border:1px solid rgba(74,222,128,.18);box-shadow:0 0 12px rgba(74,222,128,.1)}
+
+    /* Score meter */
+    .score-meter{margin:12px 0 16px}
+    .score-meter .label{display:flex;justify-content:space-between;margin-bottom:6px;font-size:11px;color:#777}
+    .score-meter .label span:last-child{font-size:13px;font-weight:800;color:#e8e8e8}
+    .meter-bar{height:8px;background:rgba(255,255,255,.04);border-radius:4px;overflow:hidden;border:1px solid rgba(255,255,255,.03)}
+    .meter-fill{height:100%;border-radius:4px;transition:width .6s cubic-bezier(.4,0,.2,1);position:relative}
+    .meter-fill.glow-red{box-shadow:0 0 12px rgba(255,68,68,.5),0 0 4px rgba(255,68,68,.8);animation:meterPulse 2s ease-in-out infinite}
+    .meter-fill.glow-orange{box-shadow:0 0 10px rgba(255,140,66,.4),0 0 4px rgba(255,140,66,.6)}
+    .meter-fill.glow-yellow{box-shadow:0 0 8px rgba(255,196,46,.3)}
+    .meter-fill.glow-green{box-shadow:0 0 6px rgba(74,222,128,.2)}
+    @keyframes meterPulse{0%,100%{box-shadow:0 0 12px rgba(255,68,68,.5),0 0 4px rgba(255,68,68,.8)}50%{box-shadow:0 0 18px rgba(255,68,68,.7),0 0 6px rgba(255,68,68,1)}}
+
+    /* Page info */
+    .page-info{margin-bottom:14px;padding:10px 12px;background:rgba(255,255,255,.02);border:1px solid rgba(255,255,255,.05);border-radius:12px;backdrop-filter:blur(4px);-webkit-backdrop-filter:blur(4px)}
+    .page-info .hostname{font-weight:600;font-size:13px;color:#e8e8e8;margin-bottom:2px}
+    .page-info .url{font-size:11px;color:#444;word-break:break-all}
+
+    /* Signals */
+    .signals-section h4{font-size:11px;text-transform:uppercase;letter-spacing:.06em;color:#666;margin-bottom:8px}
+    .signal-card{display:flex;gap:10px;padding:10px 12px;background:rgba(255,255,255,.02);border:1px solid rgba(255,255,255,.05);border-radius:12px;margin-bottom:8px;backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);transition:border-color .3s,box-shadow .3s}
+    .signal-card:hover{border-color:rgba(245,166,35,.15);box-shadow:0 0 8px rgba(245,166,35,.05)}
+    .signal-card .icon{width:28px;height:28px;border-radius:8px;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:14px}
+    .signal-card .icon.urgency{background:rgba(255,68,68,.1);box-shadow:inset 0 0 8px rgba(255,68,68,.1)}
+    .signal-card .icon.payment{background:rgba(255,140,66,.1);box-shadow:inset 0 0 8px rgba(255,140,66,.1)}
+    .signal-card .icon.impersonation{background:rgba(147,51,234,.1);box-shadow:inset 0 0 8px rgba(147,51,234,.1)}
+    .signal-card .icon.pressure{background:rgba(255,196,46,.08);box-shadow:inset 0 0 8px rgba(255,196,46,.08)}
+    .signal-card .icon.default{background:rgba(255,255,255,.04)}
+    .signal-card .content{flex:1;min-width:0}
+    .signal-card .content .label{font-weight:600;font-size:12px;color:#ddd;margin-bottom:2px}
+    .signal-card .content .evidence{font-size:11px;color:#666;word-break:break-word}
+
+    /* Advice */
+    .advice-section{margin-top:14px;padding:12px;background:rgba(255,255,255,.02);border:1px solid rgba(255,255,255,.05);border-radius:12px;backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px)}
+    .advice-section h4{font-size:11px;text-transform:uppercase;letter-spacing:.06em;color:#666;margin-bottom:6px}
+    .advice-section p{font-size:12px;color:#bbb;line-height:1.5}
+
+    /* Actions */
+    .actions{display:flex;gap:8px;margin-top:16px;padding-bottom:4px}
+    .actions button{flex:1;padding:10px 8px;border:0;border-radius:10px;font-size:11px;font-weight:700;cursor:pointer;transition:all .25s ease}
+    .btn-primary{background:linear-gradient(135deg,#f5a623,#e09000);color:#050505;box-shadow:0 2px 8px rgba(245,166,35,.2)}
+    .btn-primary:hover{box-shadow:0 0 16px rgba(245,166,35,.45),0 2px 8px rgba(245,166,35,.3);transform:translateY(-1px)}
+    .btn-secondary{background:rgba(255,255,255,.04);color:#ccc;border:1px solid rgba(255,255,255,.08) !important;backdrop-filter:blur(4px);-webkit-backdrop-filter:blur(4px)}
+    .btn-secondary:hover{background:rgba(255,255,255,.07);border-color:rgba(255,255,255,.14) !important;box-shadow:0 0 10px rgba(255,255,255,.05);transform:translateY(-1px)}
+    .btn-danger{background:rgba(255,68,68,.08);color:#ff6b6b;border:1px solid rgba(255,68,68,.15) !important}
+    .btn-danger:hover{background:rgba(255,68,68,.12);box-shadow:0 0 14px rgba(255,68,68,.2);border-color:rgba(255,68,68,.3) !important;transform:translateY(-1px)}
+
+    /* History */
+    .history-card{display:flex;align-items:center;gap:10px;padding:10px 12px;background:rgba(255,255,255,.02);border:1px solid rgba(255,255,255,.05);border-radius:12px;margin-bottom:8px;cursor:pointer;transition:all .3s ease;backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px)}
+    .history-card:hover{border-color:rgba(245,166,35,.18);box-shadow:0 0 10px rgba(245,166,35,.06);transform:translateY(-1px)}
+    .history-card .info{flex:1;min-width:0}
+    .history-card .info .host{font-weight:600;font-size:12px;color:#ddd;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+    .history-card .info .time{font-size:10px;color:#444;margin-top:2px}
+    .history-card .score-pill{font-size:11px;font-weight:700;padding:4px 8px;border-radius:6px;white-space:nowrap}
+
+    .history-empty{text-align:center;padding:30px 0;color:#444;font-size:12px}
+
+    /* Detail overlay for history items */
+    .detail-back{display:flex;align-items:center;gap:6px;margin-bottom:14px;padding:6px 0;cursor:pointer;font-size:12px;color:#f5a623;font-weight:600;transition:opacity .2s}
+    .detail-back:hover{opacity:.7}
+
+    /* Screenshot modal */
+    .screenshot-modal{position:fixed;inset:0;background:rgba(0,0,0,.9);z-index:100;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:16px;backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px)}
+    .screenshot-modal img{max-width:100%;max-height:70%;border-radius:10px;border:1px solid rgba(255,255,255,.08);box-shadow:0 20px 60px rgba(0,0,0,.6)}
+    .screenshot-modal .modal-actions{display:flex;gap:8px;margin-top:12px}
+    .screenshot-modal button{padding:8px 16px;border:0;border-radius:8px;font-size:12px;font-weight:600;cursor:pointer;transition:all .2s}
+    .screenshot-modal .btn-export{background:linear-gradient(135deg,#f5a623,#e09000);color:#050505}
+    .screenshot-modal .btn-export:hover{box-shadow:0 0 12px rgba(245,166,35,.4)}
+    .screenshot-modal .btn-close{background:rgba(255,255,255,.08);color:#ccc;border:1px solid rgba(255,255,255,.1)}
+    .screenshot-modal .btn-close:hover{background:rgba(255,255,255,.12)}
+  </style>
 </head>
 <body>
-  <main>
-    <p class="eyebrow">cloak sting</p>
-    <h1>latest threat receipt</h1>
-    <section id="receipt" class="card muted">No receipt yet. Open a suspicious demo page.</section>
-    <button id="copy">Copy receipt</button>
-  </main>
+  <div class="ambient-bg">
+    <div class="orb orb-1"></div>
+    <div class="orb orb-2"></div>
+    <div class="orb orb-3"></div>
+  </div>
+
+  <div class="header">
+    <svg viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path d="M16 2C10 2 5 6 4 11c-1 5 1 9 4 12 2 2 4 4 4 7h8c0-3 2-5 4-7 3-3 5-7 4-12-1-5-4-9-8-9z" fill="#f5a623" opacity=".15"/>
+      <path d="M16 4c-4.5 0-8.5 3.5-9.5 8-.8 4 .8 7.5 3.2 10 2.2 2.2 3.8 4.5 3.8 7.5h5c0-3 1.6-5.3 3.8-7.5 2.4-2.5 4-6 3.2-10C24.5 7.5 20.5 4 16 4z" stroke="#f5a623" stroke-width="1.5" fill="none"/>
+      <path d="M16 8c-1 0-2 .5-2.5 1.5L11 14l3.5 1.5c.3.1.7.1 1 0l2-1 2 1c.3.1.7.1 1 0L24 14l-2.5-4.5C21 8.5 20 8 19 8h-3z" fill="#f5a623" opacity=".6"/>
+      <circle cx="13.5" cy="12" r="1.5" fill="#f5a623"/>
+      <circle cx="18.5" cy="12" r="1.5" fill="#f5a623"/>
+      <path d="M12 17c0 0 2 2.5 4 2.5s4-2.5 4-2.5" stroke="#f5a623" stroke-width="1.2" stroke-linecap="round" fill="none"/>
+    </svg>
+    <h1>Sting</h1>
+  </div>
+
+  <div class="tabs">
+    <div class="tab active" data-tab="scan">Current Scan</div>
+    <div class="tab" data-tab="history">History</div>
+  </div>
+
+  <div id="panel-scan" class="panel active">
+    <div class="loading" id="loading-state">
+      <div class="spinner"></div>
+      <p>Analyzing page...</p>
+    </div>
+  </div>
+
+  <div id="panel-history" class="panel">
+    <div id="history-list"></div>
+  </div>
+
   <script src="src/popup.js"></script>
 </body>
 </html>

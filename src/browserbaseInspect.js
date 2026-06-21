@@ -37,7 +37,12 @@ async function createBrowserbaseSession({ env = process.env, fetchImpl = fetch }
 
   if (!response.ok) {
     const text = await response.text().catch(() => '');
-    throw new Error(`Browserbase session create failed: ${response.status} ${text}`.trim());
+    const err = new Error(`Browserbase session create failed: ${response.status} ${text}`.trim());
+    try {
+      const { captureError } = require('./sentry.js');
+      captureError(err, { component: 'browserbase-inspect' }).catch(() => {});
+    } catch (_) {}
+    throw err;
   }
 
   const session = await response.json();

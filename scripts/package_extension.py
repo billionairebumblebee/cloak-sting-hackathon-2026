@@ -6,7 +6,7 @@ OUT = ROOT / "dist" / "cloak-sting-extension.zip"
 INCLUDE = [
     "manifest.json",
     "popup.html",
-    "popup.css",
+    "onboard.html",
     "README.md",
     "BRAND_AND_PITCH_BRIEF.md",
     "package.json",

@@ -1,4 +1,13 @@
 (function attachScamSignals(global) {
+  /* ── Lazy-load advanced detectors (Node only, no-op in browser) ── */
+  let _typosquat = null;
+  let _formAnalyzer = null;
+  let _voicePatterns = null;
+  function tryRequire(mod) { try { if (typeof require === 'function') return require(mod); } catch (_) {} return null; }
+  function getTyposquatDetector() { if (!_typosquat) _typosquat = tryRequire('./typosquatDetector.js'); return _typosquat; }
+  function getFormAnalyzer() { if (!_formAnalyzer) _formAnalyzer = tryRequire('./formAnalyzer.js'); return _formAnalyzer; }
+  function getVoicePatterns() { if (!_voicePatterns) _voicePatterns = tryRequire('./voicePatterns.js'); return _voicePatterns; }
+
   const URGENCY_TERMS = [
     'act now', 'urgent', 'immediately', 'within 24 hours', 'final notice',
     'account locked', 'account suspended', 'verify now', 'limited time'
@@ -32,6 +41,22 @@
     '洗钱', '通缉', '拘留', '护照', '签证',
     '银行账户', '转账', '冻结', '逮捕令', '资金安全',
     '配合调查', '涉嫌犯罪'
+  ];
+
+  const CREDENTIAL_HARVEST_TERMS = [
+    'seed phrase', 'recovery phrase', 'private key', 'wallet key',
+    'enter your 12 words', 'enter your 24 words', 'mnemonic'
+  ];
+
+  const AI_DEEPFAKE_TERMS = [
+    'ai generated', 'this is not a recording', 'real person',
+    'definitely not a bot', 'i am calling from'
+  ];
+
+  const SOCIAL_ENGINEERING_TERMS = [
+    'do not hang up', 'stay on the line', 'transfer you to',
+    'your case number is', 'badge number', 'reference number',
+    'recording this call', 'for your protection'
   ];
 
   function normalize(value) {
@@ -85,12 +110,57 @@
       findings.push({ type: 'chinese_scam', label: 'Chinese-language scam signal', weight: 16, evidence: term });
     }
 
+    for (const term of containsAny(normalized, CREDENTIAL_HARVEST_TERMS)) {
+      findings.push({ type: 'crypto-harvest', label: 'Crypto credential harvesting', weight: 22, evidence: term });
+    }
+    for (const term of containsAny(normalized, AI_DEEPFAKE_TERMS)) {
+      findings.push({ type: 'deepfake', label: 'Possible AI deepfake/robocall indicator', weight: 8, evidence: term });
+    }
+    for (const term of containsAny(normalized, SOCIAL_ENGINEERING_TERMS)) {
+      findings.push({ type: 'social-engineering', label: 'Social engineering tactic', weight: 12, evidence: term });
+    }
+
     const passwordFields = (text.match(/password|passcode|security code|one-time code|otp/g) || []).length;
     if (passwordFields >= 2) {
       findings.push({ type: 'credential', label: 'Repeated credential/code request', weight: 16, evidence: `${passwordFields} credential terms` });
     }
 
     return findings;
+  }
+
+  const BRAND_SAFE_ACTIONS = {
+    usps: 'USPS never charges redelivery by text. Track packages at usps.com only.',
+    fedex: 'FedEx does not request payment via text or email. Use fedex.com/manage.',
+    dhl: 'DHL does not collect customs fees by link. Contact DHL directly.',
+    bank: 'Your real bank will never ask for your password by email. Call the number on your card.',
+    paypal: 'PayPal never asks for passwords outside paypal.com. Log in directly at paypal.com.',
+    apple: 'Apple will never call you about a security issue. Check at appleid.apple.com.',
+    microsoft: 'Microsoft does not cold-call about viruses. Ignore phone numbers on screen.',
+    irs: 'The IRS contacts you by mail first, never by phone demanding gift cards.',
+    'gift card': 'No real company or government agency accepts gift cards as payment. This is always a scam.',
+    crypto: 'Legitimate companies do not demand crypto payments. This is irreversible and almost certainly fraud.',
+  };
+
+  function detectBrand(text, hostname) {
+    const combined = normalize(`${text} ${hostname}`);
+    for (const [brand, action] of Object.entries(BRAND_SAFE_ACTIONS)) {
+      if (combined.includes(brand)) return action;
+    }
+    return null;
+  }
+
+  function buildAdvice(risk, text, hostname) {
+    const brandAction = detectBrand(text, hostname);
+    if (risk === 'high') {
+      const base = 'Do not enter information, send money, or call numbers on this page.';
+      return brandAction ? `${base} ${brandAction}` : `${base} Verify through the official app or type the real website address yourself.`;
+    }
+    if (risk === 'medium') {
+      return brandAction
+        ? `Slow down before continuing. ${brandAction}`
+        : 'Slow down and verify through an official channel before continuing.';
+    }
+    return 'No strong scam signals detected. Stay alert before sharing money or codes.';
   }
 
   function analyzeScamSurface(input) {
@@ -103,6 +173,23 @@
 
     const pageText = input?.text || '';
     const findings = [...hostnameSignals(hostname), ...scoreText(`${title} ${pageText}`)];
+
+    /* Advanced hostname analysis via typosquat detector */
+    const ts = getTyposquatDetector();
+    if (ts && hostname) {
+      const typoFindings = ts.analyzeHostname(hostname);
+      findings.push(...typoFindings);
+    }
+
+    /* Advanced form field analysis */
+    const fa = getFormAnalyzer();
+    if (fa && pageText) {
+      const labels = fa.extractInputLabels(pageText);
+      if (labels.length > 0) {
+        const { findings: formFindings, riskFactors } = fa.analyzeFormInputs(labels);
+        findings.push(...formFindings, ...riskFactors);
+      }
+    }
     const rawScore = findings.reduce((sum, item) => sum + item.weight, 0);
     const score = Math.min(100, rawScore);
     let risk = 'low';
@@ -115,16 +202,18 @@
       score,
       findingCount: findings.length,
       findings,
-      advice: risk === 'high'
-        ? 'Pause. Do not pay, enter passwords, or call numbers on this page. Verify through the official app or typed official website.'
-        : risk === 'medium'
-          ? 'Slow down and verify through an official channel before continuing.'
-          : 'No strong scam pattern detected, but stay alert before sharing money or codes.',
+      advice: buildAdvice(risk, `${title} ${pageText}`, hostname),
       analyzedAt: new Date().toISOString()
     };
   }
 
-  global.CloakScamSignals = { analyzeScamSurface, scoreText, hostnameSignals };
+  function analyzeVoiceTranscript(transcript) {
+    const vp = getVoicePatterns();
+    if (!vp) return [];
+    return vp.matchVoicePattern(transcript);
+  }
+
+  global.CloakScamSignals = { analyzeScamSurface, scoreText, hostnameSignals, analyzeVoiceTranscript };
 
   if (typeof module !== 'undefined') {
     module.exports = global.CloakScamSignals;
