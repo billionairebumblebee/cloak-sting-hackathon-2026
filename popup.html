@@ -26,7 +26,7 @@
     /* Header */
     .header{position:relative;display:flex;align-items:center;gap:10px;padding:16px 18px 12px;z-index:1}
     .header::after{content:'';position:absolute;bottom:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,#f5a623 30%,#9333ea 70%,transparent)}
-    .header svg{width:28px;height:28px;flex-shrink:0;filter:drop-shadow(0 0 6px rgba(245,166,35,.5))}
+    .header svg{width:28px;height:28px;flex-shrink:0;filter:drop-shadow(0 0 8px rgba(245,166,35,.6)) drop-shadow(0 0 16px rgba(245,166,35,.3))}
     .header h1{font-size:16px;font-weight:700;letter-spacing:-.02em;color:#f5a623;text-shadow:0 0 12px rgba(245,166,35,.3)}
     .header .version{font-size:10px;color:#444;font-weight:500;letter-spacing:.02em}
     .header .spacer{flex:1}
@@ -176,21 +176,37 @@
 
     /* Light mode */
     body.light{background:#f8f8fa;color:#1a1a1a}
-    body.light .ambient-bg{opacity:.15}
+    body.light::before{opacity:.01}
+    body.light .ambient-bg{opacity:.1}
     body.light .header::after{background:linear-gradient(90deg,transparent,#f5a623 30%,#9333ea 70%,transparent);opacity:.5}
-    body.light .header h1{text-shadow:none}
-    body.light .header svg{filter:none}
+    body.light .header h1{color:#c7841a;text-shadow:none}
+    body.light .header svg{filter:drop-shadow(0 0 4px rgba(200,130,20,.3))}
+    body.light .header .version{color:#999}
     body.light .tab{color:#888}
     body.light .tab.active{color:#c7841a;border-bottom-color:#c7841a;text-shadow:none}
+    body.light .tab:hover{color:#333}
     body.light .status-indicator{background:rgba(74,222,128,.06);border-color:rgba(74,222,128,.2)}
+    body.light .status-indicator .text p{color:#555}
     body.light .stat-card{background:rgba(0,0,0,.02);border-color:rgba(0,0,0,.06)}
     body.light .stat-card .value{color:#1a1a1a}
+    body.light .stat-card .value.highlight{color:#c7841a;text-shadow:none}
     body.light .stat-card .label{color:#666}
-    body.light .module-item{background:rgba(0,0,0,.02);border-color:rgba(0,0,0,.06)}
-    body.light .module-item .name{color:#1a1a1a}
+    body.light .module-row{background:rgba(0,0,0,.02);border-color:rgba(0,0,0,.06)}
+    body.light .module-row .name{color:#333}
+    body.light .modules-section h4{color:#777}
     body.light .panel{color:#1a1a1a}
     body.light .theme-btn{border-color:rgba(0,0,0,.1);background:rgba(0,0,0,.04);color:#555}
     body.light .theme-btn:hover{background:rgba(0,0,0,.08);color:#1a1a1a}
+    body.light .scan-btn{box-shadow:0 2px 8px rgba(245,166,35,.15)}
+    body.light .signal-card{background:rgba(0,0,0,.02);border-color:rgba(0,0,0,.06)}
+    body.light .signal-card .content .label{color:#1a1a1a}
+    body.light .signal-card .content .evidence{color:#555}
+    body.light .page-info{background:rgba(0,0,0,.02);border-color:rgba(0,0,0,.06)}
+    body.light .page-info .hostname{color:#1a1a1a}
+    body.light .page-info .url{color:#666}
+    body.light .history-card{background:rgba(0,0,0,.02);border-color:rgba(0,0,0,.06)}
+    body.light .history-card .info .host{color:#1a1a1a}
+    body.light .history-card .info .time{color:#666}
   </style>
 </head>
 <body>
@@ -201,7 +217,7 @@
   </div>
 
   <div class="header">
-    <svg viewBox="0 0 64 80" fill="none" xmlns="http://www.w3.org/2000/svg" style="filter: drop-shadow(0 0 4px rgba(255,255,255,0.3))">
+    <svg viewBox="0 0 64 80" fill="none" xmlns="http://www.w3.org/2000/svg" class="logo-svg">
       <path d="M32 4 C20 4 4 18 4 30 C4 40 16 48 32 48 C48 48 60 40 60 30 C60 18 44 4 32 4 Z" fill="#1a1a1a"/>
       <path d="M32 14 C28 20 26 28 28 38 C29 42 30 45 31 47" stroke="white" stroke-width="1.8" fill="none" stroke-linecap="round" opacity="0.9"/>
       <path d="M32 14 C36 20 38 28 36 38 C35 42 34 45 33 47" stroke="white" stroke-width="1.8" fill="none" stroke-linecap="round" opacity="0.9"/>
@@ -240,23 +256,38 @@
   </div>
 
   <script>
-    // Theme toggle
+    // Theme toggle — works in both extension popup and standalone file:// context
     (function(){
-      const saved = localStorage.getItem('sting-theme');
-      if(saved === 'light') document.body.classList.add('light');
+      function getTheme(cb) {
+        if (globalThis.chrome?.storage?.local) {
+          chrome.storage.local.get(['sting-theme'], function(r) { cb(r['sting-theme'] || 'dark'); });
+        } else {
+          cb(localStorage.getItem('sting-theme') || 'dark');
+        }
+      }
+      function saveTheme(theme) {
+        if (globalThis.chrome?.storage?.local) {
+          chrome.storage.local.set({ 'sting-theme': theme });
+        }
+        try { localStorage.setItem('sting-theme', theme); } catch(_) {}
+      }
       const btn = document.getElementById('theme-toggle');
       const sun = document.getElementById('icon-sun');
       const moon = document.getElementById('icon-moon');
-      function updateIcons(){
-        const isLight = document.body.classList.contains('light');
-        sun.style.display = isLight ? 'none' : 'block';
-        moon.style.display = isLight ? 'block' : 'none';
+      function applyTheme(theme) {
+        if (theme === 'light') {
+          document.body.classList.add('light');
+        } else {
+          document.body.classList.remove('light');
+        }
+        sun.style.display = theme === 'dark' ? 'block' : 'none';
+        moon.style.display = theme === 'light' ? 'block' : 'none';
       }
-      updateIcons();
+      getTheme(applyTheme);
       btn.addEventListener('click', function(){
-        document.body.classList.toggle('light');
-        localStorage.setItem('sting-theme', document.body.classList.contains('light') ? 'light' : 'dark');
-        updateIcons();
+        const next = document.body.classList.contains('light') ? 'dark' : 'light';
+        applyTheme(next);
+        saveTheme(next);
       });
     })();
   </script>
