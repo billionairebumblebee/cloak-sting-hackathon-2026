@@ -37,6 +37,9 @@ export default function Footer() {
                 <Link to="/legal" className="text-[11px] text-amber-400/60 hover:text-amber-400 transition-colors">
                   Legal
                 </Link>
+                <Link to="/support" className="text-[11px] text-amber-400/60 hover:text-amber-400 transition-colors">
+                  Support
+                </Link>
               </div>
             </div>
           </div>
