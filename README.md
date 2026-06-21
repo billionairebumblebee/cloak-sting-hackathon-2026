@@ -31,6 +31,11 @@ Then:
 npm run demo      # runs scripts/full_demo.js — voice pipeline, evidence, export
 ```
 
+**Scam cluster intelligence (groups reports into suspected scam networks):**
+```bash
+node scripts/scammer_profile_demo.js
+```
+
 ---
 
 ## What it does

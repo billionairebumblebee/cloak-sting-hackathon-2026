@@ -1,0 +1,108 @@
+[
+  {
+    "clusterId": "cluster_6c383e70dea5",
+    "name": "Fake Bank Cluster #1",
+    "clusterBasis": "shared-domain",
+    "linkedDomains": [
+      "bank-verify-secure.example"
+    ],
+    "linkedPhones": [],
+    "linkedEmails": [],
+    "sharedInfrastructure": {
+      "hosting": "Hyphen-stuffed domain pattern (possible bulk registration)",
+      "registrar": "No shared registrar pattern detected",
+      "paymentMethods": [
+        "wire transfer"
+      ]
+    },
+    "urgencyLanguage": [
+      "urgent",
+      "within 24 hours",
+      "act now",
+      "immediately"
+    ],
+    "timeline": {
+      "firstSeen": "2026-06-21T17:33:29.500Z",
+      "lastSeen": "2026-06-21T17:33:29.501Z",
+      "totalReports": 2
+    },
+    "riskLevel": "high",
+    "caseCount": 2,
+    "caseIds": [
+      "case_c445dbe4894e3afa",
+      "case_08df9b13c6358201"
+    ],
+    "disclaimer": "This profile represents suspected patterns from reported indicators and requires law-enforcement verification."
+  },
+  {
+    "clusterId": "cluster_36d3af6e548a",
+    "name": "Prize Claim Network #2",
+    "clusterBasis": "shared-domain",
+    "linkedDomains": [
+      "prize-claim.xyz"
+    ],
+    "linkedPhones": [],
+    "linkedEmails": [],
+    "sharedInfrastructure": {
+      "hosting": "No shared hosting pattern detected",
+      "registrar": "Cheap/novelty TLD registrar",
+      "paymentMethods": [
+        "gift card",
+        "processing fee"
+      ]
+    },
+    "urgencyLanguage": [
+      "act now",
+      "immediately",
+      "final notice"
+    ],
+    "timeline": {
+      "firstSeen": "2026-06-21T17:33:29.502Z",
+      "lastSeen": "2026-06-21T17:33:29.503Z",
+      "totalReports": 2
+    },
+    "riskLevel": "high",
+    "caseCount": 2,
+    "caseIds": [
+      "case_840dac79693750b1",
+      "case_4ca02902394d3bcd"
+    ],
+    "disclaimer": "This profile represents suspected patterns from reported indicators and requires law-enforcement verification."
+  },
+  {
+    "clusterId": "cluster_5ffc9df984d4",
+    "name": "Crypto Drain Network #3",
+    "clusterBasis": "shared-payment-method",
+    "linkedDomains": [
+      "crypto-recovery-help.top",
+      "secure-investment-returns.click"
+    ],
+    "linkedPhones": [],
+    "linkedEmails": [],
+    "sharedInfrastructure": {
+      "hosting": "Hyphen-stuffed domain pattern (possible bulk registration)",
+      "registrar": "Cheap/novelty TLD registrar",
+      "paymentMethods": [
+        "crypto",
+        "processing fee",
+        "wire transfer"
+      ]
+    },
+    "urgencyLanguage": [
+      "act now",
+      "immediately"
+    ],
+    "timeline": {
+      "firstSeen": "2026-06-21T17:33:29.503Z",
+      "lastSeen": "2026-06-21T17:33:29.504Z",
+      "totalReports": 2
+    },
+    "riskLevel": "high",
+    "caseCount": 2,
+    "caseIds": [
+      "case_08fbd51f605f2681",
+      "case_9f0e5fb5f6757899"
+    ],
+    "disclaimer": "This profile represents suspected patterns from reported indicators and requires law-enforcement verification."
+  }
+]
