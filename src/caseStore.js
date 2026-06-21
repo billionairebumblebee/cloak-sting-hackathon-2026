@@ -56,7 +56,7 @@ function normalizeReceiptToCase(receipt, extra = {}) {
   const now = new Date().toISOString();
   const caseRecord = {
     id: extra.id || receipt.id || stableId(receipt),
-    source: extra.source || 'cloak-sting-extension',
+    source: extra.source || 'sting-extension',
     createdAt: extra.createdAt || now,
     updatedAt: now,
     url: receipt.url || '',
@@ -142,10 +142,10 @@ class RedisRestCaseStore {
   }
 
   async saveCase(caseRecord) {
-    await this.command(['JSON.SET', `cloak:case:${caseRecord.id}`, '$', JSON.stringify(caseRecord)]).catch(async () => {
-      await this.command(['SET', `cloak:case:${caseRecord.id}`, JSON.stringify(caseRecord)]);
+    await this.command(['JSON.SET', `sting:case:${caseRecord.id}`, '$', JSON.stringify(caseRecord)]).catch(async () => {
+      await this.command(['SET', `sting:case:${caseRecord.id}`, JSON.stringify(caseRecord)]);
     });
-    await this.command(['SADD', 'cloak:cases', caseRecord.id]).catch(() => null);
+    await this.command(['SADD', 'sting:cases', caseRecord.id]).catch(() => null);
     return { backend: 'redis-rest', case: caseRecord };
   }
 }
@@ -187,8 +187,8 @@ class RedisClientCaseStore {
     client.on('error', () => {});
     await client.connect();
     try {
-      await client.set(`cloak:case:${caseRecord.id}`, JSON.stringify(caseRecord));
-      await client.sAdd('cloak:cases', caseRecord.id).catch(() => null);
+      await client.set(`sting:case:${caseRecord.id}`, JSON.stringify(caseRecord));
+      await client.sAdd('sting:cases', caseRecord.id).catch(() => null);
       return { backend: 'redis-client', case: caseRecord };
     } finally {
       await client.quit().catch(() => null);

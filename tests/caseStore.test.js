@@ -23,7 +23,7 @@ test('normalizes threat receipt into authority-safe case record', () => {
 });
 
 test('local case store persists records without Redis config', () => {
-  const filePath = path.join(fs.mkdtempSync(path.join(os.tmpdir(), 'cloak-cases-')), 'cases.json');
+  const filePath = path.join(fs.mkdtempSync(path.join(os.tmpdir(), 'sting-cases-')), 'cases.json');
   const store = new LocalCaseStore(filePath);
   const record = normalizeReceiptToCase({ id: 'r1', url: 'https://example.com', hostname: 'example.com', risk: 'low', score: 0 });
   const result = store.saveCase(record);

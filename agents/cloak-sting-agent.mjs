@@ -1,5 +1,5 @@
 /**
- * Cloak Sting — ASI:One / Agentverse agent wrapper.
+ * sting — ASI:One / Agentverse agent wrapper.
  *
  * Minimal HTTP server exposing the scam-detection pipeline as an
  * Agentverse-compatible agent with standard routes:
@@ -12,8 +12,8 @@
  * Uses existing src/scamSignals.js for detection. No new dependencies.
  *
  * Usage:
- *   node agents/cloak-sting-agent.mjs              # default port 3100
- *   PORT=8080 node agents/cloak-sting-agent.mjs    # custom port
+ *   node agents/sting-agent.mjs              # default port 3100
+ *   PORT=8080 node agents/sting-agent.mjs    # custom port
  */
 
 import { createServer } from 'node:http';
@@ -25,7 +25,7 @@ const { analyzeScamSurface } = require('../src/scamSignals.js');
 const PORT = parseInt(process.env.PORT || '3100', 10);
 
 const AGENT_DESCRIPTOR = {
-  name: 'cloak-sting',
+  name: 'sting',
   version: '0.1.0',
   description: 'Ambient scam-warning agent. Analyzes pages, URLs, and text for scam signals (urgency, payment, impersonation, credential harvesting, ransom, Chinese-language scams).',
   capabilities: ['threat-analysis', 'scam-detection', 'receipt-generation'],
@@ -35,7 +35,7 @@ const AGENT_DESCRIPTOR = {
     analyzeThreat: '/analyze-threat'
   },
   protocol: 'asi-one-v0',
-  sourceRepo: 'https://github.com/billionairebumblebee/cloak-sting-hackathon-2026'
+  sourceRepo: 'https://github.com/billionairebumblebee/sting-hackathon-2026'
 };
 
 function jsonResponse(res, status, data) {
@@ -110,7 +110,7 @@ const server = createServer(async (req, res) => {
   const url = req.url.split('?')[0];
 
   if (method === 'GET' && url === '/status') {
-    return jsonResponse(res, 200, { status: 'ok', agent: 'cloak-sting', version: '0.1.0' });
+    return jsonResponse(res, 200, { status: 'ok', agent: 'sting', version: '0.1.0' });
   }
 
   if (method === 'GET' && url === '/.well-known/agent.json') {
@@ -129,7 +129,7 @@ const server = createServer(async (req, res) => {
 });
 
 server.listen(PORT, () => {
-  console.log(`Cloak Sting agent listening on http://localhost:${PORT}`);
+  console.log(`sting agent listening on http://localhost:${PORT}`);
   console.log('Routes: /status, /.well-known/agent.json, /chat, /analyze-threat');
 });
 

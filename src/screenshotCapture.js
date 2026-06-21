@@ -1,6 +1,6 @@
 (function attachScreenshotCapture(global) {
-  const SCREENSHOT_PREFIX = 'cloak:screenshot:';
-  const SCREENSHOT_INDEX_KEY = 'cloak:screenshotIndex';
+  const SCREENSHOT_PREFIX = 'sting:screenshot:';
+  const SCREENSHOT_INDEX_KEY = 'sting:screenshotIndex';
   const MAX_SCREENSHOTS = 10;
 
   async function captureEvidence(tabId) {
@@ -11,7 +11,7 @@
       });
       return dataUrl;
     } catch (err) {
-      console.warn('[cloak-sting] screenshot capture failed:', err.message);
+      console.warn('[sting] screenshot capture failed:', err.message);
       return null;
     }
   }

@@ -1,5 +1,5 @@
 /**
- * Threat intelligence export for Cloak Sting.
+ * Threat intelligence export for sting.
  *
  * Generates structured threat intelligence reports in multiple formats:
  *  - STIX 2.1 (Structured Threat Information Expression)
@@ -7,7 +7,7 @@
  *  - Human-readable summary
  *
  * These exports enable law enforcement, banks, and platform abuse teams
- * to action the evidence Cloak Sting collects.
+ * to action the evidence sting collects.
  */
 
 function generateStixBundle(caseRecord) {
@@ -16,14 +16,14 @@ function generateStixBundle(caseRecord) {
 
   const objects = [];
 
-  // Identity — the reporter (Cloak Sting)
+  // Identity — the reporter (sting)
   objects.push({
     type: 'identity',
     spec_version: '2.1',
-    id: 'identity--cloak-sting-detector',
+    id: 'identity--sting-detector',
     created: now,
     modified: now,
-    name: 'Cloak Sting Scam Detector',
+    name: 'sting Scam Detector',
     identity_class: 'system',
     description: 'Automated scam detection system from UC Berkeley AI Hackathon 2026'
   });
@@ -42,7 +42,7 @@ function generateStixBundle(caseRecord) {
     pattern_type: 'stix',
     valid_from: caseRecord.createdAt || now,
     labels: [`risk:${caseRecord.risk}`, `brand:${caseRecord.suspectedBrand || 'unknown'}`],
-    created_by_ref: 'identity--cloak-sting-detector'
+    created_by_ref: 'identity--sting-detector'
   });
 
   // Observable — the URL
@@ -78,7 +78,7 @@ function generateStixBundle(caseRecord) {
     modified: now,
     content: `Scam Signal Analysis:\n${findingsSummary}\n\nAdvice: ${caseRecord.advice || ''}`,
     object_refs: [stixId],
-    created_by_ref: 'identity--cloak-sting-detector'
+    created_by_ref: 'identity--sting-detector'
   });
 
   return {
@@ -166,7 +166,7 @@ function csvEscape(value) {
 
 function generateHumanSummary(caseRecord) {
   const lines = [
-    `CLOAK STING — THREAT INTELLIGENCE REPORT`,
+    `STING — THREAT INTELLIGENCE REPORT`,
     `═══════════════════════════════════════`,
     ``,
     `Case: ${caseRecord.id}`,

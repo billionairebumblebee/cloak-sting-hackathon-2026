@@ -33,7 +33,7 @@ test('STIX bundle contains identity', () => {
   const bundle = generateStixBundle(caseRecord);
   const identity = bundle.objects.find((o) => o.type === 'identity');
   assert.ok(identity);
-  assert.equal(identity.name, 'Cloak Sting Scam Detector');
+  assert.equal(identity.name, 'sting Scam Detector');
 });
 
 test('STIX bundle contains indicator with risk labels', () => {
@@ -87,7 +87,7 @@ test('csvEscape handles commas and quotes', () => {
 test('human summary includes all sections', () => {
   const caseRecord = makeSampleCase();
   const summary = generateHumanSummary(caseRecord);
-  assert.ok(summary.includes('CLOAK STING'));
+  assert.ok(summary.includes('STING'));
   assert.ok(summary.includes('SIGNALS DETECTED'));
   assert.ok(summary.includes('RECOMMENDED ACTION'));
   assert.ok(summary.includes('REPORTING CHANNELS'));

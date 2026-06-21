@@ -42,7 +42,7 @@ const architectureNodes = [
     role: "Case memory & receipts",
     color: "#dc2626",
     description:
-      "Stores evidence receipts, case records, and scam pattern signatures. Enables similar-scam retrieval so Sting can say \u2018we\u2019ve seen 47 variants of this scam\u2019 with real data.",
+      "Stores evidence receipts, case records, and scam pattern signatures. Enables similar-scam retrieval so sting can recognize repeat scam patterns with real data.",
   },
   {
     id: "arize",
@@ -58,7 +58,7 @@ const architectureNodes = [
     role: "Reliability monitoring",
     color: "#8b5cf6",
     description:
-      "Captures errors, performance issues, and edge cases in production. Ensures the scanning pipeline doesn\u2019t silently fail when encountering novel scam patterns.",
+      "Captures errors and edge cases via custom envelope protocol (with DSN). Ensures the scanning pipeline doesn\u2019t silently fail when encountering novel scam patterns. Falls back to local logging without DSN.",
   },
   {
     id: "fetch",

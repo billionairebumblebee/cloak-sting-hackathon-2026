@@ -1,9 +1,19 @@
 (() => {
-  const STORAGE_KEY = 'cloakStingLatestReceipt';
-  const HISTORY_KEY = 'cloakStingScanHistory';
+  const STORAGE_KEY = 'stingLatestReceipt';
+  const HISTORY_KEY = 'stingScanHistory';
   const HISTORY_LIMIT = 25;
   const MIN_VISIBLE_SCORE = 35;
   const BLOCK_SCORE = 50;
+
+  const ALLOWLISTED_DOMAINS = [
+    'cloak-sting-hackathon-2026.vercel.app',
+    'localhost',
+    '127.0.0.1',
+  ];
+
+  if (ALLOWLISTED_DOMAINS.some((d) => location.hostname === d || location.hostname.endsWith('.' + d))) {
+    return;
+  }
 
   function getPageText() {
     const bodyText = document.body ? document.body.innerText : '';
@@ -23,38 +33,46 @@
     };
   }
 
+  function isDuplicateReceipt(history, receipt) {
+    return history.some((h) => h.url === receipt.url && h.score === receipt.score);
+  }
+
   function saveReceipt(receipt) {
     try {
       if (globalThis.chrome?.storage?.local) {
         chrome.storage.local.set({ [STORAGE_KEY]: receipt });
         chrome.storage.local.get(HISTORY_KEY, (result) => {
           const history = result[HISTORY_KEY] || [];
-          history.unshift(receipt);
-          if (history.length > HISTORY_LIMIT) history.length = HISTORY_LIMIT;
-          chrome.storage.local.set({ [HISTORY_KEY]: history });
+          if (!isDuplicateReceipt(history, receipt)) {
+            history.unshift(receipt);
+            if (history.length > HISTORY_LIMIT) history.length = HISTORY_LIMIT;
+            chrome.storage.local.set({ [HISTORY_KEY]: history });
+          }
         });
       } else {
         localStorage.setItem(STORAGE_KEY, JSON.stringify(receipt));
         let history = [];
         try { history = JSON.parse(localStorage.getItem(HISTORY_KEY) || '[]'); } catch (_) {}
-        history.unshift(receipt);
-        if (history.length > HISTORY_LIMIT) history.length = HISTORY_LIMIT;
-        localStorage.setItem(HISTORY_KEY, JSON.stringify(history));
+        if (!isDuplicateReceipt(history, receipt)) {
+          history.unshift(receipt);
+          if (history.length > HISTORY_LIMIT) history.length = HISTORY_LIMIT;
+          localStorage.setItem(HISTORY_KEY, JSON.stringify(history));
+        }
       }
     } catch (_) {}
   }
 
   function removeExistingOverlay() {
-    document.getElementById('cloak-sting-overlay')?.remove();
+    document.getElementById('sting-overlay')?.remove();
   }
 
   function blockPageInputs() {
-    if (document.getElementById('cloak-sting-input-shield')) return;
+    if (document.getElementById('sting-input-shield')) return;
     const shield = document.createElement('div');
-    shield.id = 'cloak-sting-input-shield';
+    shield.id = 'sting-input-shield';
     shield.innerHTML = `
       <style>
-        #cloak-sting-input-shield {
+        #sting-input-shield {
           position: fixed;
           inset: 0;
           z-index: 2147483646;
@@ -62,9 +80,9 @@
           backdrop-filter: blur(2px);
           -webkit-backdrop-filter: blur(2px);
           cursor: not-allowed;
-          animation: cloakShieldIn 0.3s ease-out;
+          animation: stingShieldIn 0.3s ease-out;
         }
-        @keyframes cloakShieldIn {
+        @keyframes stingShieldIn {
           from { opacity: 0; }
           to { opacity: 1; }
         }
@@ -78,7 +96,7 @@
   }
 
   function unblockPageInputs() {
-    document.getElementById('cloak-sting-input-shield')?.remove();
+    document.getElementById('sting-input-shield')?.remove();
   }
 
   function verdictText(risk) {
@@ -94,14 +112,14 @@
   }
 
   function showPersistentStrip(receipt) {
-    const existing = document.getElementById('cloak-sting-strip');
+    const existing = document.getElementById('sting-strip');
     if (existing) return;
     const colors = riskColor(receipt.risk);
     const strip = document.createElement('div');
-    strip.id = 'cloak-sting-strip';
+    strip.id = 'sting-strip';
     strip.innerHTML = `
       <style>
-        #cloak-sting-strip {
+        #sting-strip {
           position: fixed;
           top: 0; left: 0; right: 0;
           z-index: 2147483645;
@@ -116,14 +134,14 @@
           color: ${colors.text};
           backdrop-filter: blur(10px);
           -webkit-backdrop-filter: blur(10px);
-          animation: cloakStripIn 0.2s ease-out;
+          animation: stingStripIn 0.2s ease-out;
         }
-        @keyframes cloakStripIn {
+        @keyframes stingStripIn {
           from { transform: translateY(-100%); }
           to { transform: translateY(0); }
         }
-        #cloak-sting-strip .strip-text { font-weight: 700; }
-        #cloak-sting-strip button {
+        #sting-strip .strip-text { font-weight: 700; }
+        #sting-strip button {
           background: ${colors.border};
           color: white;
           border: none;
@@ -134,13 +152,13 @@
           cursor: pointer;
           transition: opacity 0.15s;
         }
-        #cloak-sting-strip button:hover { opacity: 0.85; }
+        #sting-strip button:hover { opacity: 0.85; }
       </style>
       <span class="strip-text">\u26A0 This page was flagged: ${escapeHtml(verdictText(receipt.risk))}</span>
-      <button data-cloak-strip="show">Show warning</button>
+      <button data-sting-strip="show">Show warning</button>
     `;
     strip.addEventListener('click', (e) => {
-      if (e.target?.dataset?.cloakStrip === 'show') {
+      if (e.target?.dataset?.stingStrip === 'show') {
         strip.remove();
         renderOverlay(receipt);
       }
@@ -148,18 +166,43 @@
     document.documentElement.appendChild(strip);
   }
 
+  function disablePageForms() {
+    document.querySelectorAll('input, textarea, select, button:not([data-sting-action])').forEach((el) => {
+      if (!el.closest('#sting-overlay') && !el.closest('#sting-strip')) {
+        el.dataset.stingDisabled = el.disabled ? 'was-disabled' : 'enabled';
+        el.disabled = true;
+        el.setAttribute('tabindex', '-1');
+      }
+    });
+  }
+
+  function enablePageForms() {
+    document.querySelectorAll('[data-sting-disabled]').forEach((el) => {
+      if (el.dataset.stingDisabled === 'enabled') {
+        el.disabled = false;
+        el.removeAttribute('tabindex');
+      }
+      delete el.dataset.stingDisabled;
+    });
+  }
+
   function renderOverlay(receipt) {
     removeExistingOverlay();
     if (receipt.score < MIN_VISIBLE_SCORE) return;
 
     const shouldBlock = receipt.score >= BLOCK_SCORE;
-    if (shouldBlock) blockPageInputs();
+    if (shouldBlock) {
+      blockPageInputs();
+      disablePageForms();
+    }
 
     const root = document.createElement('section');
-    root.id = 'cloak-sting-overlay';
-    root.setAttribute('role', 'dialog');
-    root.setAttribute('aria-label', 'Scam warning from Cloak Sting');
-    root.setAttribute('aria-describedby', 'cloak-sting-advice');
+    root.id = 'sting-overlay';
+    root.setAttribute('role', 'alertdialog');
+    root.setAttribute('aria-modal', 'true');
+    root.setAttribute('aria-label', 'Scam warning from sting');
+    root.setAttribute('aria-describedby', 'sting-advice');
+    root.setAttribute('tabindex', '-1');
 
     const findingItems = receipt.findings
       .slice(0, 4)
@@ -168,40 +211,42 @@
 
     root.innerHTML = `
       <style>
-        #cloak-sting-overlay{position:fixed;right:18px;top:18px;z-index:2147483647;width:min(420px,calc(100vw - 36px));font:16px/1.45 -apple-system,BlinkMacSystemFont,"Inter","Segoe UI",sans-serif;color:#111;background:rgba(255,255,255,.96);border:2px solid rgba(200,50,50,.3);box-shadow:0 24px 80px rgba(0,0,0,.28);border-radius:22px;overflow:hidden;backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px)}
-        #cloak-sting-overlay .bar{height:7px;background:linear-gradient(90deg,#111,#9f6bff,#ff5f7e)}
-        #cloak-sting-overlay .inner{padding:18px}
-        #cloak-sting-overlay h2{margin:0 0 10px;font-size:20px;letter-spacing:-.02em}
-        #cloak-sting-overlay .risk{display:inline-flex;align-items:center;gap:8px;margin:0 0 12px;padding:8px 14px;border-radius:999px;background:#c0392b;color:white;font-weight:700;text-transform:uppercase;font-size:14px;letter-spacing:.06em}
-        #cloak-sting-overlay p{margin:0 0 13px;color:#252525}
-        #cloak-sting-overlay ul{margin:0 0 14px;padding:0;list-style:none;display:grid;gap:8px}
-        #cloak-sting-overlay li{display:grid;gap:2px;padding:12px;border-radius:14px;background:#f4f0ea}
-        #cloak-sting-overlay li strong{font-size:15px}
-        #cloak-sting-overlay li span{color:#665f58;font-size:13px;word-break:break-word}
-        #cloak-sting-overlay .actions{display:flex;gap:10px;flex-wrap:wrap}
-        #cloak-sting-overlay button{border:0;border-radius:999px;padding:13px 18px;font-size:15px;font-weight:700;cursor:pointer}
-        #cloak-sting-overlay .primary{background:#111;color:white}
-        #cloak-sting-overlay .ghost{background:#ece7df;color:#111}
+        #sting-overlay{position:fixed;right:18px;top:18px;z-index:2147483647;width:min(420px,calc(100vw - 36px));font:1.125rem/1.45 -apple-system,BlinkMacSystemFont,"Inter","Segoe UI",sans-serif;color:#111;background:rgba(255,255,255,.96);border:2px solid rgba(200,50,50,.3);box-shadow:0 24px 80px rgba(0,0,0,.28);border-radius:22px;overflow:hidden;backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px)}
+        #sting-overlay .bar{height:7px;background:linear-gradient(90deg,#111,#9f6bff,#ff5f7e)}
+        #sting-overlay .inner{padding:18px}
+        #sting-overlay h2{margin:0 0 10px;font-size:1.375rem;letter-spacing:-.02em}
+        #sting-overlay .risk{display:inline-flex;align-items:center;gap:8px;margin:0 0 12px;padding:8px 14px;border-radius:999px;background:#c0392b;color:white;font-weight:700;text-transform:uppercase;font-size:0.875rem;letter-spacing:.06em}
+        #sting-overlay p{margin:0 0 13px;color:#252525;font-size:1.0625rem}
+        #sting-overlay ul{margin:0 0 14px;padding:0;list-style:none;display:grid;gap:8px}
+        #sting-overlay li{display:grid;gap:2px;padding:12px;border-radius:14px;background:#f4f0ea}
+        #sting-overlay li strong{font-size:0.9375rem}
+        #sting-overlay li span{color:#665f58;font-size:0.8125rem;word-break:break-word}
+        #sting-overlay .actions{display:flex;gap:10px;flex-wrap:wrap}
+        #sting-overlay button{border:0;border-radius:999px;padding:14px 20px;font-size:1rem;font-weight:700;cursor:pointer;min-height:44px;min-width:44px}
+        #sting-overlay .primary{background:#111;color:white}
+        #sting-overlay .ghost{background:#ece7df;color:#111}
       </style>
       <div class="bar"></div>
       <div class="inner">
-        <h2>\u{1F6E1} ${verdictText(receipt.risk)}</h2>
+        <h2>\u{1F6E1} Stop \u2014 ${verdictText(receipt.risk).toLowerCase()}</h2>
         <div class="risk">\u26A0 ${escapeHtml(receipt.risk)} risk</div>
-        <p style="font-size:15px;line-height:1.5" id="cloak-sting-advice">${escapeHtml(receipt.advice)}</p>
+        <p style="font-size:1rem;color:#444;margin:0 0 10px">You haven\u2019t done anything wrong. You\u2019re safe as long as you don\u2019t type anything here.</p>
+        <p style="font-size:15px;line-height:1.5" id="sting-advice">${escapeHtml(receipt.advice)}</p>
         <ul>${findingItems}</ul>
         <div class="actions">
-          <button class="primary" style="background:#dc2626" data-cloak-action="leave">\u2190 Leave this page</button>
-          <button class="primary" data-cloak-action="copy">Copy receipt to report</button>
-          <button class="ghost" data-cloak-action="dismiss">Hide warning (I understand the risk)</button>
+          <button class="primary" style="background:#dc2626" data-sting-action="leave">\u2190 Take me somewhere safe</button>
+          <button class="primary" data-sting-action="copy">Save proof for my bank or family</button>
+          <button class="ghost" data-sting-action="dismiss">Hide warning (I understand the risk)</button>
         </div>
       </div>
     `;
 
     root.addEventListener('click', async (event) => {
-      const action = event.target?.dataset?.cloakAction;
+      const action = event.target?.dataset?.stingAction;
       if (action === 'dismiss') {
         root.remove();
         unblockPageInputs();
+        enablePageForms();
         showPersistentStrip(receipt);
       }
       if (action === 'leave') {
@@ -210,11 +255,22 @@
       }
       if (action === 'copy') {
         await navigator.clipboard?.writeText(formatReceipt(receipt));
-        event.target.textContent = 'Copied';
+        event.target.textContent = '\u2705 Saved! Paste in a message to show someone you trust.';
+        setTimeout(() => { event.target.textContent = 'Save proof for my bank or family'; }, 4000);
+      }
+    });
+
+    root.addEventListener('keydown', (event) => {
+      if (event.key === 'Escape') {
+        root.remove();
+        unblockPageInputs();
+        enablePageForms();
+        showPersistentStrip(receipt);
       }
     });
 
     document.documentElement.appendChild(root);
+    root.focus();
   }
 
   function escapeHtml(value) {
@@ -223,9 +279,9 @@
 
   function formatReceipt(receipt) {
     const lines = [
-      'CLOAK STING - SCAM WARNING RECEIPT',
+      'sting — scam warning receipt',
       '------------------------------------',
-      `Verdict: ${verdictText(receipt.risk)} (${receipt.score}/100)`,
+      `Verdict: ${verdictText(receipt.risk)}`,
       `Page: ${receipt.title || receipt.hostname}`,
       `URL: ${receipt.url}`,
       '',
@@ -284,7 +340,7 @@
 
   /* ── Link pre-scan on hover ── */
 
-  const TOOLTIP_ID = 'cloak-sting-link-tooltip';
+  const TOOLTIP_ID = 'sting-link-tooltip';
   const HOVER_DEBOUNCE_MS = 300;
   let lastHoverCheck = 0;
 
@@ -311,7 +367,7 @@
         #${TOOLTIP_ID}{position:fixed;z-index:2147483647;max-width:320px;padding:8px 12px;font:12px/1.4 -apple-system,BlinkMacSystemFont,"Inter","Segoe UI",sans-serif;color:#fff;background:#1a1a1a;border:1.5px solid #e85d3a;border-radius:10px;pointer-events:none;box-shadow:0 6px 20px rgba(0,0,0,.35)}
         #${TOOLTIP_ID} .warn-icon{margin-right:5px}
       </style>
-      <span class="warn-icon">\u26A0\uFE0F</span>Sting: Suspicious link \u2014 ${safeReason}
+      <span class="warn-icon">\u26A0\uFE0F</span>sting: Suspicious link \u2014 ${safeReason}
     `;
 
     const rect = anchor.getBoundingClientRect();
@@ -354,6 +410,33 @@
   document.addEventListener('mouseover', handleLinkHover, true);
   document.addEventListener('mouseout', handleLinkOut, true);
 
-  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', run, { once: true });
-  else run();
+  /* ── MutationObserver for dynamically-injected content ── */
+
+  let rescanTimer = null;
+  let lastScanText = '';
+  const RESCAN_DEBOUNCE_MS = 1500;
+
+  function observeDynamicContent() {
+    if (!document.body) return;
+    const observer = new MutationObserver(() => {
+      if (rescanTimer) clearTimeout(rescanTimer);
+      rescanTimer = setTimeout(() => {
+        const currentText = getPageText();
+        if (currentText !== lastScanText && currentText.length > lastScanText.length + 50) {
+          lastScanText = currentText;
+          run();
+        }
+      }, RESCAN_DEBOUNCE_MS);
+    });
+    observer.observe(document.body, { childList: true, subtree: true, characterData: true });
+  }
+
+  function initialRun() {
+    lastScanText = getPageText();
+    run();
+    observeDynamicContent();
+  }
+
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', initialRun, { once: true });
+  else initialRun();
 })();

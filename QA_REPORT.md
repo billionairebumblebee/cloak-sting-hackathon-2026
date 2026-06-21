@@ -1,4 +1,4 @@
-# QA Report — Cloak Sting Scam Detector
+# QA Report — sting Scam Detector
 
 ## Test Summary
 

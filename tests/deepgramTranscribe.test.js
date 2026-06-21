@@ -6,7 +6,7 @@ const path = require('node:path');
 const { deepgramConfigured, extractTranscript, contentTypeForPath, transcribeWithDeepgram, analyzeVoiceScam } = require('../src/deepgramTranscribe.js');
 
 function tempAudio() {
-  const filePath = path.join(fs.mkdtempSync(path.join(os.tmpdir(), 'cloak-audio-')), 'sample.wav');
+  const filePath = path.join(fs.mkdtempSync(path.join(os.tmpdir(), 'sting-audio-')), 'sample.wav');
   fs.writeFileSync(filePath, Buffer.from([0x52, 0x49, 0x46, 0x46]));
   return filePath;
 }

@@ -24,7 +24,7 @@ function saveProof(proof) {
 }
 
 async function main() {
-  console.log('=== Cloak Sting — Sentry Smoke Demo ===\n');
+  console.log('=== sting — Sentry Smoke Demo ===\n');
 
   if (!sentryConfigured()) {
     console.log('SENTRY_DSN is not set. Sentry capture is disabled.');
@@ -71,7 +71,7 @@ async function main() {
 
   console.log('1. Sending raw envelope…');
   const rawResult = await sendEnvelope({
-    message: 'Cloak Sting smoke test: scam detection event',
+    message: 'sting smoke test: scam detection event',
     level: 'info',
     tags: { component: 'smoke-demo', risk: 'test' },
     extra: { score: 42, scenario: 'sentry-smoke-demo' }
@@ -97,8 +97,10 @@ async function main() {
   );
   console.log(`   sent=${errResult.sent}, eventId=${errResult.eventId}`);
 
+  const allSent = rawResult.sent && scamResult.sent && errResult.sent;
+
   const proof = {
-    mode: 'live',
+    mode: allSent ? 'live' : 'live-partial',
     timestamp: new Date().toISOString(),
     rawEnvelope: { sent: rawResult.sent, eventId: rawResult.eventId, status: rawResult.status, ingest: sanitizeUrl(rawResult.ingestUrl) },
     scamEvent: { sent: scamResult.sent, eventId: scamResult.eventId, status: scamResult.status },
@@ -106,7 +108,14 @@ async function main() {
   };
 
   saveProof(proof);
-  console.log('\nLive Sentry proof complete. All three event types sent.');
+
+  if (allSent) {
+    console.log('\nLive Sentry proof complete. All three event types sent successfully.');
+  } else {
+    const failed = [!rawResult.sent && 'rawEnvelope', !scamResult.sent && 'scamEvent', !errResult.sent && 'errorEvent'].filter(Boolean);
+    console.log(`\nSentry DSN is set but some events did not send: ${failed.join(', ')}.`);
+    console.log('Check your DSN and network. Proof JSON records the partial results.');
+  }
 }
 
 main().catch((err) => {

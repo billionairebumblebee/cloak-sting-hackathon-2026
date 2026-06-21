@@ -1,5 +1,5 @@
 /**
- * Voice scam pattern library for Cloak Sting.
+ * Voice scam pattern library for sting.
  *
  * Structured patterns for categorizing phone scam transcripts
  * into known attack families with specific counter-advice.
