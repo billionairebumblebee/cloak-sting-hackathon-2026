@@ -27,9 +27,17 @@ export default function Footer() {
                 Clean-room implementation. Every line written during the hacking
                 period. Zero tolerance for fraud.
               </p>
-              <Link to="/privacy" className="text-[11px] text-amber-400/60 hover:text-amber-400 transition-colors mt-1">
-                Privacy Policy
-              </Link>
+              <div className="flex gap-3 mt-1">
+                <Link to="/privacy" className="text-[11px] text-amber-400/60 hover:text-amber-400 transition-colors">
+                  Privacy
+                </Link>
+                <Link to="/terms" className="text-[11px] text-amber-400/60 hover:text-amber-400 transition-colors">
+                  Terms
+                </Link>
+                <Link to="/legal" className="text-[11px] text-amber-400/60 hover:text-amber-400 transition-colors">
+                  Legal
+                </Link>
+              </div>
             </div>
           </div>
         </FadeIn>
