@@ -13,10 +13,14 @@ const Footer = lazy(() => import("./components/Footer"));
 export default function App() {
   return (
     <div className="relative min-h-screen">
-      {/* Gradient mesh background */}
+      {/* Gradient mesh background — multi-layer */}
       <div className="gradient-mesh">
+        {/* Layer 1: slow (60s) */}
         <div className="mesh-orb-amber" />
         <div className="mesh-orb-teal" />
+        {/* Layer 2: mid-speed (30s) */}
+        <div className="mesh-orb-purple" />
+        <div className="mesh-orb-rose" />
       </div>
 
       {/* Film grain */}

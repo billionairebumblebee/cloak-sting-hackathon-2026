@@ -3,22 +3,28 @@ import StingLogo from "../assets/StingLogo";
 import { FileText, Crosshair, Phone } from "lucide-react";
 import { FloatingOrb } from "./Motion";
 
+// Layer 3: fast foreground sparkles (2-6s cycles)
 const sparkles = [
-  { left: "8%", top: "15%", size: 2, delay: 0, duration: 4 },
-  { left: "15%", top: "70%", size: 1.5, delay: 1.2, duration: 5 },
-  { left: "25%", top: "30%", size: 2.5, delay: 2.5, duration: 3.5 },
-  { left: "35%", top: "80%", size: 1, delay: 0.8, duration: 6 },
-  { left: "45%", top: "10%", size: 2, delay: 3, duration: 4.5 },
-  { left: "55%", top: "60%", size: 1.5, delay: 1.5, duration: 5.5 },
-  { left: "65%", top: "25%", size: 2, delay: 0.3, duration: 4 },
-  { left: "72%", top: "75%", size: 1, delay: 2, duration: 3 },
-  { left: "80%", top: "40%", size: 2.5, delay: 3.5, duration: 5 },
-  { left: "88%", top: "55%", size: 1.5, delay: 0.7, duration: 4.5 },
-  { left: "92%", top: "20%", size: 2, delay: 2.8, duration: 6 },
-  { left: "20%", top: "50%", size: 1, delay: 4, duration: 3.5 },
-  { left: "50%", top: "85%", size: 2, delay: 1, duration: 5 },
-  { left: "78%", top: "12%", size: 1.5, delay: 3.2, duration: 4.5 },
-  { left: "40%", top: "45%", size: 1, delay: 2.2, duration: 6 },
+  { left: "5%", top: "12%", size: 3, delay: 0, duration: 2.5 },
+  { left: "12%", top: "65%", size: 2, delay: 0.8, duration: 3 },
+  { left: "22%", top: "28%", size: 3.5, delay: 1.5, duration: 2 },
+  { left: "30%", top: "78%", size: 1.5, delay: 0.3, duration: 4 },
+  { left: "38%", top: "8%", size: 2.5, delay: 2, duration: 2.5 },
+  { left: "48%", top: "55%", size: 2, delay: 1, duration: 3.5 },
+  { left: "55%", top: "18%", size: 3, delay: 0.5, duration: 2 },
+  { left: "62%", top: "72%", size: 2, delay: 2.5, duration: 3 },
+  { left: "70%", top: "35%", size: 3.5, delay: 0.2, duration: 2.5 },
+  { left: "78%", top: "58%", size: 2, delay: 1.8, duration: 3 },
+  { left: "85%", top: "15%", size: 2.5, delay: 3, duration: 2 },
+  { left: "92%", top: "45%", size: 2, delay: 0.7, duration: 4 },
+  { left: "18%", top: "42%", size: 1.5, delay: 2.2, duration: 3 },
+  { left: "42%", top: "88%", size: 3, delay: 1.2, duration: 2.5 },
+  { left: "75%", top: "8%", size: 2, delay: 3.2, duration: 2 },
+  { left: "33%", top: "35%", size: 2.5, delay: 0.9, duration: 3.5 },
+  { left: "58%", top: "82%", size: 2, delay: 2.8, duration: 2.5 },
+  { left: "88%", top: "68%", size: 3, delay: 1.5, duration: 3 },
+  { left: "10%", top: "88%", size: 2, delay: 3.5, duration: 2 },
+  { left: "95%", top: "30%", size: 2.5, delay: 0.4, duration: 3.5 },
 ];
 
 export default function Hero() {
@@ -43,15 +49,22 @@ export default function Hero() {
       />
 
       {/* Ambient orbs */}
-      <FloatingOrb color="rgba(245, 166, 35, 0.05)" size={500} x="10%" y="20%" delay={0} />
-      <FloatingOrb color="rgba(255, 68, 68, 0.03)" size={400} x="70%" y="60%" delay={5} />
-      <FloatingOrb color="rgba(245, 166, 35, 0.03)" size={300} x="50%" y="10%" delay={10} />
+      <FloatingOrb color="rgba(255, 167, 38, 0.10)" size={600} x="5%" y="15%" delay={0} />
+      <FloatingOrb color="rgba(139, 92, 246, 0.07)" size={500} x="70%" y="55%" delay={4} />
+      <FloatingOrb color="rgba(255, 143, 0, 0.06)" size={450} x="50%" y="5%" delay={8} />
+      <FloatingOrb color="rgba(10, 150, 150, 0.05)" size={400} x="85%" y="20%" delay={12} />
+
+      {/* Hero spotlight — radial glow behind headline */}
+      <div className="hero-spotlight" />
 
       {/* Central threat glow */}
-      <div className="pointer-events-none absolute top-1/3 left-1/2 h-[600px] w-[600px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-honey/[0.04] blur-[180px]" />
+      <div className="pointer-events-none absolute top-1/3 left-1/2 h-[700px] w-[700px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-honey/[0.08] blur-[150px]" />
 
       {/* Red danger undercurrent */}
-      <div className="pointer-events-none absolute top-2/3 left-1/2 h-[400px] w-[800px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-red-600/[0.02] blur-[200px]" />
+      <div className="pointer-events-none absolute top-2/3 left-1/2 h-[500px] w-[900px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-red-600/[0.03] blur-[180px]" />
+
+      {/* Purple accent layer */}
+      <div className="pointer-events-none absolute top-1/4 right-1/4 h-[400px] w-[400px] rounded-full bg-purple-500/[0.05] blur-[120px]" />
 
       {/* Sparkle field */}
       <div className="sparkle-field">
@@ -96,7 +109,7 @@ export default function Hero() {
 
         {/* Headline with glow */}
         <h1
-          className="mb-7 text-[clamp(2.5rem,6vw,4.5rem)] font-extrabold leading-[1.08] tracking-[-0.035em]"
+          className="mb-7 text-[clamp(3rem,7vw,6rem)] font-black leading-[1.02] tracking-[-0.04em]"
           style={{
             opacity: mounted ? 1 : 0,
             transform: mounted ? "translateY(0)" : "translateY(24px)",
