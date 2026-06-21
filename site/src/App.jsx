@@ -4,11 +4,19 @@ import Navbar from "./components/Navbar";
 import Hero from "./components/Hero";
 
 const VideoShowcase = lazy(() => import("./components/VideoShowcase"));
+const FounderStory = lazy(() => import("./components/FounderStory"));
 const Problem = lazy(() => import("./components/Problem"));
 const ProductFlow = lazy(() => import("./components/ProductFlow"));
+const MessagesDemo = lazy(() => import("./components/MessagesDemo"));
 const VoiceScanner = lazy(() => import("./components/VoiceScanner"));
+const VoicemailDemo = lazy(() => import("./components/VoicemailDemo"));
+const EmailDemo = lazy(() => import("./components/EmailDemo"));
 const InteractiveDemo = lazy(() => import("./components/InteractiveDemo"));
+const FamilyRescue = lazy(() => import("./components/FamilyRescue"));
+const ScamIntelligence = lazy(() => import("./components/ScamIntelligence"));
+const ReportingRoutes = lazy(() => import("./components/ReportingRoutes"));
 const HallOfFame = lazy(() => import("./components/HallOfFame"));
+const Roadmap = lazy(() => import("./components/Roadmap"));
 const SponsorShowcase = lazy(() => import("./components/SponsorShowcase"));
 
 const Footer = lazy(() => import("./components/Footer"));
@@ -17,6 +25,7 @@ const PrivacyPolicy = lazy(() => import("./components/PrivacyPolicy"));
 const TermsOfService = lazy(() => import("./components/TermsOfService"));
 const Legal = lazy(() => import("./components/Legal"));
 const Support = lazy(() => import("./components/Support"));
+const VolunteerReport = lazy(() => import("./components/VolunteerReport"));
 
 function LandingPage() {
   return (
@@ -29,13 +38,29 @@ function LandingPage() {
             <div className="pointer-events-none absolute inset-0 bg-gradient-to-b from-transparent via-honey/[0.01] to-transparent" />
             <VideoShowcase />
             <div className="section-divider mx-6" />
+            <FounderStory />
+            <div className="section-divider mx-6" />
             <Problem />
             <div className="section-divider mx-6" />
             <ProductFlow />
             <div className="section-divider mx-6" />
+            <MessagesDemo />
+            <div className="section-divider mx-6" />
             <VoiceScanner />
             <div className="section-divider mx-6" />
+            <VoicemailDemo />
+            <div className="section-divider mx-6" />
+            <EmailDemo />
+            <div className="section-divider mx-6" />
             <InteractiveDemo />
+            <div className="section-divider mx-6" />
+            <FamilyRescue />
+            <div className="section-divider mx-6" />
+            <ScamIntelligence />
+            <div className="section-divider mx-6" />
+            <ReportingRoutes />
+            <div className="section-divider mx-6" />
+            <Roadmap />
             <div className="section-divider mx-6" />
             <HallOfFame />
             <div className="section-divider mx-6" />
@@ -88,6 +113,7 @@ export default function App() {
           <Route path="/terms" element={<Suspense fallback={<div />}><TermsOfService /></Suspense>} />
           <Route path="/legal" element={<Suspense fallback={<div />}><Legal /></Suspense>} />
           <Route path="/support" element={<Suspense fallback={<div />}><Support /></Suspense>} />
+          <Route path="/report" element={<Suspense fallback={<div />}><VolunteerReport /></Suspense>} />
         </Routes>
       </div>
     </BrowserRouter>

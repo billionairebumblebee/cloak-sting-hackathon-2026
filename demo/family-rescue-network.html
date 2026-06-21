@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>STING Intelligence — Suspected Scam Cluster Profile</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+    background: #0d1117;
+    color: #e6edf3;
+    min-height: 100vh;
+    padding: 0;
+  }
+  .topbar {
+    background: #161b22;
+    border-bottom: 1px solid #30363d;
+    padding: 12px 24px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+  .topbar .brand {
+    font-size: 1.2rem;
+    font-weight: bold;
+    color: #58a6ff;
+    letter-spacing: 1px;
+  }
+  .topbar .nav {
+    color: #8b949e;
+    font-size: 0.9rem;
+  }
+  .container {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 32px 24px;
+  }
+  .cluster-header {
+    background: #161b22;
+    border: 1px solid #30363d;
+    border-radius: 8px;
+    padding: 24px;
+    margin-bottom: 24px;
+  }
+  .cluster-header h1 {
+    font-size: 1.6rem;
+    color: #e6edf3;
+    margin-bottom: 8px;
+  }
+  .cluster-header .cluster-id {
+    color: #8b949e;
+    font-size: 0.9rem;
+    margin-bottom: 16px;
+  }
+  .status-badge {
+    display: inline-block;
+    background: #da3633;
+    color: #fff;
+    font-size: 0.75rem;
+    font-weight: bold;
+    padding: 4px 10px;
+    border-radius: 12px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+  .status-badge.active {
+    background: #da3633;
+  }
+  .grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+    margin-bottom: 24px;
+  }
+  @media (max-width: 600px) {
+    .grid { grid-template-columns: 1fr; }
+  }
+  .card {
+    background: #161b22;
+    border: 1px solid #30363d;
+    border-radius: 8px;
+    padding: 20px;
+  }
+  .card h3 {
+    color: #58a6ff;
+    font-size: 0.85rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-bottom: 12px;
+  }
+  .card ul {
+    list-style: none;
+    padding: 0;
+  }
+  .card ul li {
+    padding: 6px 0;
+    border-bottom: 1px solid #21262d;
+    font-size: 0.9rem;
+    color: #c9d1d9;
+  }
+  .card ul li:last-child {
+    border-bottom: none;
+  }
+  .card ul li code {
+    background: #21262d;
+    padding: 2px 6px;
+    border-radius: 3px;
+    font-size: 0.85rem;
+    color: #f0883e;
+  }
+  .timeline {
+    background: #161b22;
+    border: 1px solid #30363d;
+    border-radius: 8px;
+    padding: 20px;
+    margin-bottom: 24px;
+  }
+  .timeline h3 {
+    color: #58a6ff;
+    font-size: 0.85rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-bottom: 16px;
+  }
+  .timeline-row {
+    display: flex;
+    justify-content: space-between;
+    padding: 8px 0;
+    border-bottom: 1px solid #21262d;
+  }
+  .timeline-row:last-child {
+    border-bottom: none;
+  }
+  .timeline-row .label {
+    color: #8b949e;
+    font-size: 0.9rem;
+  }
+  .timeline-row .value {
+    color: #e6edf3;
+    font-weight: 500;
+    font-size: 0.9rem;
+  }
+  .infra-section {
+    background: #161b22;
+    border: 1px solid #30363d;
+    border-radius: 8px;
+    padding: 20px;
+    margin-bottom: 24px;
+  }
+  .infra-section h3 {
+    color: #58a6ff;
+    font-size: 0.85rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-bottom: 16px;
+  }
+  .infra-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 12px;
+  }
+  @media (max-width: 600px) {
+    .infra-grid { grid-template-columns: 1fr; }
+  }
+  .infra-item {
+    background: #21262d;
+    padding: 12px;
+    border-radius: 6px;
+  }
+  .infra-item .infra-label {
+    color: #8b949e;
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    margin-bottom: 4px;
+  }
+  .infra-item .infra-value {
+    color: #e6edf3;
+    font-size: 0.9rem;
+  }
+  .disclaimer {
+    background: #1c1e23;
+    border: 1px solid #d29922;
+    border-radius: 8px;
+    padding: 16px 20px;
+    margin-top: 24px;
+  }
+  .disclaimer h4 {
+    color: #d29922;
+    font-size: 0.9rem;
+    margin-bottom: 8px;
+  }
+  .disclaimer p {
+    color: #8b949e;
+    font-size: 0.85rem;
+    line-height: 1.5;
+  }
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <span class="brand">STING</span>
+  <span class="nav">Intelligence &gt; Suspected Scam Clusters &gt; Profile</span>
+</div>
+
+<div class="container">
+  <div class="cluster-header">
+    <h1>Prize Claim Network #47</h1>
+    <div class="cluster-id">Cluster ID: SCN-2026-047 &middot; Category: Sweepstakes / Lottery Fraud</div>
+    <span class="status-badge active">Active — Reported Indicators</span>
+  </div>
+
+  <div class="grid">
+    <div class="card">
+      <h3>Linked Domains (3)</h3>
+      <ul>
+        <li><code>national-prize-authority.win</code></li>
+        <li><code>sweepstakes-claim-center.top</code></li>
+        <li><code>prize-verify-now.click</code></li>
+      </ul>
+    </div>
+    <div class="card">
+      <h3>Linked Phone Numbers (2)</h3>
+      <ul>
+        <li><code>+1 (800) 555-0147</code></li>
+        <li><code>+1 (888) 555-0293</code></li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="grid">
+    <div class="card">
+      <h3>Linked Email (1)</h3>
+      <ul>
+        <li><code>claims@national-prize-authority.win</code></li>
+      </ul>
+    </div>
+    <div class="card">
+      <h3>Scam Signals Detected</h3>
+      <ul>
+        <li>Urgency pressure (deadline, final notice)</li>
+        <li>Unusual payment request (gift card, wire)</li>
+        <li>Isolation / secrecy pressure</li>
+        <li>Credential harvesting (SSN, bank details)</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="timeline">
+    <h3>Activity Timeline</h3>
+    <div class="timeline-row">
+      <span class="label">First Seen</span>
+      <span class="value">2026-03-12</span>
+    </div>
+    <div class="timeline-row">
+      <span class="label">Last Seen</span>
+      <span class="value">2026-06-19</span>
+    </div>
+    <div class="timeline-row">
+      <span class="label">Total Reports</span>
+      <span class="value">142 reports from 89 unique sources</span>
+    </div>
+    <div class="timeline-row">
+      <span class="label">Estimated Victims</span>
+      <span class="value">37 confirmed, ~200 suspected</span>
+    </div>
+    <div class="timeline-row">
+      <span class="label">Estimated Loss</span>
+      <span class="value">$84,600 (reported)</span>
+    </div>
+  </div>
+
+  <div class="infra-section">
+    <h3>Shared Infrastructure</h3>
+    <div class="infra-grid">
+      <div class="infra-item">
+        <div class="infra-label">Hosting Provider</div>
+        <div class="infra-value">BulletShield Hosting (offshore)</div>
+      </div>
+      <div class="infra-item">
+        <div class="infra-label">Registrar</div>
+        <div class="infra-value">QuickReg Domains LLC</div>
+      </div>
+      <div class="infra-item">
+        <div class="infra-label">Payment Processor</div>
+        <div class="infra-value">Gift card codes (no processor)</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="disclaimer">
+    <h4>⚠ Intelligence Disclaimer</h4>
+    <p>
+      This profile is based on reported indicators and shared infrastructure patterns identified through
+      community reports and automated analysis. This represents a suspected scam cluster and
+      needs law-enforcement verification before any attribution or action. Do not use this
+      information to identify real people. All indicators are aggregated from public reports and
+      automated scam detection signals.
+    </p>
+  </div>
+</div>
+
+</body>
+</html>

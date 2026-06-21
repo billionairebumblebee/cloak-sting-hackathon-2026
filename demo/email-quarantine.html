@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>STING Email Shield — Demo</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: #0a0a0f;
+      color: #e8e4dc;
+      min-height: 100vh;
+      padding: 24px;
+    }
+    .container { max-width: 900px; margin: 0 auto; }
+    header {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 20px 0; margin-bottom: 32px; border-bottom: 1px solid rgba(255,255,255,0.06);
+    }
+    .logo { font-size: 20px; font-weight: 700; color: #F5A623; letter-spacing: -0.5px; }
+    .disclaimer {
+      font-size: 11px; color: rgba(255,255,255,0.4); max-width: 400px; text-align: right;
+    }
+    h2 { font-size: 14px; font-weight: 600; text-transform: uppercase; letter-spacing: 1.5px; margin-bottom: 16px; }
+    .section-safe h2 { color: #4ade80; }
+    .section-quarantine h2 { color: #ef4444; }
+    .section-quarantine { margin-top: 32px; }
+    .email-list { display: flex; flex-direction: column; gap: 8px; }
+    .email-item {
+      background: rgba(255,255,255,0.02);
+      border: 1px solid rgba(255,255,255,0.06);
+      border-radius: 12px; padding: 16px 20px; cursor: pointer;
+      transition: all 0.2s;
+    }
+    .email-item:hover { background: rgba(255,255,255,0.04); border-color: rgba(255,255,255,0.1); }
+    .email-item.quarantined { border-color: rgba(239,68,68,0.25); }
+    .email-item.quarantined:hover { border-color: rgba(239,68,68,0.4); }
+    .email-header { display: flex; align-items: center; gap: 12px; }
+    .email-from { font-weight: 600; font-size: 14px; }
+    .email-subject { font-size: 13px; color: rgba(255,255,255,0.6); margin-top: 4px; }
+    .badge {
+      font-size: 9px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.8px;
+      padding: 3px 8px; border-radius: 4px; margin-left: auto; white-space: nowrap;
+    }
+    .badge-safe { background: rgba(74,222,128,0.1); color: #4ade80; }
+    .badge-scam { background: rgba(239,68,68,0.1); color: #ef4444; }
+    .email-body {
+      display: none; margin-top: 16px; padding-top: 16px;
+      border-top: 1px solid rgba(255,255,255,0.06);
+    }
+    .email-item.expanded .email-body { display: block; }
+    .email-content { font-size: 13px; line-height: 1.7; color: rgba(255,255,255,0.6); margin-bottom: 16px; }
+    .analysis-overlay {
+      background: rgba(245,166,35,0.04); border: 1px solid rgba(245,166,35,0.15);
+      border-radius: 10px; padding: 16px; margin-bottom: 16px;
+    }
+    .analysis-title {
+      font-size: 10px; font-weight: 700; text-transform: uppercase;
+      letter-spacing: 1.2px; color: #F5A623; margin-bottom: 12px;
+    }
+    .analysis-score {
+      font-size: 24px; font-weight: 800; margin-bottom: 8px;
+    }
+    .score-high { color: #ef4444; }
+    .score-low { color: #4ade80; }
+    .analysis-signals { list-style: none; }
+    .analysis-signals li {
+      font-size: 12px; color: rgba(255,255,255,0.6); padding: 4px 0;
+      display: flex; align-items: center; gap: 8px;
+    }
+    .analysis-signals li::before { content: "\2192"; color: #F5A623; }
+    .sender-rep {
+      font-size: 11px; color: rgba(255,255,255,0.4); margin-top: 12px;
+      padding-top: 8px; border-top: 1px solid rgba(255,255,255,0.04);
+    }
+    .actions { display: flex; gap: 8px; margin-top: 12px; }
+    .btn {
+      font-size: 12px; font-weight: 600; padding: 8px 16px; border-radius: 8px;
+      border: none; cursor: pointer; transition: all 0.2s;
+    }
+    .btn-safe { background: rgba(74,222,128,0.1); color: #4ade80; border: 1px solid rgba(74,222,128,0.2); }
+    .btn-safe:hover { background: rgba(74,222,128,0.2); }
+    .btn-delete { background: rgba(239,68,68,0.1); color: #ef4444; border: 1px solid rgba(239,68,68,0.2); }
+    .btn-delete:hover { background: rgba(239,68,68,0.2); }
+    .released {
+      opacity: 0.5; border-color: rgba(74,222,128,0.2) !important;
+    }
+    .deleted { display: none !important; }
+    .toast {
+      position: fixed; bottom: 24px; right: 24px; background: #1a1a24;
+      border: 1px solid rgba(255,255,255,0.08); border-radius: 10px;
+      padding: 12px 20px; font-size: 13px; color: #e8e4dc;
+      transform: translateY(100px); opacity: 0; transition: all 0.3s;
+      z-index: 100;
+    }
+    .toast.show { transform: translateY(0); opacity: 1; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <div class="logo">STING Email Shield &mdash; Demo</div>
+      <div class="disclaimer">Demo simulation. Email scanning requires integration with your email provider.</div>
+    </header>
+
+    <div class="section-safe">
+      <h2>Inbox</h2>
+      <div class="email-list" id="inbox"></div>
+    </div>
+
+    <div class="section-quarantine">
+      <h2>Quarantine</h2>
+      <div class="email-list" id="quarantine"></div>
+    </div>
+  </div>
+
+  <div class="toast" id="toast"></div>
+
+  <script>
+    // Inline scoring engine (mirrors src/scamSignals.js logic)
+    const URGENCY_TERMS = ['act now','urgent','immediately','within 24 hours','final notice','account locked','account suspended','verify now','limited time'];
+    const PAYMENT_TERMS = ['wire transfer','gift card','crypto','bitcoin','zelle','cash app','processing fee','redelivery fee','customs fee','pay to release'];
+    const TRUST_IMPERSONATION_TERMS = ['bank security','fraud department','irs','usps','fedex','dhl','apple support','microsoft support','verification center'];
+    const CREDENTIAL_HARVEST_TERMS = ['seed phrase','recovery phrase','private key','wallet key','enter your 12 words','enter your 24 words','mnemonic','password','passcode','security code','one-time code','otp'];
+
+    function analyzeText(text) {
+      const normalized = text.toLowerCase().replace(/\s+/g, ' ').trim();
+      const findings = [];
+      for (const term of URGENCY_TERMS) {
+        if (normalized.includes(term)) findings.push({ type: 'urgency', label: 'Urgency pressure', weight: 12, evidence: term });
+      }
+      for (const term of PAYMENT_TERMS) {
+        if (normalized.includes(term)) findings.push({ type: 'payment', label: 'Unusual payment request', weight: 18, evidence: term });
+      }
+      for (const term of TRUST_IMPERSONATION_TERMS) {
+        if (normalized.includes(term)) findings.push({ type: 'impersonation', label: 'Trusted institution impersonation', weight: 14, evidence: term });
+      }
+      for (const term of CREDENTIAL_HARVEST_TERMS) {
+        if (normalized.includes(term)) findings.push({ type: 'credential', label: 'Credential harvesting', weight: 16, evidence: term });
+      }
+      const rawScore = findings.reduce((sum, f) => sum + f.weight, 0);
+      const score = Math.min(100, rawScore);
+      let level = 'low';
+      if (score >= 65) level = 'high';
+      else if (score >= 35) level = 'medium';
+      return { score, level, findings };
+    }
+
+    const emails = [
+      {
+        id: 1, from: 'Sarah Chen', subject: 'Lunch tomorrow?',
+        body: 'Hey! Want to grab lunch tomorrow at that new Thai place on Market St? I heard their pad thai is amazing. Let me know if noon works for you.',
+        senderRep: 'Known contact — frequent correspondence'
+      },
+      {
+        id: 2, from: 'Apple Support', subject: 'Your Apple ID has been locked! Verify immediately',
+        body: 'Dear Customer, Your Apple ID has been locked due to suspicious activity. You must verify your identity immediately or your account will be permanently suspended. Click here to verify now. Enter your password, security code, and payment information to restore access. Act now — final notice.',
+        senderRep: 'Unverified sender — does not match official Apple domains'
+      },
+      {
+        id: 3, from: 'HR Department', subject: 'Updated benefits enrollment deadline',
+        body: 'Hi team, Just a reminder that the benefits enrollment period has been extended to July 15th. Please review the updated plan options on the HR portal. Let us know if you have questions. — HR Team',
+        senderRep: 'Internal sender — company domain verified'
+      },
+      {
+        id: 4, from: 'PayPal Security', subject: 'Unusual activity — confirm identity or account will be suspended',
+        body: 'We detected unusual activity on your PayPal account. Your account will be suspended within 24 hours unless you verify now. Confirm your identity by entering your password and one-time security code. This is urgent — act now immediately to avoid account locked status. Do not ignore this final notice.',
+        senderRep: 'Unverified sender — domain mismatch with official PayPal'
+      },
+      {
+        id: 5, from: 'Amazon Delivery', subject: 'Your package #AMZ-8847291 is being held — pay $2.99 redelivery fee',
+        body: 'Your package #AMZ-8847291 could not be delivered. To schedule redelivery, a small processing fee of $2.99 is required. Pay the redelivery fee now to release your package. This is a limited time offer before the package is returned to sender.',
+        senderRep: 'Unverified sender — not associated with official Amazon logistics'
+      },
+      {
+        id: 6, from: 'Dad', subject: 'Re: Weekend plans',
+        body: 'Sounds good! Let\'s do the barbecue on Saturday. I\'ll pick up the steaks. Mom says she\'ll bring her potato salad. See you around 3?',
+        senderRep: 'Known contact — family member'
+      }
+    ];
+
+    // Analyze and classify
+    emails.forEach(email => {
+      const result = analyzeText(email.subject + ' ' + email.body);
+      email.analysis = result;
+      email.isScam = result.level === 'high' || result.level === 'medium';
+    });
+
+    function renderEmail(email, container) {
+      const div = document.createElement('div');
+      div.className = `email-item${email.isScam ? ' quarantined' : ''}`;
+      div.id = `email-${email.id}`;
+
+      const badgeClass = email.isScam ? 'badge-scam' : 'badge-safe';
+      const badgeText = email.isScam ? 'QUARANTINED' : 'SAFE';
+
+      let analysisHtml = '';
+      if (email.isScam) {
+        const signalsHtml = email.analysis.findings.slice(0, 5).map(f =>
+          `<li><strong>${f.label}</strong>: "${f.evidence}"</li>`
+        ).join('');
+        analysisHtml = `
+          <div class="analysis-overlay">
+            <div class="analysis-title">STING Analysis</div>
+            <div class="analysis-score score-high">Score: ${email.analysis.score}/100 — ${email.analysis.level.toUpperCase()} RISK</div>
+            <ul class="analysis-signals">${signalsHtml}</ul>
+            <div class="sender-rep">${email.senderRep}</div>
+          </div>
+          <div class="actions">
+            <button class="btn btn-safe" onclick="releaseEmail(${email.id})">This is safe</button>
+            <button class="btn btn-delete" onclick="deleteEmail(${email.id})">Report &amp; delete</button>
+          </div>
+        `;
+      } else {
+        analysisHtml = `
+          <div class="analysis-overlay" style="border-color: rgba(74,222,128,0.15); background: rgba(74,222,128,0.03);">
+            <div class="analysis-title" style="color: #4ade80;">STING Analysis</div>
+            <div class="analysis-score score-low">Score: ${email.analysis.score}/100 — SAFE</div>
+            <div class="sender-rep">${email.senderRep}</div>
+          </div>
+        `;
+      }
+
+      div.innerHTML = `
+        <div class="email-header" onclick="toggleEmail(${email.id})">
+          <div>
+            <div class="email-from">${email.from}</div>
+            <div class="email-subject">${email.subject}</div>
+          </div>
+          <span class="badge ${badgeClass}">${badgeText}</span>
+        </div>
+        <div class="email-body">
+          <div class="email-content">${email.body}</div>
+          ${analysisHtml}
+        </div>
+      `;
+
+      container.appendChild(div);
+    }
+
+    function toggleEmail(id) {
+      const el = document.getElementById(`email-${id}`);
+      el.classList.toggle('expanded');
+    }
+
+    function releaseEmail(id) {
+      const el = document.getElementById(`email-${id}`);
+      el.classList.add('released');
+      el.classList.remove('quarantined');
+      el.querySelector('.badge').className = 'badge badge-safe';
+      el.querySelector('.badge').textContent = 'RELEASED';
+      el.querySelector('.actions').remove();
+      // Move to inbox
+      document.getElementById('inbox').appendChild(el);
+      showToast('Email released from quarantine');
+    }
+
+    function deleteEmail(id) {
+      const el = document.getElementById(`email-${id}`);
+      el.classList.add('deleted');
+      showToast('Email reported and deleted');
+    }
+
+    function showToast(msg) {
+      const toast = document.getElementById('toast');
+      toast.textContent = msg;
+      toast.classList.add('show');
+      setTimeout(() => toast.classList.remove('show'), 2500);
+    }
+
+    // Render
+    const inbox = document.getElementById('inbox');
+    const quarantine = document.getElementById('quarantine');
+    emails.forEach(email => {
+      renderEmail(email, email.isScam ? quarantine : inbox);
+    });
+  </script>
+</body>
+</html>

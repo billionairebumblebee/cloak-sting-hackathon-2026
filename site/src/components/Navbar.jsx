@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { Link } from "react-router-dom";
 import StingLogo from "../assets/StingLogo";
 import { Menu, X } from "lucide-react";
 import { playClick } from "../utils/sounds";
@@ -92,6 +93,16 @@ export default function Navbar() {
                 {link.label}
               </a>
             ))}
+            <Link
+              to="/report"
+              className="flex h-12 items-center text-[16px] font-medium text-amber-400 transition-colors hover:text-amber-300"
+              style={{
+                animation: `slideInLeft 0.3s ease ${navLinks.length * 0.04}s both`,
+              }}
+              onClick={() => setOpen(false)}
+            >
+              Report a Scam
+            </Link>
             <div className="mt-2 mb-2 flex items-center gap-3">
               <ThemeToggle />
               <a

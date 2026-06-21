@@ -1,0 +1,475 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>STING — Family Rescue Packet</title>
+<style>
+  :root {
+    --amber-50: #fffbeb;
+    --amber-100: #fef3c7;
+    --amber-200: #fde68a;
+    --amber-400: #fbbf24;
+    --amber-500: #f59e0b;
+    --amber-600: #d97706;
+    --amber-700: #b45309;
+    --blue-50: #eff6ff;
+    --blue-100: #dbeafe;
+    --blue-500: #3b82f6;
+    --blue-600: #2563eb;
+    --blue-700: #1d4ed8;
+    --gray-50: #f9fafb;
+    --gray-100: #f3f4f6;
+    --gray-200: #e5e7eb;
+    --gray-300: #d1d5db;
+    --gray-500: #6b7280;
+    --gray-600: #4b5563;
+    --gray-700: #374151;
+    --gray-800: #1f2937;
+    --gray-900: #111827;
+    --green-50: #f0fdf4;
+    --green-100: #dcfce7;
+    --green-600: #16a34a;
+    --red-600: #dc2626;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    background: linear-gradient(135deg, var(--blue-50) 0%, var(--amber-50) 100%);
+    min-height: 100vh;
+    padding: 24px 16px;
+    color: var(--gray-800);
+  }
+
+  .page-header {
+    text-align: center;
+    margin-bottom: 28px;
+  }
+  .page-header h1 {
+    font-size: 22px;
+    font-weight: 700;
+    color: var(--gray-900);
+    margin-bottom: 6px;
+  }
+  .page-header p {
+    font-size: 14px;
+    color: var(--gray-500);
+  }
+
+  .card {
+    max-width: 480px;
+    margin: 0 auto 32px;
+    background: #fff;
+    border-radius: 18px;
+    overflow: hidden;
+    box-shadow: 0 4px 28px rgba(0,0,0,0.07);
+    border: 2px solid var(--amber-400);
+  }
+
+  .card-header {
+    background: var(--amber-100);
+    padding: 18px 22px;
+    border-bottom: 1px solid var(--amber-200);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .card-header .shield { font-size: 30px; }
+  .card-header .title {
+    font-size: 18px;
+    font-weight: 700;
+    color: var(--gray-900);
+  }
+  .card-header .badge {
+    margin-left: auto;
+    padding: 4px 14px;
+    border-radius: 999px;
+    background: var(--amber-200);
+    color: var(--amber-700);
+    font-weight: 700;
+    font-size: 12px;
+    letter-spacing: 0.06em;
+  }
+
+  .card-body { padding: 22px; }
+
+  .section { margin-bottom: 20px; }
+  .section:last-child { margin-bottom: 0; }
+
+  .section h3 {
+    font-size: 15px;
+    font-weight: 700;
+    color: var(--gray-900);
+    margin-bottom: 8px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  .section p {
+    font-size: 15px;
+    line-height: 1.55;
+    color: var(--gray-600);
+  }
+
+  .signal-list {
+    list-style: none;
+    padding: 0;
+  }
+  .signal-list li {
+    padding: 8px 0;
+    border-bottom: 1px solid var(--gray-100);
+    font-size: 14px;
+    color: var(--gray-700);
+    display: flex;
+    align-items: flex-start;
+    gap: 8px;
+  }
+  .signal-list li:last-child { border-bottom: none; }
+  .signal-list li::before {
+    content: "\26A0\FE0F";
+    flex-shrink: 0;
+  }
+
+  .action-list {
+    list-style: none;
+    padding: 0;
+    counter-reset: steps;
+  }
+  .action-list li {
+    padding: 8px 0;
+    font-size: 14px;
+    color: var(--gray-700);
+    line-height: 1.45;
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+  }
+  .action-list li::before {
+    counter-increment: steps;
+    content: counter(steps);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    background: var(--blue-100);
+    color: var(--blue-700);
+    font-weight: 700;
+    font-size: 12px;
+    flex-shrink: 0;
+  }
+
+  .blocked-site {
+    background: var(--gray-50);
+    border-radius: 12px;
+    padding: 14px 16px;
+  }
+  .blocked-site .label {
+    font-size: 11px;
+    color: var(--gray-500);
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    margin-bottom: 4px;
+  }
+  .blocked-site .url {
+    font-size: 14px;
+    color: var(--red-600);
+    font-weight: 600;
+    word-break: break-all;
+  }
+
+  .share-box {
+    background: var(--amber-50);
+    border: 1px solid var(--amber-200);
+    border-radius: 12px;
+    padding: 14px 16px;
+  }
+  .share-box .label {
+    font-size: 11px;
+    color: var(--gray-500);
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    margin-bottom: 4px;
+  }
+  .share-box .msg {
+    font-size: 14px;
+    color: var(--gray-700);
+    line-height: 1.5;
+  }
+
+  .card-actions {
+    padding: 16px 22px;
+    border-top: 1px solid var(--gray-200);
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+  }
+
+  .btn {
+    flex: 1;
+    min-width: 140px;
+    padding: 14px;
+    border: none;
+    border-radius: 12px;
+    font-weight: 700;
+    font-size: 14px;
+    cursor: pointer;
+    text-align: center;
+    transition: transform 0.15s, box-shadow 0.15s;
+  }
+  .btn:hover { transform: translateY(-1px); box-shadow: 0 4px 12px rgba(0,0,0,0.1); }
+  .btn:active { transform: translateY(0); }
+  .btn-primary {
+    background: var(--amber-600);
+    color: #fff;
+  }
+  .btn-outline {
+    background: #fff;
+    color: var(--blue-600);
+    border: 2px solid var(--blue-500);
+  }
+
+  .card-footer {
+    padding: 10px 22px;
+    background: var(--gray-50);
+    border-top: 1px solid var(--gray-200);
+    font-size: 11px;
+    color: var(--gray-500);
+  }
+
+  .toast {
+    position: fixed;
+    bottom: 24px;
+    left: 50%;
+    transform: translateX(-50%) translateY(80px);
+    background: var(--gray-900);
+    color: #fff;
+    padding: 12px 24px;
+    border-radius: 10px;
+    font-size: 14px;
+    font-weight: 600;
+    opacity: 0;
+    transition: transform 0.3s ease, opacity 0.3s ease;
+    pointer-events: none;
+    z-index: 999;
+  }
+  .toast.show {
+    transform: translateX(-50%) translateY(0);
+    opacity: 1;
+  }
+
+  .scenario-picker {
+    max-width: 480px;
+    margin: 0 auto 20px;
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+  .scenario-btn {
+    padding: 8px 16px;
+    border-radius: 999px;
+    border: 1.5px solid var(--gray-300);
+    background: #fff;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--gray-700);
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+  .scenario-btn:hover { border-color: var(--amber-500); color: var(--amber-700); }
+  .scenario-btn.active {
+    background: var(--amber-100);
+    border-color: var(--amber-500);
+    color: var(--amber-700);
+  }
+</style>
+</head>
+<body>
+
+<div class="page-header">
+  <h1>&#x1F6E1;&#xFE0F; STING Family Rescue Packet</h1>
+  <p>Shareable evidence to help your family understand and respond to a scam.</p>
+</div>
+
+<div class="scenario-picker" id="scenarioPicker">
+  <button class="scenario-btn active" data-idx="0">&#x1F3E6; Fake Bank</button>
+  <button class="scenario-btn" data-idx="1">&#x1F381; Prize Scam</button>
+  <button class="scenario-btn" data-idx="2">&#x1F4BB; Tech Support</button>
+</div>
+
+<div class="card" id="packetCard">
+  <!-- filled by JS -->
+</div>
+
+<div class="toast" id="toast">Copied to clipboard!</div>
+
+<script>
+const SCENARIOS = [
+  {
+    riskLevel: "HIGH",
+    whatHappened: "Your family member visited a website (chase-secure-verify.net) that is trying to steal their bank login information or secret codes.",
+    whatTheyWanted: "The scammers wanted: your login username and password, you to panic and act without thinking, to isolate you so nobody can warn you",
+    signalsDetected: [
+      "The page tries to rush you into acting before you can think.",
+      "This site pretends to be your bank so it can steal your login.",
+      "The website address uses words like \"secure\" or \"verify\" to seem real.",
+      "They tell you not to talk to anyone else — a major red flag.",
+      "They keep asking for passwords and codes — a sign they are harvesting your info."
+    ],
+    whatToDo: [
+      "Do NOT enter any information on that site.",
+      "Close the page or turn off the device if needed.",
+      "Call your bank directly using the number on your card — not a number from the suspicious site.",
+      "Tell a family member or someone you trust what happened.",
+      "Report to the FTC at reportfraud.ftc.gov"
+    ],
+    siteBlocked: "chase-secure-verify.net",
+    shareableMessage: "\u26A0\uFE0F STING blocked a scam targeting your family member. The site chase-secure-verify.net was trying to get your login username and password. Do NOT enter any info. Do NOT enter any information on that site."
+  },
+  {
+    riskLevel: "HIGH",
+    whatHappened: "Your family member visited a website (mega-prize-winner-claim.click) that is trying to trick them into sending money.",
+    whatTheyWanted: "The scammers wanted: a payment (gift cards, wire transfer, or crypto), you to panic and act without thinking, to isolate you so nobody can warn you",
+    signalsDetected: [
+      "They ask you to pay in an unusual way, like gift cards or crypto.",
+      "The page tries to rush you into acting before you can think.",
+      "They tell you not to talk to anyone else — a major red flag.",
+      "The website uses an unusual address ending that scammers often pick."
+    ],
+    whatToDo: [
+      "Do NOT enter any information on that site.",
+      "Close the page or turn off the device if needed.",
+      "Call your bank directly using the number on your card — not a number from the suspicious site.",
+      "Tell a family member or someone you trust what happened.",
+      "Report to the FTC at reportfraud.ftc.gov"
+    ],
+    siteBlocked: "mega-prize-winner-claim.click",
+    shareableMessage: "\u26A0\uFE0F STING blocked a scam targeting your family member. The site mega-prize-winner-claim.click was trying to get a payment (gift cards, wire transfer, or crypto). Do NOT enter any info. Do NOT enter any information on that site."
+  },
+  {
+    riskLevel: "HIGH",
+    whatHappened: "Your family member visited a website (microsoft-support-alert-fix.top) that shows strong signs of being a scam.",
+    whatTheyWanted: "The scammers wanted: a payment (gift cards, wire transfer, or crypto), your trust by pretending to be a real company, you to panic and act without thinking, to keep you on the line so you can't check",
+    signalsDetected: [
+      "They ask you to pay in an unusual way, like gift cards or crypto.",
+      "The page uses the name of a real company or government agency to trick you.",
+      "The page tries to rush you into acting before you can think.",
+      "They use tricks to keep you on the line and stop you from checking.",
+      "The website uses an unusual address ending that scammers often pick."
+    ],
+    whatToDo: [
+      "Do NOT enter any information on that site.",
+      "Close the page or turn off the device if needed.",
+      "Call your bank directly using the number on your card — not a number from the suspicious site.",
+      "Tell a family member or someone you trust what happened.",
+      "Report to the FTC at reportfraud.ftc.gov"
+    ],
+    siteBlocked: "microsoft-support-alert-fix.top",
+    shareableMessage: "\u26A0\uFE0F STING blocked a scam targeting your family member. The site microsoft-support-alert-fix.top was trying to get a payment (gift cards, wire transfer, or crypto). Do NOT enter any info. Do NOT enter any information on that site."
+  }
+];
+
+function esc(s) {
+  var d = document.createElement('div');
+  d.textContent = s;
+  return d.innerHTML;
+}
+
+function renderCard(idx) {
+  var s = SCENARIOS[idx];
+  var signals = s.signalsDetected.map(function(sig) {
+    return '<li>' + esc(sig) + '</li>';
+  }).join('');
+  var actions = s.whatToDo.map(function(a) {
+    return '<li>' + esc(a) + '</li>';
+  }).join('');
+
+  document.getElementById('packetCard').innerHTML =
+    '<div class="card-header">' +
+      '<span class="shield">\uD83D\uDEE1\uFE0F</span>' +
+      '<span class="title">Family Rescue Packet</span>' +
+      '<span class="badge">' + esc(s.riskLevel) + ' RISK</span>' +
+    '</div>' +
+    '<div class="card-body">' +
+      '<div class="section">' +
+        '<h3>\uD83D\uDCA1 What happened</h3>' +
+        '<p>' + esc(s.whatHappened) + '</p>' +
+      '</div>' +
+      '<div class="section">' +
+        '<h3>\uD83C\uDFAF What they wanted</h3>' +
+        '<p>' + esc(s.whatTheyWanted) + '</p>' +
+      '</div>' +
+      '<div class="section">' +
+        '<h3>\u26A0\uFE0F Warning signs we found</h3>' +
+        '<ul class="signal-list">' + signals + '</ul>' +
+      '</div>' +
+      '<div class="section">' +
+        '<h3>\u2705 What to do now</h3>' +
+        '<ol class="action-list">' + actions + '</ol>' +
+      '</div>' +
+      '<div class="section">' +
+        '<div class="blocked-site">' +
+          '<div class="label">Blocked site</div>' +
+          '<div class="url">' + esc(s.siteBlocked) + '</div>' +
+        '</div>' +
+      '</div>' +
+      '<div class="section">' +
+        '<div class="share-box">' +
+          '<div class="label">Shareable message</div>' +
+          '<div class="msg" id="shareMsg">' + esc(s.shareableMessage) + '</div>' +
+        '</div>' +
+      '</div>' +
+    '</div>' +
+    '<div class="card-actions">' +
+      '<button class="btn btn-primary" onclick="copyToClipboard()">\uD83D\uDCCB Copy to clipboard</button>' +
+      '<button class="btn btn-outline" onclick="shareViaText()">\uD83D\uDCF1 Share via text</button>' +
+    '</div>' +
+    '<div class="card-footer">' +
+      'Generated by STING &middot; This is a demo packet' +
+    '</div>';
+}
+
+function copyToClipboard() {
+  var msg = document.getElementById('shareMsg').textContent;
+  navigator.clipboard.writeText(msg).then(function() {
+    showToast('Copied to clipboard!');
+  }).catch(function() {
+    showToast('Could not copy — please select and copy manually.');
+  });
+}
+
+function shareViaText() {
+  var msg = document.getElementById('shareMsg').textContent;
+  window.location.href = 'sms:?body=' + encodeURIComponent(msg);
+}
+
+function showToast(message) {
+  var toast = document.getElementById('toast');
+  toast.textContent = message;
+  toast.classList.add('show');
+  setTimeout(function() { toast.classList.remove('show'); }, 2500);
+}
+
+// Scenario picker
+document.getElementById('scenarioPicker').addEventListener('click', function(e) {
+  var btn = e.target.closest('.scenario-btn');
+  if (!btn) return;
+  var idx = parseInt(btn.dataset.idx, 10);
+  document.querySelectorAll('.scenario-btn').forEach(function(b) { b.classList.remove('active'); });
+  btn.classList.add('active');
+  renderCard(idx);
+});
+
+// Initial render
+renderCard(0);
+</script>
+
+</body>
+</html>

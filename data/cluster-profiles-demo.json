@@ -1,0 +1,57 @@
+{
+  "generatedAt": "2026-06-21T17:45:27.276Z",
+  "totalCasesAnalyzed": 8,
+  "clustersFound": 2,
+  "profiles": [
+    {
+      "clusterId": "cluster_f661274c82b1",
+      "clusterName": "Fake Secure-banking-verify Cluster #1",
+      "linkedDomains": [
+        "login.secure-banking-verify.example",
+        "update.secure-banking-verify.example",
+        "verify.secure-banking-verify.example"
+      ],
+      "linkedPhones": [],
+      "linkedEmails": [],
+      "sharedInfrastructure": {
+        "hosting": "Bulk-generated subdomain pattern",
+        "registrar": "Unknown",
+        "paymentMethods": []
+      },
+      "timeline": {
+        "firstSeen": "2026-06-15T10:30:00.000Z",
+        "lastSeen": "2026-06-17T09:15:00.000Z",
+        "totalReports": 3
+      },
+      "riskLevel": "critical",
+      "disclaimer": "This profile represents suspected patterns from reported indicators and requires law-enforcement verification."
+    },
+    {
+      "clusterId": "cluster_d78d72578bfb",
+      "clusterName": "Prize Claim Network #2",
+      "linkedDomains": [
+        "prizes-winner-2026.top",
+        "mega-prize-claim.click",
+        "lucky-draw-rewards.xyz"
+      ],
+      "linkedPhones": [],
+      "linkedEmails": [],
+      "sharedInfrastructure": {
+        "hosting": "Bulk-generated subdomain pattern",
+        "registrar": "Cheap novelty TLD registrar",
+        "paymentMethods": [
+          "gift card",
+          "processing fee"
+        ]
+      },
+      "timeline": {
+        "firstSeen": "2026-06-14T08:00:00.000Z",
+        "lastSeen": "2026-06-18T16:00:00.000Z",
+        "totalReports": 3
+      },
+      "riskLevel": "critical",
+      "disclaimer": "This profile represents suspected patterns from reported indicators and requires law-enforcement verification."
+    }
+  ],
+  "disclaimer": "This profile represents suspected patterns from reported indicators and requires law-enforcement verification."
+}

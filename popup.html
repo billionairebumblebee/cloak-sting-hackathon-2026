@@ -160,6 +160,34 @@
 
     .history-empty{text-align:center;padding:30px 0;color:#444;font-size:12px}
 
+    /* Family rescue tab */
+    .family-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px}
+    .family-header h4{font-size:12px;font-weight:700;color:#c4b5fd;text-transform:uppercase;letter-spacing:.04em}
+    .family-clear-btn{padding:5px 10px;border:1px solid rgba(255,68,68,.2);border-radius:6px;background:rgba(255,68,68,.06);color:#ff6b6b;font-size:10px;font-weight:600;cursor:pointer;transition:all .2s}
+    .family-clear-btn:hover{background:rgba(255,68,68,.12);box-shadow:0 0 8px rgba(255,68,68,.15)}
+    .family-card{padding:12px;background:rgba(147,51,234,.04);border:1px solid rgba(147,51,234,.12);border-radius:12px;margin-bottom:8px;backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);transition:border-color .3s,box-shadow .3s}
+    .family-card:hover{border-color:rgba(147,51,234,.25);box-shadow:0 0 10px rgba(147,51,234,.08)}
+    .family-card .family-meta{display:flex;align-items:center;gap:8px;margin-bottom:6px}
+    .family-card .family-date{font-size:10px;color:#666;flex:1}
+    .family-card .family-threat{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.04em;padding:2px 7px;border-radius:4px}
+    .family-card .family-threat.high{background:rgba(255,68,68,.12);color:#ff6b6b}
+    .family-card .family-threat.medium{background:rgba(255,196,46,.1);color:#ffc42e}
+    .family-card .family-threat.low{background:rgba(74,222,128,.08);color:#4ade80}
+    .family-card .family-site{font-weight:600;font-size:12px;color:#e8e8e8;margin-bottom:4px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+    .family-card .family-summary{font-size:11px;color:#888;line-height:1.4;margin-bottom:8px}
+    .family-card .family-copy-btn{padding:6px 12px;border:1px solid rgba(245,166,35,.2);border-radius:6px;background:rgba(245,166,35,.06);color:#f5a623;font-size:10px;font-weight:700;cursor:pointer;transition:all .2s}
+    .family-card .family-copy-btn:hover{background:rgba(245,166,35,.12);box-shadow:0 0 8px rgba(245,166,35,.15)}
+    .family-empty{text-align:center;padding:30px 0;color:#555;font-size:12px;line-height:1.6}
+    .family-empty .family-icon{font-size:32px;margin-bottom:8px;opacity:.4}
+
+    /* Light mode family */
+    body.light .family-header h4{color:#7c3aed}
+    body.light .family-card{background:rgba(147,51,234,.03);border-color:rgba(147,51,234,.1)}
+    body.light .family-card .family-site{color:#1a1a1a}
+    body.light .family-card .family-summary{color:#555}
+    body.light .family-card .family-copy-btn{border-color:rgba(199,132,26,.3);color:#c7841a;background:rgba(199,132,26,.06)}
+    body.light .family-clear-btn{border-color:rgba(220,38,38,.2);color:#dc2626;background:rgba(220,38,38,.04)}
+
     /* Detail overlay for history items */
     .detail-back{display:flex;align-items:center;gap:6px;margin-bottom:14px;padding:6px 0;cursor:pointer;font-size:12px;color:#f5a623;font-weight:600;transition:opacity .2s}
     .detail-back:hover{opacity:.7}
@@ -231,6 +259,7 @@
     <div class="tab active" data-tab="scan" role="tab" aria-selected="true" aria-controls="panel-scan" tabindex="0">Status</div>
     <div class="tab" data-tab="threats" role="tab" aria-selected="false" aria-controls="panel-threats" tabindex="-1">Threats</div>
     <div class="tab" data-tab="history" role="tab" aria-selected="false" aria-controls="panel-history" tabindex="-1">History</div>
+    <div class="tab" data-tab="family" role="tab" aria-selected="false" aria-controls="panel-family" tabindex="-1">Family</div>
   </div>
 
   <div id="panel-scan" class="panel active" role="tabpanel" aria-labelledby="tab-scan">
@@ -246,6 +275,10 @@
 
   <div id="panel-history" class="panel" role="tabpanel" aria-labelledby="tab-history">
     <div id="history-list"></div>
+  </div>
+
+  <div id="panel-family" class="panel" role="tabpanel" aria-labelledby="tab-family">
+    <div id="family-list"></div>
   </div>
 
   <script src="src/theme.js"></script>
