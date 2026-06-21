@@ -8,6 +8,8 @@ const Problem = lazy(() => import("./components/Problem"));
 const ProductFlow = lazy(() => import("./components/ProductFlow"));
 const VoiceScanner = lazy(() => import("./components/VoiceScanner"));
 const InteractiveDemo = lazy(() => import("./components/InteractiveDemo"));
+const FamilyRescue = lazy(() => import("./components/FamilyRescue"));
+const ScamIntelligence = lazy(() => import("./components/ScamIntelligence"));
 const HallOfFame = lazy(() => import("./components/HallOfFame"));
 const SponsorShowcase = lazy(() => import("./components/SponsorShowcase"));
 const ScamIntelligence = lazy(() => import("./components/ScamIntelligence"));
