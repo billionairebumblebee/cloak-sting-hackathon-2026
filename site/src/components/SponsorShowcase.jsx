@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef } from "react";
 import { Link } from "react-router-dom";
 import { FadeIn, StaggerContainer, StaggerItem, SectionLabel } from "./Motion";
+import { playClick } from "../utils/sounds";
 
 const sponsors = [
   {
@@ -184,7 +185,7 @@ export default function SponsorShowcase() {
         <StaggerContainer className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3" stagger={0.06}>
           {sponsors.map((s) => (
             <StaggerItem key={s.name}>
-              <Link to={`/arsenal/${s.slug}`} className="block">
+              <Link to={`/arsenal/${s.slug}`} className="block" onClick={playClick}>
                 <div className="glass group rounded-2xl p-6 transition-all duration-300 hover:scale-[1.02] hover:ring-1 hover:ring-white/[0.08]">
                   <div className="mb-4 flex items-center justify-between">
                     <div className="flex items-center gap-3">

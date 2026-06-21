@@ -9,6 +9,7 @@ import {
   Zap,
 } from "lucide-react";
 import { FadeIn, SectionLabel } from "./Motion";
+import { playScanStart, playThreatDetected, playVerdictSlam, playWarningBeep } from "../utils/sounds";
 
 const typeIcons = { SMS: MessageSquare, Website: Globe };
 
@@ -158,6 +159,7 @@ export default function InteractiveDemo() {
     setShowReceipt(false);
     setScanning(true);
     setScanPhase(0);
+    playScanStart();
 
     const phaseInterval = setInterval(() => {
       setScanPhase((p) => {
@@ -165,6 +167,7 @@ export default function InteractiveDemo() {
           clearInterval(phaseInterval);
           return p;
         }
+        playWarningBeep();
         return p + 1;
       });
     }, 600);
@@ -173,6 +176,8 @@ export default function InteractiveDemo() {
       clearInterval(phaseInterval);
       setScanning(false);
       setShowResult(true);
+      playThreatDetected();
+      setTimeout(() => playVerdictSlam(), 300);
     }, 2600);
   };
 
