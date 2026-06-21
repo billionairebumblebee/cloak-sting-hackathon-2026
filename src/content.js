@@ -211,30 +211,34 @@
 
     root.innerHTML = `
       <style>
-        #sting-overlay{position:fixed;right:18px;top:18px;z-index:2147483647;width:min(420px,calc(100vw - 36px));font:1.125rem/1.45 -apple-system,BlinkMacSystemFont,"Inter","Segoe UI",sans-serif;color:#111;background:rgba(255,255,255,.96);border:2px solid rgba(200,50,50,.3);box-shadow:0 24px 80px rgba(0,0,0,.28);border-radius:22px;overflow:hidden;backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px)}
-        #sting-overlay .bar{height:7px;background:linear-gradient(90deg,#111,#9f6bff,#ff5f7e)}
+        #sting-overlay{position:fixed;right:18px;top:18px;z-index:2147483647;width:min(420px,calc(100vw - 36px));font:1.125rem/1.45 -apple-system,BlinkMacSystemFont,"Inter","Segoe UI",sans-serif;color:#e8e8e8;background:rgba(8,8,12,.96);border:1px solid rgba(245,166,35,.25);box-shadow:0 24px 80px rgba(0,0,0,.6),0 0 40px rgba(245,166,35,.08);border-radius:22px;overflow:hidden;backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px)}
+        #sting-overlay .bar{height:5px;background:linear-gradient(90deg,#f5a623,#9333ea,#f5a623)}
         #sting-overlay .inner{padding:18px}
-        #sting-overlay h2{margin:0 0 10px;font-size:1.375rem;letter-spacing:-.02em}
-        #sting-overlay .risk{display:inline-flex;align-items:center;gap:8px;margin:0 0 12px;padding:8px 14px;border-radius:999px;background:#c0392b;color:white;font-weight:700;text-transform:uppercase;font-size:0.875rem;letter-spacing:.06em}
-        #sting-overlay p{margin:0 0 13px;color:#252525;font-size:1.0625rem}
+        #sting-overlay h2{margin:0 0 10px;font-size:1.375rem;letter-spacing:-.02em;color:#f5a623;text-shadow:0 0 12px rgba(245,166,35,.3)}
+        #sting-overlay .risk{display:inline-flex;align-items:center;gap:8px;margin:0 0 12px;padding:8px 14px;border-radius:999px;background:rgba(220,38,38,.15);border:1px solid rgba(220,38,38,.4);color:#fca5a5;font-weight:700;text-transform:uppercase;font-size:0.875rem;letter-spacing:.06em;box-shadow:0 0 10px rgba(220,38,38,.15)}
+        #sting-overlay p{margin:0 0 13px;color:#aaa;font-size:1.0625rem}
         #sting-overlay ul{margin:0 0 14px;padding:0;list-style:none;display:grid;gap:8px}
-        #sting-overlay li{display:grid;gap:2px;padding:12px;border-radius:14px;background:#f4f0ea}
-        #sting-overlay li strong{font-size:0.9375rem}
-        #sting-overlay li span{color:#665f58;font-size:0.8125rem;word-break:break-word}
+        #sting-overlay li{display:grid;gap:2px;padding:12px;border-radius:14px;background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.06)}
+        #sting-overlay li strong{font-size:0.9375rem;color:#e8e8e8}
+        #sting-overlay li span{color:#888;font-size:0.8125rem;word-break:break-word}
         #sting-overlay .actions{display:flex;gap:10px;flex-wrap:wrap}
-        #sting-overlay button{border:0;border-radius:999px;padding:14px 20px;font-size:1rem;font-weight:700;cursor:pointer;min-height:44px;min-width:44px}
-        #sting-overlay .primary{background:#111;color:white}
-        #sting-overlay .ghost{background:#ece7df;color:#111}
+        #sting-overlay button{border:0;border-radius:999px;padding:14px 20px;font-size:1rem;font-weight:700;cursor:pointer;min-height:44px;min-width:44px;transition:all .2s}
+        #sting-overlay .primary{background:linear-gradient(135deg,#f5a623,#e09000);color:#050505;box-shadow:0 2px 8px rgba(245,166,35,.2)}
+        #sting-overlay .primary:hover{box-shadow:0 0 16px rgba(245,166,35,.4);transform:translateY(-1px)}
+        #sting-overlay .danger{background:rgba(220,38,38,.12);color:#fca5a5;border:1px solid rgba(220,38,38,.3)}
+        #sting-overlay .danger:hover{background:rgba(220,38,38,.2);box-shadow:0 0 12px rgba(220,38,38,.2)}
+        #sting-overlay .ghost{background:rgba(255,255,255,.04);color:#999;border:1px solid rgba(255,255,255,.08)}
+        #sting-overlay .ghost:hover{background:rgba(255,255,255,.08);color:#e8e8e8}
       </style>
       <div class="bar"></div>
       <div class="inner">
         <h2>\u{1F6E1} Stop \u2014 ${verdictText(receipt.risk).toLowerCase()}</h2>
         <div class="risk">\u26A0 ${escapeHtml(receipt.risk)} risk</div>
-        <p style="font-size:1rem;color:#444;margin:0 0 10px">You haven\u2019t done anything wrong. You\u2019re safe as long as you don\u2019t type anything here.</p>
-        <p style="font-size:15px;line-height:1.5" id="sting-advice">${escapeHtml(receipt.advice)}</p>
+        <p style="font-size:1rem;color:#888;margin:0 0 10px">You haven\u2019t done anything wrong. You\u2019re safe as long as you don\u2019t type anything here.</p>
+        <p style="font-size:15px;line-height:1.5;color:#ccc" id="sting-advice">${escapeHtml(receipt.advice)}</p>
         <ul>${findingItems}</ul>
         <div class="actions">
-          <button class="primary" style="background:#dc2626" data-sting-action="leave">\u2190 Take me somewhere safe</button>
+          <button class="danger" data-sting-action="leave">\u2190 Take me somewhere safe</button>
           <button class="primary" data-sting-action="copy">Save proof for my bank or family</button>
           <button class="ghost" data-sting-action="dismiss">Hide warning (I understand the risk)</button>
         </div>
