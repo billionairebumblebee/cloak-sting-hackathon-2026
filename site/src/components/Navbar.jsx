@@ -9,7 +9,7 @@ const navLinks = [
   { label: "Voice Scanner", href: "#voice-scanner" },
   { label: "Demo", href: "#demo" },
   { label: "Hall of Fame", href: "#hall-of-fame" },
-  { label: "Architecture", href: "#architecture" },
+  { label: "Arsenal", href: "#arsenal" },
 ];
 
 export default function Navbar() {
