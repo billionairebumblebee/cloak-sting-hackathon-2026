@@ -3,6 +3,7 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Navbar from "./components/Navbar";
 import Hero from "./components/Hero";
 
+const FounderStory = lazy(() => import("./components/FounderStory"));
 const VideoShowcase = lazy(() => import("./components/VideoShowcase"));
 const Problem = lazy(() => import("./components/Problem"));
 const ProductFlow = lazy(() => import("./components/ProductFlow"));
@@ -32,6 +33,8 @@ function LandingPage() {
           <div className="relative">
             <div className="pointer-events-none absolute inset-0 bg-gradient-to-b from-transparent via-honey/[0.01] to-transparent" />
             <VideoShowcase />
+            <div className="section-divider mx-6" />
+            <FounderStory />
             <div className="section-divider mx-6" />
             <Problem />
             <div className="section-divider mx-6" />
