@@ -13,9 +13,9 @@ function getStoredReceipt() {
 }
 
 function formatReceipt(receipt) {
-  if (!receipt) return 'No cloak sting receipt yet.';
+  if (!receipt) return 'No safety report yet.';
   return [
-    'cloak sting receipt',
+    'Sting — Safety Report',
     `Risk: ${receipt.risk} (${receipt.score}/100)`,
     `Page: ${receipt.title || receipt.hostname}`,
     `URL: ${receipt.url}`,
@@ -30,7 +30,7 @@ function render(receipt) {
   latestReceipt = receipt;
   if (!receipt) {
     container.className = 'card muted';
-    container.textContent = 'No receipt yet. Open a suspicious demo page.';
+    container.textContent = 'No warnings yet. This page looks safe so far.';
     return;
   }
 
