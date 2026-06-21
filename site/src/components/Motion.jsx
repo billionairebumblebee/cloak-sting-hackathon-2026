@@ -1,4 +1,4 @@
-import { motion, useInView, AnimatePresence } from "framer-motion";
+import { motion, useInView } from "framer-motion";
 import { useRef } from "react";
 
 export function FadeIn({
@@ -10,13 +10,13 @@ export function FadeIn({
   once = true,
 }) {
   const ref = useRef(null);
-  const inView = useInView(ref, { once, margin: "-80px" });
+  const inView = useInView(ref, { once, margin: "-60px" });
 
   const dirMap = {
-    up: { y: 40 },
-    down: { y: -40 },
-    left: { x: 40 },
-    right: { x: -40 },
+    up: { y: 24 },
+    down: { y: -24 },
+    left: { x: 24 },
+    right: { x: -24 },
     none: {},
   };
 
@@ -37,9 +37,9 @@ export function FadeIn({
   );
 }
 
-export function StaggerContainer({ children, className = "", stagger = 0.1 }) {
+export function StaggerContainer({ children, className = "", stagger = 0.08 }) {
   const ref = useRef(null);
-  const inView = useInView(ref, { once: true, margin: "-60px" });
+  const inView = useInView(ref, { once: true, margin: "-40px" });
 
   return (
     <motion.div
@@ -64,12 +64,12 @@ export function StaggerItem({ children, className = "" }) {
   return (
     <motion.div
       variants={{
-        hidden: { opacity: 0, y: 30, filter: "blur(4px)" },
+        hidden: { opacity: 0, y: 20, filter: "blur(3px)" },
         visible: {
           opacity: 1,
           y: 0,
           filter: "blur(0px)",
-          transition: { duration: 0.6, ease: [0.25, 0.4, 0.25, 1] },
+          transition: { duration: 0.5, ease: [0.25, 0.4, 0.25, 1] },
         },
       }}
       className={className}
@@ -79,16 +79,15 @@ export function StaggerItem({ children, className = "" }) {
   );
 }
 
-export function GlowCard({ children, className = "", glowColor = "rgba(245, 166, 35, 0.08)" }) {
+export function GlowCard({ children, className = "", glowColor = "rgba(245, 166, 35, 0.06)" }) {
   return (
     <motion.div
-      className={`glass glass-hover rounded-2xl ${className}`}
+      className={`group glass glass-hover rounded-2xl ${className}`}
       whileHover={{
-        scale: 1.02,
-        boxShadow: `0 0 40px ${glowColor}`,
-        transition: { duration: 0.3 },
+        y: -2,
+        boxShadow: `0 8px 40px ${glowColor}`,
+        transition: { duration: 0.35, ease: [0.25, 0.4, 0.25, 1] },
       }}
-      whileTap={{ scale: 0.98 }}
     >
       {children}
     </motion.div>
@@ -112,7 +111,7 @@ export function FloatingOrb({ color, size, x, y, delay = 0 }) {
         scale: [1, 1.1, 0.95, 1.05, 1],
       }}
       transition={{
-        duration: 20,
+        duration: 25,
         delay,
         repeat: Infinity,
         ease: "linear",
@@ -124,12 +123,13 @@ export function FloatingOrb({ color, size, x, y, delay = 0 }) {
 export function SectionLabel({ children }) {
   return (
     <FadeIn>
-      <span className="mb-4 inline-flex items-center gap-2 rounded-full border border-honey/10 bg-honey/5 px-4 py-1.5 text-[11px] font-semibold tracking-[0.2em] text-honey uppercase">
-        <span className="h-1 w-1 rounded-full bg-honey" />
+      <div className="mb-5 inline-flex items-center gap-2 rounded-full border border-white/[0.06] bg-white/[0.02] px-4 py-1.5 text-[11px] font-medium tracking-[0.15em] text-text-muted uppercase">
+        <span className="h-1 w-1 rounded-full bg-honey/60" />
         {children}
-      </span>
+      </div>
     </FadeIn>
   );
 }
 
-export { motion, AnimatePresence };
+// Re-exported via separate file to avoid react-refresh warning
+// Use framer-motion imports directly in components that need motion/AnimatePresence

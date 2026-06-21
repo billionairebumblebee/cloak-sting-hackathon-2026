@@ -32,7 +32,7 @@ const threats = [
   {
     icon: Clock,
     title: "Weaponized urgency",
-    desc: '"Act now or lose everything" \u2014 engineered panic designed to short-circuit your judgment.',
+    desc: '"Act now or lose everything" — engineered panic designed to short-circuit your judgment.',
   },
   {
     icon: Bot,
@@ -43,22 +43,22 @@ const threats = [
 
 export default function Problem() {
   return (
-    <section id="problem" className="relative px-6 py-32 sm:py-40">
-      {/* Danger glow */}
-      <div className="pointer-events-none absolute top-0 left-1/4 h-[400px] w-[400px] rounded-full bg-danger/[0.03] blur-[120px]" />
+    <section id="problem" className="relative px-6 py-28 sm:py-36">
+      {/* Ambient glow */}
+      <div className="pointer-events-none absolute top-0 left-1/4 h-[400px] w-[400px] rounded-full bg-danger/[0.02] blur-[150px]" />
 
       <div className="mx-auto max-w-6xl">
-        <div className="mb-20 max-w-2xl">
+        <div className="mb-16 max-w-2xl">
           <SectionLabel>The Threat</SectionLabel>
           <FadeIn delay={0.1}>
-            <h2 className="mb-6 text-4xl font-bold tracking-tight text-cream sm:text-5xl">
+            <h2 className="mb-5 text-[clamp(2rem,4vw,3rem)] font-bold leading-[1.12] tracking-[-0.025em] text-text-primary sm:text-4xl">
               Scams don&apos;t look
               <br />
               <span className="text-red-400/80">fake anymore.</span>
             </h2>
           </FadeIn>
           <FadeIn delay={0.2}>
-            <p className="text-base leading-relaxed text-text-secondary">
+            <p className="max-w-lg text-[15px] leading-[1.7] text-text-secondary">
               They look flawless. They sound real. They fool smart people every
               day. You need a weapon, not a warning — Sting gives you a
               plain-English verdict in seconds.
@@ -66,17 +66,17 @@ export default function Problem() {
           </FadeIn>
         </div>
 
-        <StaggerContainer className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3" stagger={0.08}>
+        <StaggerContainer className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3" stagger={0.06}>
           {threats.map((threat) => (
             <StaggerItem key={threat.title}>
               <GlowCard className="p-6" glowColor="rgba(220, 38, 38, 0.06)">
-                <div className="mb-4 flex h-10 w-10 items-center justify-center rounded-xl bg-red-500/[0.06] text-red-400/60 transition-colors duration-300 group-hover:text-red-400">
+                <div className="mb-4 flex h-10 w-10 items-center justify-center rounded-xl bg-red-500/[0.06] text-red-400/80 transition-colors duration-300 group-hover:text-red-400">
                   <threat.icon size={18} strokeWidth={1.5} />
                 </div>
-                <h3 className="mb-2 text-[15px] font-bold text-cream">
+                <h3 className="mb-2 text-[14px] font-semibold tracking-[-0.01em] text-text-primary">
                   {threat.title}
                 </h3>
-                <p className="text-[13px] leading-relaxed text-text-secondary">
+                <p className="text-[13px] leading-[1.65] text-text-secondary">
                   {threat.desc}
                 </p>
               </GlowCard>
