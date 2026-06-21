@@ -1,0 +1,386 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>STING — Voicemail Quarantine Demo</title>
+<style>
+  :root {
+    --bg: #0d0d0f;
+    --surface: #18181b;
+    --border: rgba(255,255,255,0.06);
+    --text: #f4f4f5;
+    --text-secondary: #a1a1aa;
+    --amber: #F5A623;
+    --red: #ef4444;
+    --green: #22c55e;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 24px;
+  }
+  .phone-frame {
+    width: 100%;
+    max-width: 420px;
+    border-radius: 32px;
+    border: 2px solid var(--border);
+    background: var(--surface);
+    overflow: hidden;
+    box-shadow: 0 25px 60px rgba(0,0,0,0.5);
+  }
+  .header {
+    padding: 20px 24px 16px;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .header h1 {
+    font-size: 18px;
+    font-weight: 700;
+    color: var(--text);
+  }
+  .header .badge {
+    font-size: 11px;
+    font-weight: 600;
+    background: var(--amber);
+    color: #000;
+    padding: 3px 8px;
+    border-radius: 6px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+  .inbox { max-height: 520px; overflow-y: auto; }
+  .vm-item {
+    padding: 16px 24px;
+    border-bottom: 1px solid var(--border);
+    cursor: pointer;
+    transition: background 0.15s;
+    position: relative;
+  }
+  .vm-item:hover { background: rgba(255,255,255,0.02); }
+  .vm-item.expanded { background: rgba(255,255,255,0.03); }
+  .vm-top { display: flex; align-items: center; gap: 12px; }
+  .vm-avatar {
+    width: 40px; height: 40px;
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 16px; font-weight: 600;
+    flex-shrink: 0;
+  }
+  .vm-avatar.safe { background: rgba(34,197,94,0.12); color: var(--green); }
+  .vm-avatar.scam { background: rgba(239,68,68,0.12); color: var(--red); }
+  .vm-info { flex: 1; min-width: 0; }
+  .vm-caller-row { display: flex; align-items: center; gap: 8px; margin-bottom: 2px; }
+  .vm-caller { font-size: 14px; font-weight: 600; color: var(--text); }
+  .vm-duration { font-size: 12px; color: var(--text-secondary); }
+  .vm-preview {
+    font-size: 13px;
+    color: var(--text-secondary);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .quarantine-badge {
+    position: absolute;
+    top: 16px;
+    right: 24px;
+    font-size: 10px;
+    font-weight: 700;
+    color: var(--red);
+    background: rgba(239,68,68,0.1);
+    border: 1px solid rgba(239,68,68,0.2);
+    padding: 3px 8px;
+    border-radius: 6px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+  .safe-badge {
+    position: absolute;
+    top: 16px;
+    right: 24px;
+    font-size: 10px;
+    font-weight: 700;
+    color: var(--green);
+    background: rgba(34,197,94,0.1);
+    border: 1px solid rgba(34,197,94,0.2);
+    padding: 3px 8px;
+    border-radius: 6px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+  .vm-expanded {
+    padding: 16px 24px 20px;
+    border-bottom: 1px solid var(--border);
+    background: rgba(0,0,0,0.2);
+    display: none;
+  }
+  .vm-expanded.show { display: block; }
+  .vm-expanded h3 {
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--text-secondary);
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+    margin-bottom: 8px;
+  }
+  .transcript-text {
+    font-size: 14px;
+    line-height: 1.6;
+    color: var(--text);
+    margin-bottom: 16px;
+    padding: 12px;
+    border-radius: 10px;
+    background: rgba(255,255,255,0.02);
+    border: 1px solid var(--border);
+  }
+  .analysis {
+    border-radius: 10px;
+    padding: 14px;
+    margin-bottom: 12px;
+  }
+  .analysis.scam-analysis {
+    background: rgba(239,68,68,0.05);
+    border: 1px solid rgba(239,68,68,0.15);
+  }
+  .analysis.safe-analysis {
+    background: rgba(34,197,94,0.05);
+    border: 1px solid rgba(34,197,94,0.15);
+  }
+  .analysis-header {
+    font-size: 13px;
+    font-weight: 700;
+    margin-bottom: 8px;
+  }
+  .analysis-header.danger { color: var(--red); }
+  .analysis-header.safe { color: var(--green); }
+  .signal-list { list-style: none; padding: 0; margin: 0 0 10px; }
+  .signal-list li {
+    font-size: 12px;
+    color: var(--text-secondary);
+    padding: 3px 0;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .signal-dot {
+    width: 6px; height: 6px;
+    border-radius: 50%;
+    background: var(--red);
+    flex-shrink: 0;
+  }
+  .score-bar {
+    height: 4px;
+    border-radius: 2px;
+    background: rgba(255,255,255,0.06);
+    margin: 8px 0;
+    overflow: hidden;
+  }
+  .score-fill {
+    height: 100%;
+    border-radius: 2px;
+    transition: width 0.5s ease;
+  }
+  .score-fill.high { background: var(--red); }
+  .score-fill.low { background: var(--green); }
+  .advice {
+    font-size: 12px;
+    color: var(--text-secondary);
+    font-style: italic;
+    margin-top: 8px;
+  }
+  .play-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 8px 14px;
+    border: 1px solid var(--border);
+    background: rgba(255,255,255,0.03);
+    color: var(--text);
+    font-size: 12px;
+    font-weight: 500;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.15s;
+    margin-top: 8px;
+  }
+  .play-btn:hover {
+    background: rgba(245,166,35,0.1);
+    border-color: var(--amber);
+    color: var(--amber);
+  }
+  .disclaimer {
+    padding: 14px 24px;
+    font-size: 11px;
+    color: var(--text-secondary);
+    text-align: center;
+    border-top: 1px solid var(--border);
+    line-height: 1.5;
+  }
+</style>
+</head>
+<body>
+
+<div class="phone-frame">
+  <div class="header">
+    <h1>Voicemail</h1>
+    <span class="badge">STING Active</span>
+  </div>
+
+  <div class="inbox" id="inbox"></div>
+
+  <div class="disclaimer">
+    Demo simulation. STING can analyze voicemail transcripts shared via supported APIs, where platform APIs allow.
+  </div>
+</div>
+
+<script>
+const voicemails = [
+  {
+    id: 1,
+    caller: "Mom",
+    duration: "0:12",
+    transcript: "Hi sweetie, just calling to check in. Love you!",
+    level: "safe",
+    score: 0,
+    signals: [],
+    advice: "No scam signals detected. This appears to be a normal personal call."
+  },
+  {
+    id: 2,
+    caller: "Unknown",
+    duration: "0:34",
+    transcript: "This is the IRS. You owe back taxes and must act now. Failure to pay immediately will result in arrest. This is your final notice. Send payment via gift card to avoid further action.",
+    level: "scam",
+    score: 82,
+    signals: [
+      "Urgency pressure: 'immediately'",
+      "Trusted institution impersonation: 'IRS'",
+      "Threat of arrest (coercion)",
+      "Demand for immediate payment"
+    ],
+    advice: "The IRS NEVER calls to demand immediate payment or threaten arrest. They always contact by mail first. Hang up and report to TIGTA."
+  },
+  {
+    id: 3,
+    caller: "Dr. Park",
+    duration: "0:08",
+    transcript: "This is Dr. Park's office confirming your appointment Thursday.",
+    level: "safe",
+    score: 0,
+    signals: [],
+    advice: "No scam signals detected. This appears to be a routine appointment confirmation."
+  },
+  {
+    id: 4,
+    caller: "Unknown",
+    duration: "1:02",
+    transcript: "Grandma? It's me, I'm in jail and I need bail money. I need you to send $5,000 in gift cards. Do not tell mom and dad. Do not contact anyone else. Only through this page can you help.",
+    level: "scam",
+    score: 91,
+    signals: [
+      "Secrecy pressure: 'don't tell'",
+      "Unusual payment method: 'gift cards'",
+      "Social engineering: impersonating family member",
+      "Emotional manipulation: fake emergency"
+    ],
+    advice: "HANG UP and call your grandchild on their real phone number. Scammers use AI voice cloning. Never send gift cards as payment."
+  },
+  {
+    id: 5,
+    caller: "Bank",
+    duration: "0:22",
+    transcript: "This is your bank's fraud department. Your account has been suspended. You must verify now to avoid permanent closure. Provide your password and security code immediately. Do not contact your branch.",
+    level: "scam",
+    score: 76,
+    signals: [
+      "Credential harvesting: requesting SSN",
+      "Trusted institution impersonation: 'fraud department'",
+      "Urgency: 'compromised'",
+      "Soliciting sensitive information via phone"
+    ],
+    advice: "Your real bank will NEVER ask for your full SSN by phone. Hang up and call the number on the back of your card."
+  }
+];
+
+function renderInbox() {
+  const inbox = document.getElementById('inbox');
+  inbox.innerHTML = voicemails.map(vm => {
+    const isScam = vm.level === 'scam';
+    const initial = vm.caller[0].toUpperCase();
+    return `
+      <div class="vm-item" onclick="toggleExpand(${vm.id})">
+        <div class="vm-top">
+          <div class="vm-avatar ${isScam ? 'scam' : 'safe'}">${initial}</div>
+          <div class="vm-info">
+            <div class="vm-caller-row">
+              <span class="vm-caller">${vm.caller}</span>
+              <span class="vm-duration">${vm.duration}</span>
+            </div>
+            <div class="vm-preview">${vm.transcript}</div>
+          </div>
+        </div>
+        ${isScam ? '<div class="quarantine-badge">STING detected: HIGH RISK</div>' : '<div class="safe-badge">Safe</div>'}
+      </div>
+      <div class="vm-expanded" id="expanded-${vm.id}">
+        <h3>Full Transcript</h3>
+        <div class="transcript-text">${vm.transcript}</div>
+        <div class="analysis ${isScam ? 'scam-analysis' : 'safe-analysis'}">
+          <div class="analysis-header ${isScam ? 'danger' : 'safe'}">
+            ${isScam ? 'STING Analysis — HIGH RISK' : 'STING Analysis — SAFE'}
+          </div>
+          <div class="score-bar">
+            <div class="score-fill ${isScam ? 'high' : 'low'}" style="width: ${vm.score}%"></div>
+          </div>
+          <div style="font-size:12px;color:var(--text-secondary);margin-bottom:8px;">
+            Risk Score: ${vm.score}/100
+          </div>
+          ${vm.signals.length > 0 ? `
+            <ul class="signal-list">
+              ${vm.signals.map(s => `<li><span class="signal-dot"></span>${s}</li>`).join('')}
+            </ul>
+          ` : ''}
+          <div class="advice">${vm.advice}</div>
+        </div>
+        <button class="play-btn" onclick="event.stopPropagation(); playVoicemail(${vm.id})">
+          <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+          Play (Speech Synthesis)
+        </button>
+      </div>
+    `;
+  }).join('');
+}
+
+function toggleExpand(id) {
+  const el = document.getElementById(`expanded-${id}`);
+  const isShowing = el.classList.contains('show');
+  // Close all
+  document.querySelectorAll('.vm-expanded').forEach(e => e.classList.remove('show'));
+  document.querySelectorAll('.vm-item').forEach(e => e.classList.remove('expanded'));
+  if (!isShowing) {
+    el.classList.add('show');
+    el.previousElementSibling.classList.add('expanded');
+  }
+}
+
+function playVoicemail(id) {
+  const vm = voicemails.find(v => v.id === id);
+  if (!vm || !window.speechSynthesis) return;
+  window.speechSynthesis.cancel();
+  const utter = new SpeechSynthesisUtterance(vm.transcript);
+  utter.rate = 1.0;
+  utter.pitch = 1.0;
+  window.speechSynthesis.speak(utter);
+}
+
+renderInbox();
+</script>
+</body>
+</html>
