@@ -62,7 +62,7 @@ Devpost sponsor chips are only the entry point, so this README is the detailed p
 | **Anthropic / Claude** | Plain-English explanation layer over deterministic evidence. Claude is not the detector; it turns findings into calm, grounded next steps for vulnerable users and families. | Live Claude when `ANTHROPIC_API_KEY` is set; deterministic template fallback otherwise. | `src/anthropicExplain.js`, `scripts/explain_case_demo.js` |
 | **Browserbase** | Isolated suspicious-link inspection: a “bomb squad browser” path for opening risky URLs away from the user’s device, extracting page evidence, then feeding STING’s local detector. | Live Browserbase session when keys are set; local DOM/fetch fallback otherwise. | `src/browserbaseInspect.js`, `scripts/inspect_link_demo.js`, `dist/browserbase/` proof artifact |
 | **Redis** | Scam memory and case database: saves evidence receipts, repeated scam indicators, and clustered suspected scam infrastructure profiles. Supports community blacklist/network-effect story. | Redis/Upstash when configured; automatic local JSON fallback for demos. | `src/caseStore.js`, `src/scammerProfile.js`, `scripts/save_case_demo.js`, `scripts/scammer_profile_demo.js`, `data/cluster-profiles-demo.json` |
-| **Sentry** | Reliability + abuse-signal monitoring for protection software. STING sends scam-detection and integration-failure events so failures are visible when warnings, voice analysis, or AI explanation paths break. | Live Sentry project exists; local envelope/log fallback when `SENTRY_DSN` is absent. | `src/sentry.js`, `scripts/sentry_smoke_demo.js`, Sentry org: https://cloak-qr.sentry.io, project: `cloak-sting-extension`, issues: https://cloak-qr.sentry.io/issues/?project=cloak-sting-extension&query=is%3Aunresolved |
+| **Sentry** | Reliability + abuse-signal monitoring for protection software. STING sends high-risk scam-detection events plus integration failures so failures are visible when warnings, voice analysis, or AI explanation paths break. | Live Sentry project exists; local envelope/log fallback when `SENTRY_DSN` is absent. | `src/sentry.js`, `scripts/sentry_smoke_demo.js`, Sentry org: https://cloak-qr.sentry.io / https://sting-ext.sentry.io/, project: `cloak-sting-extension`, issues: https://cloak-qr.sentry.io/issues/?project=cloak-sting-extension&query=is%3Aunresolved |
 | **Fetch.ai / ASI:One** | Local agent-wrapper interface for STING as an anti-scam agent: analyze a suspicious page/voice/report request and return structured scam findings in an agent-style request/response shape. | Local wrapper implemented; no claim of Agentverse registration unless manually completed. | `src/asiOneWrapper.js`, `scripts/asi_agent_demo.js` |
 | **Arize / Phoenix** | Evaluation layer for AI-generated scam explanations: checks whether explanations are grounded in evidence, safe, clear for nontechnical users, and avoid overclaiming. | Local eval report generation; cloud traces/observability if configured. | `src/arizeEvalCriteria.js`, `scripts/arize_eval_demo.js`, `docs/ARIZE_EVAL_PROOF.md`, `data/arize-eval-*.json` |
 | **Token Company** | Risk-preserving evidence compression: noisy scam page/voice/report evidence → compact structured block that preserves URL, brand, score, exact scam quotes, indicators, and safe next steps. | Local deterministic compressor; demonstrates 66% reduction while preserving critical fields. | `src/tokenCompress.js`, `scripts/token_compress_demo.js`, `data/token-compress-proof.json` |
@@ -70,6 +70,20 @@ Devpost sponsor chips are only the entry point, so this README is the detailed p
 | **OpenAI Codex** | AI coding agent used for implementation acceleration across tests, scripts, extension logic, and docs during a one-day hackathon sprint. | Development tool, not runtime product dependency. | Git history / generated implementation artifacts |
 | **Devin (Cognition)** | Full-stack agent handoffs for parallel implementation: family rescue mode, scammer profile network, reporting routes, accessible inbox roadmap, sponsor proof audits. | Development tool, not runtime product dependency. | `docs/DEVIN_FAMILY_RESCUE_MODE_7_SUBAGENTS.md`, `docs/DEVIN_STING_ROADMAP_ACCESSIBLE_INBOX_SPRINT.md` |
 | **Pika / Midjourney** | Visual design support for Devpost/Chrome Web Store/pitch assets: STING logo/thumbnail/listing-style graphics and launch support materials. | Support/polish only; not claimed as runtime product infrastructure. | `site/public/sting-logo.svg`, Devpost/extension listing assets |
+
+### Sentry proof
+
+Sentry org: https://cloak-qr.sentry.io  
+Also linked as: https://sting-ext.sentry.io/  
+Project: `cloak-sting-extension`
+
+We used Sentry as STING’s reliability and abuse-signal monitoring layer. STING captured high-risk scam-detection events like `scam-detected: high risk (100/100)` as well as integration failures from Deepgram and Anthropic. Since STING is meant to protect vulnerable users at the exact moment of a scam, Sentry helps us see when detections fire, when the protection pipeline fails, and what needs to be fixed before real users depend on it.
+
+Issues dashboard: https://cloak-qr.sentry.io/issues/?project=cloak-sting-extension&query=is%3Aunresolved
+
+### Simular proof
+
+We used Simular/Sai as a vulnerable-user simulator, not just a generic QA bot. Sai tested STING through the perspective of an older, nontechnical user encountering scam pages and warnings under pressure. The goal was to answer the real product question: not just “does the detector work?” but “would a scared person know what to do next?” That testing informed clearer family handoff language, bigger action buttons, and the scammer handoff packet flow.
 
 ### Key distinction
 - **Core detection is 100% local** — `scamSignals.js`, `typosquatDetector.js`, `formAnalyzer.js`, `voicePatterns.js`, `familyRescue.js`, `reportingRoute.js`, and `scammerProfile.js` run without external API calls.
