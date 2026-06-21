@@ -138,6 +138,7 @@ function renderScanPanel(receipt) {
       ${signalCards}
     </div>
     ${receipt.advice ? `<div class="advice-section"><h4>Advice</h4><p>${escapeHtml(receipt.advice)}</p></div>` : ''}
+    ${receipt.evidence?.screenshotCaptured ? '<div class="actions"><button class="btn-secondary" id="btn-screenshot">View Screenshot</button></div>' : ''}
     <div class="actions">
       <button class="btn-primary" id="btn-copy">Copy Receipt</button>
       <button class="btn-secondary" id="btn-download">Download JSON</button>
@@ -179,6 +180,34 @@ function bindActions() {
       } else {
         window.open(reportUrl, '_blank');
       }
+    });
+  }
+
+  const screenshotBtn = document.getElementById('btn-screenshot');
+  if (screenshotBtn && latestReceipt?.evidence?.screenshotKey) {
+    screenshotBtn.addEventListener('click', async () => {
+      const key = latestReceipt.evidence.screenshotKey;
+      const data = await getStorage([key]);
+      const dataUrl = data[key];
+      if (!dataUrl) { screenshotBtn.textContent = 'No screenshot found'; return; }
+
+      const modal = document.createElement('div');
+      modal.className = 'screenshot-modal';
+      modal.innerHTML = `
+        <img src="${dataUrl}" alt="Evidence screenshot" />
+        <div class="modal-actions">
+          <button class="btn-export" id="modal-export">Export PNG</button>
+          <button class="btn-close" id="modal-close">Close</button>
+        </div>`;
+      document.body.appendChild(modal);
+
+      document.getElementById('modal-close').addEventListener('click', () => modal.remove());
+      document.getElementById('modal-export').addEventListener('click', () => {
+        const a = document.createElement('a');
+        a.href = dataUrl;
+        a.download = `cloak-sting-evidence-${latestReceipt.id || 'unknown'}.png`;
+        a.click();
+      });
     });
   }
 }

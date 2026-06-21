@@ -8,6 +8,9 @@
     "service_worker": "src/background.js"
   },
   "host_permissions": ["<all_urls>"],
+  "background": {
+    "service_worker": "src/background.js"
+  },
   "action": {
     "default_title": "cloak sting",
     "default_popup": "popup.html"
