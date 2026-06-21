@@ -2,19 +2,19 @@ export default function StingLogo({ className = "", size = 48, animate = false }
   return (
     <svg
       width={size}
-      height={size}
+      height={size * 1.25}
       viewBox="0 0 64 80"
       fill="none"
       xmlns="http://www.w3.org/2000/svg"
-      className={`${className}${animate ? " logo-glow" : ""}`}
+      className={`sting-logo ${className}${animate ? " logo-glow" : ""}`}
       aria-label="STING logo"
     >
-      {/* Stingray body — rounded diamond silhouette */}
+      {/* Stingray body — fixed dark, matches reference art */}
       <path
         d="M32 4 C20 4 4 18 4 30 C4 40 16 48 32 48 C48 48 60 40 60 30 C60 18 44 4 32 4 Z"
-        fill="currentColor"
+        fill="#1a1a1a"
       />
-      {/* Body curves (white lines) */}
+      {/* Body curves */}
       <path
         d="M32 14 C28 20 26 28 28 38 C29 42 30 45 31 47"
         stroke="white"
@@ -37,7 +37,7 @@ export default function StingLogo({ className = "", size = 48, animate = false }
       {/* Tail */}
       <path
         d="M32 48 C32 52 32.5 58 33 64 C33.3 68 32.5 72 32 76"
-        stroke="currentColor"
+        stroke="#1a1a1a"
         strokeWidth="1.2"
         fill="none"
         strokeLinecap="round"
