@@ -188,13 +188,13 @@ export default function InteractiveDemo() {
           <SectionLabel>Live Demo</SectionLabel>
           <FadeIn delay={0.1}>
             <h2 className="mb-5 text-[clamp(2.25rem,4.5vw,3.5rem)] font-extrabold leading-[1.08] tracking-[-0.03em] text-text-primary">
-              Watch Sting{" "}
+              Watch sting{" "}
               <span className="gradient-text">hunt.</span>
             </h2>
           </FadeIn>
           <FadeIn delay={0.2}>
             <p className="mx-auto max-w-md text-[16px] leading-[1.7] text-text-secondary">
-              Pick a scam scenario below and watch Sting tear it apart in real time.
+              Pick a scam scenario below and watch sting tear it apart in real time.
             </p>
           </FadeIn>
         </div>
@@ -251,7 +251,7 @@ export default function InteractiveDemo() {
               Select a scam scenario above to begin
             </p>
             <p className="mt-1.5 text-[14px] text-text-secondary">
-              Choose a scam scenario and watch Sting tear it apart
+              Choose a scam scenario and watch sting tear it apart
             </p>
           </div>
         )}

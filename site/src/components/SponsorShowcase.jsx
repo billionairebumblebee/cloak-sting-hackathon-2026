@@ -5,65 +5,65 @@ const sponsors = [
   {
     name: "Deepgram",
     color: "#13ef93",
-    status: "LIVE",
+    status: "FALLBACK",
     role: "Voice Intelligence",
-    detail: "Nova-3 real-time STT with automatic language detection. Transcribes suspicious calls in English, Mandarin, and Spanish with word-level timestamps and speaker diarization.",
-    stats: "3 language support \u2022 Real-time transcription \u2022 Confidence scoring",
-    files: ["src/deepgramSTT.js", "src/deepgramTranscribe.js", "src/voiceScamPipeline.js"],
+    detail: "Nova-3 real-time STT pipeline fully built. Without API key, uses local audio fixtures (bank robocall, Chinese embassy scam, hostage ransom) to demonstrate the voice scam detection path end-to-end.",
+    stats: "3 audio fixtures \u2022 8-family voice pattern matcher \u2022 Live with key",
+    files: ["src/deepgramSTT.js", "src/voiceScamPipeline.js", "src/voicePatterns.js"],
   },
   {
     name: "Anthropic",
     color: "#d97706",
-    status: "LIVE",
-    role: "Verdict Engine",
-    detail: "Claude generates plain-English verdicts grounded in deterministic signal analysis. Produces safe next-step recommendations anyone can understand \u2014 including your grandma.",
-    stats: "5-criteria eval system \u2022 Grounded explanations \u2022 Arize-traced",
+    status: "FALLBACK",
+    role: "Explanation Layer",
+    detail: "Claude generates grounded plain-English explanations from deterministic signal data. Without API key, a local template engine produces the same explanation structure from case findings.",
+    stats: "5-criteria eval \u2022 Deterministic fallback \u2022 Not the detector",
     files: ["src/anthropicExplain.js", "src/arizeEvalCriteria.js"],
   },
   {
     name: "Browserbase",
     color: "#6366f1",
-    status: "LIVE",
-    role: "Safe Page Inspection",
-    detail: "Opens scam URLs in an isolated cloud browser. Captures structure, redirects, and form behavior without ever exposing the user\u2019s real browser or IP to attackers.",
-    stats: "Sandboxed analysis \u2022 Form detection \u2022 Evidence capture",
+    status: "SEAM",
+    role: "Isolated Link Inspection",
+    detail: "URL detonation in a sandboxed cloud browser. Without API key, sting performs local DOM analysis only. The isolation seam is fully wired \u2014 add a key and remote inspection activates.",
+    stats: "Local DOM fallback \u2022 Form/redirect capture ready \u2022 Live with key",
     files: ["src/browserbaseInspect.js"],
   },
   {
     name: "Redis",
     color: "#dc2626",
-    status: "LIVE",
+    status: "FALLBACK",
     role: "Threat Memory",
-    detail: "Stores evidence dossiers, case records, and attack signatures. Supports both Upstash REST and native Redis client with automatic fallback to local JSON.",
-    stats: "3 backends \u2022 Case persistence \u2022 Pattern retrieval",
+    detail: "3-backend case store: Redis client, Upstash REST, or local JSON. Falls back gracefully \u2014 demo runs entirely on local JSON without any Redis endpoint. Add credentials and cases persist to cloud.",
+    stats: "3 backends \u2022 Automatic fallback \u2022 Zero-config demo",
     files: ["src/caseStore.js"],
   },
   {
     name: "Sentry",
     color: "#362d59",
-    status: "LIVE",
+    status: "FALLBACK",
     role: "Reliability Monitor",
-    detail: "Custom envelope protocol (no @sentry/node) captures errors and scam events across all API paths. Auto-tags with risk level, score, signal types. Proof artifacts without credential leakage.",
-    stats: "Zero dependencies \u2022 All API paths covered \u2022 20 tests",
-    files: ["src/sentry.js"],
+    detail: "Custom envelope protocol captures errors and scam events. Without DSN, events log locally. The smoke script proves the protocol works without leaking credentials.",
+    stats: "Zero dependencies \u2022 Local log fallback \u2022 20 tests",
+    files: ["src/sentry.js", "scripts/sentry_smoke_demo.js"],
   },
   {
     name: "Fetch.ai / ASI:One",
     color: "#3b82f6",
-    status: "LIVE",
+    status: "LOCAL",
     role: "Agent Coordination",
-    detail: "Autonomous agent wrapper with /status, /chat, /analyze-threat endpoints. Agent-to-agent communication ready for Agentverse registration.",
-    stats: "4 endpoints \u2022 8 tests \u2022 Agentverse-ready",
+    detail: "Local agent wrapper with /status, /chat, /analyze-threat endpoints. Runs without Agentverse registration. Agent-to-agent protocol is wired; registration is future work.",
+    stats: "4 endpoints \u2022 8 tests \u2022 No registration required",
     files: ["src/asiOneWrapper.js", "agents/cloak-sting-agent.mjs"],
   },
   {
     name: "Arize / Phoenix",
     color: "#f97316",
-    status: "LIVE",
+    status: "LOCAL",
     role: "Eval Observability",
-    detail: "5-criteria evaluation pipeline: grounded, safeAction, noOverclaim, noSecrets, clarity. Traces every AI verdict to prove the system improves over time.",
-    stats: "5 eval criteria \u2022 Regression detection \u2022 Quality scoring",
-    files: ["src/arizeEvalCriteria.js"],
+    detail: "5-criteria evaluation pipeline runs locally: grounded, safeAction, noOverclaim, noSecrets, clarity. Proof script generates eval reports without any cloud connection.",
+    stats: "5 eval criteria \u2022 Local proof script \u2022 No API needed",
+    files: ["src/arizeEvalCriteria.js", "scripts/arize_eval_demo.js"],
   },
 ];
 
@@ -106,14 +106,14 @@ export default function SponsorShowcase() {
           <SectionLabel>Sponsor Integrations</SectionLabel>
           <FadeIn delay={0.1}>
             <h2 className="mb-5 text-[clamp(2.25rem,4.5vw,3.5rem)] font-extrabold leading-[1.08] tracking-[-0.03em] text-text-primary">
-              Every sponsor.{" "}
-              <span className="gradient-text">Actually used.</span>
+              every sponsor.{" "}
+              <span className="gradient-text">honestly integrated.</span>
             </h2>
           </FadeIn>
           <FadeIn delay={0.2}>
             <p className="mx-auto max-w-lg text-[16px] leading-[1.7] text-text-secondary">
-              Not checkbox integrations. Each sponsor technology is woven into the
-              detection pipeline with real code, real tests, and real proof artifacts.
+              no fake claims. each sponsor is woven into the pipeline with real code and tests.
+              without API keys, every path degrades gracefully to a local fallback.
             </p>
           </FadeIn>
         </div>
@@ -122,9 +122,9 @@ export default function SponsorShowcase() {
         <FadeIn delay={0.3}>
           <div className="mb-16 grid grid-cols-2 gap-4 sm:grid-cols-4">
             {[
-              { label: "Tests Passing", value: 159, suffix: "" },
-              { label: "Source Files", value: 18, suffix: "" },
-              { label: "Scam Patterns", value: 8, suffix: "" },
+              { label: "Tests Passing", value: 169, suffix: "" },
+              { label: "Source Files", value: 20, suffix: "" },
+              { label: "Scam Patterns", value: 10, suffix: "" },
               { label: "Sponsor APIs", value: 7, suffix: "" },
             ].map((stat) => (
               <div

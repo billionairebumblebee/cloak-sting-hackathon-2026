@@ -190,7 +190,7 @@
     root.id = 'cloak-sting-overlay';
     root.setAttribute('role', 'alertdialog');
     root.setAttribute('aria-modal', 'true');
-    root.setAttribute('aria-label', 'Scam warning from Cloak Sting');
+    root.setAttribute('aria-label', 'Scam warning from cloak sting');
     root.setAttribute('aria-describedby', 'cloak-sting-advice');
     root.setAttribute('tabindex', '-1');
 
@@ -269,7 +269,7 @@
 
   function formatReceipt(receipt) {
     const lines = [
-      'CLOAK STING - SCAM WARNING RECEIPT',
+      'cloak sting — scam warning receipt',
       '------------------------------------',
       `Verdict: ${verdictText(receipt.risk)}`,
       `Page: ${receipt.title || receipt.hostname}`,

@@ -36,7 +36,7 @@ function verdictText(risk) {
 function formatReceipt(receipt) {
   if (!receipt) return 'No scam receipt yet.';
   return [
-    'CLOAK STING - SCAM WARNING RECEIPT',
+    'cloak sting \u2014 scam warning receipt',
     '------------------------------------',
     `Verdict: ${verdictText(receipt.risk)}`,
     `Page: ${receipt.title || receipt.hostname}`,
