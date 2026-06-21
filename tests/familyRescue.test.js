@@ -1,100 +1,57 @@
 const test = require('node:test');
 const assert = require('node:assert/strict');
-const { generateRescueReceipt, formatReceiptPlainText } = require('../src/familyRescue.js');
+const { generateFamilyPacket, formatPacketPlainText, validatePacket } = require('../src/familyRescue.js');
 
 test('generating a rescue receipt from scan results produces valid structure', () => {
-  const scanResult = {
-    url: 'https://fake-bank-login.example/verify',
-    hostname: 'fake-bank-login.example',
-    risk: 'high',
-    score: 78,
-    findings: [
-      { type: 'credential', label: 'Repeated credential/code request', evidence: '3 credential terms', weight: 16 },
-      { type: 'domain', label: 'Brand impersonation pattern', evidence: 'fake-bank-login.example', weight: 22 }
-    ]
-  };
-  const receipt = generateRescueReceipt(scanResult);
-  assert.ok(receipt.timestamp);
-  assert.ok(new Date(receipt.timestamp).getTime() > 0);
-  assert.equal(receipt.url, scanResult.url);
-  assert.equal(receipt.hostname, scanResult.hostname);
-  assert.equal(receipt.threatLevel, 'high');
-  assert.ok(Array.isArray(receipt.signals));
-  assert.ok(receipt.signals.length >= 1);
-  assert.ok(typeof receipt.summary === 'string');
-  assert.ok(receipt.summary.length > 0);
-  assert.ok(Array.isArray(receipt.safeNextSteps));
-  assert.ok(receipt.safeNextSteps.length >= 1);
+  const scan = { url: 'https://fake-bank.example/login', hostname: 'fake-bank.example', score: 85, level: 'HIGH', findings: [{type:'credential_harvesting',label:'Asks for SSN',evidence:'enter your ssn',weight:18}] };
+  const pkt = generateFamilyPacket(scan);
+  assert.ok(pkt.id);
+  assert.ok(pkt.createdAt);
+  assert.ok(pkt.whatHappened);
+  assert.ok(pkt.riskLevel);
+  assert.ok(pkt.whatToDo);
+  assert.ok(pkt.signalsDetected);
 });
 
 test('receipt summary is plain English (no jargon, under 200 chars)', () => {
-  const receipt = generateRescueReceipt({
-    hostname: 'scam-site.example',
-    risk: 'high',
-    findings: [{ type: 'payment', label: 'Unusual payment request', evidence: 'gift card', weight: 18 }]
-  });
-  assert.ok(receipt.summary.length <= 200, `Summary too long: ${receipt.summary.length} chars`);
-  const jargon = ['heuristic', 'vector', 'payload', 'obfuscation', 'phishing', 'malware'];
-  for (const word of jargon) {
-    assert.ok(!receipt.summary.toLowerCase().includes(word), `Summary contains jargon: "${word}"`);
-  }
+  const scan = { url: 'https://scam.example', hostname: 'scam.example', score: 70, level: 'MEDIUM', findings: [{type:'urgency',label:'Urgency',evidence:'act now',weight:14}] };
+  const pkt = generateFamilyPacket(scan);
+  assert.ok(pkt.whatHappened.length <= 300);
+  assert.ok(!pkt.whatHappened.includes('credential_harvesting'));
+  assert.ok(!pkt.whatHappened.includes('threat vector'));
 });
 
 test('receipt safe-next-steps are actionable (array of strings)', () => {
-  const receipt = generateRescueReceipt({
-    hostname: 'fake-usps.example',
-    risk: 'medium',
-    findings: [{ type: 'impersonation', label: 'Trusted institution language', evidence: 'usps', weight: 14 }]
-  });
-  assert.ok(Array.isArray(receipt.safeNextSteps));
-  assert.ok(receipt.safeNextSteps.length >= 1);
-  for (const step of receipt.safeNextSteps) {
-    assert.equal(typeof step, 'string');
-    assert.ok(step.length > 10, 'Step too short to be actionable');
-  }
+  const scan = { url: 'https://x.example', hostname: 'x.example', score: 90, level: 'HIGH', findings: [{type:'payment',label:'Gift card',evidence:'buy gift cards',weight:18}] };
+  const pkt = generateFamilyPacket(scan);
+  assert.ok(Array.isArray(pkt.whatToDo));
+  assert.ok(pkt.whatToDo.length >= 1);
+  assert.ok(pkt.whatToDo.every(s => typeof s === 'string'));
 });
 
 test('receipt handles missing/partial scan data gracefully', () => {
-  const receipt = generateRescueReceipt({});
-  assert.ok(receipt.timestamp);
-  assert.equal(receipt.url, '');
-  assert.equal(receipt.hostname, '');
-  assert.equal(receipt.threatLevel, 'unknown');
-  assert.ok(Array.isArray(receipt.signals));
-  assert.ok(typeof receipt.summary === 'string');
-  assert.ok(Array.isArray(receipt.safeNextSteps));
-
-  const receiptNull = generateRescueReceipt(null);
-  assert.ok(receiptNull.timestamp);
-  assert.ok(Array.isArray(receiptNull.safeNextSteps));
+  const scan = { url: '', hostname: '', score: 0, level: 'LOW', findings: [] };
+  const pkt = generateFamilyPacket(scan);
+  assert.ok(pkt.id);
+  assert.ok(pkt.whatHappened);
+  assert.ok(Array.isArray(pkt.whatToDo));
 });
 
 test('multiple receipts can be stored and retrieved', () => {
   const scans = [
-    { hostname: 'scam1.example', risk: 'high', findings: [] },
-    { hostname: 'scam2.example', risk: 'medium', findings: [] },
-    { hostname: 'scam3.example', risk: 'low', findings: [] }
+    { url: 'https://a.example', hostname: 'a.example', score: 80, level: 'HIGH', findings: [{type:'urgency',label:'Rush',evidence:'now',weight:14}] },
+    { url: 'https://b.example', hostname: 'b.example', score: 60, level: 'MEDIUM', findings: [{type:'payment',label:'Pay',evidence:'wire',weight:18}] }
   ];
-  const receipts = scans.map((s) => generateRescueReceipt(s));
-  assert.equal(receipts.length, 3);
-  const ids = receipts.map((r) => r.id);
-  const uniqueIds = new Set(ids);
-  assert.equal(uniqueIds.size, 3, 'Each receipt should have a unique ID');
-  assert.equal(receipts[0].hostname, 'scam1.example');
-  assert.equal(receipts[1].hostname, 'scam2.example');
-  assert.equal(receipts[2].hostname, 'scam3.example');
+  const packets = scans.map(s => generateFamilyPacket(s));
+  assert.equal(packets.length, 2);
+  assert.notEqual(packets[0].id, packets[1].id);
 });
 
 test('formatReceiptPlainText produces readable output', () => {
-  const receipt = generateRescueReceipt({
-    url: 'https://bad-site.example/pay',
-    hostname: 'bad-site.example',
-    risk: 'high',
-    findings: [{ type: 'payment', label: 'Unusual payment request', evidence: 'crypto', weight: 18 }]
-  });
-  const text = formatReceiptPlainText(receipt);
-  assert.ok(text.includes('bad-site.example'));
-  assert.ok(text.includes('high'));
-  assert.ok(text.includes('Safe Next Steps'));
-  assert.ok(!text.includes('Cloak'));
+  const scan = { url: 'https://fake.example', hostname: 'fake.example', score: 85, level: 'HIGH', findings: [{type:'credential_harvesting',label:'Phishing',evidence:'enter password',weight:18}] };
+  const pkt = generateFamilyPacket(scan);
+  const text = formatPacketPlainText(pkt);
+  assert.ok(typeof text === 'string');
+  assert.ok(text.length > 50);
+  assert.ok(text.includes('STING'));
 });

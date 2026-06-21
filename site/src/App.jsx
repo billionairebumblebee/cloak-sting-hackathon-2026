@@ -3,19 +3,21 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Navbar from "./components/Navbar";
 import Hero from "./components/Hero";
 
-const FounderStory = lazy(() => import("./components/FounderStory"));
 const VideoShowcase = lazy(() => import("./components/VideoShowcase"));
+const FounderStory = lazy(() => import("./components/FounderStory"));
 const Problem = lazy(() => import("./components/Problem"));
 const ProductFlow = lazy(() => import("./components/ProductFlow"));
+const MessagesDemo = lazy(() => import("./components/MessagesDemo"));
 const VoiceScanner = lazy(() => import("./components/VoiceScanner"));
 const VoicemailDemo = lazy(() => import("./components/VoicemailDemo"));
+const EmailDemo = lazy(() => import("./components/EmailDemo"));
 const InteractiveDemo = lazy(() => import("./components/InteractiveDemo"));
 const FamilyRescue = lazy(() => import("./components/FamilyRescue"));
 const ScamIntelligence = lazy(() => import("./components/ScamIntelligence"));
+const ReportingRoutes = lazy(() => import("./components/ReportingRoutes"));
 const HallOfFame = lazy(() => import("./components/HallOfFame"));
 const Roadmap = lazy(() => import("./components/Roadmap"));
 const SponsorShowcase = lazy(() => import("./components/SponsorShowcase"));
-const ScamIntelligence = lazy(() => import("./components/ScamIntelligence"));
 
 const Footer = lazy(() => import("./components/Footer"));
 const ArsenalPage = lazy(() => import("./pages/ArsenalPage"));
@@ -42,17 +44,25 @@ function LandingPage() {
             <div className="section-divider mx-6" />
             <ProductFlow />
             <div className="section-divider mx-6" />
+            <MessagesDemo />
+            <div className="section-divider mx-6" />
             <VoiceScanner />
             <div className="section-divider mx-6" />
             <VoicemailDemo />
             <div className="section-divider mx-6" />
+            <EmailDemo />
+            <div className="section-divider mx-6" />
             <InteractiveDemo />
+            <div className="section-divider mx-6" />
+            <FamilyRescue />
             <div className="section-divider mx-6" />
             <ScamIntelligence />
             <div className="section-divider mx-6" />
-            <HallOfFame />
+            <ReportingRoutes />
             <div className="section-divider mx-6" />
             <Roadmap />
+            <div className="section-divider mx-6" />
+            <HallOfFame />
             <div className="section-divider mx-6" />
             <SponsorShowcase />
           </div>
