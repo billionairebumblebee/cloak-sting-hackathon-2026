@@ -1,0 +1,190 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>STING Messages Companion — Demo</title>
+<style>
+  *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+  body{background:#0a0a0b;color:#e8e4de;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;display:flex;justify-content:center;align-items:center;min-height:100vh;padding:24px}
+
+  .phone{width:100%;max-width:400px;background:#111113;border-radius:32px;border:1px solid rgba(255,255,255,0.06);overflow:hidden;box-shadow:0 40px 80px rgba(0,0,0,0.6)}
+
+  .header{padding:20px 24px 16px;border-bottom:1px solid rgba(255,255,255,0.04);text-align:center}
+  .header h1{font-size:14px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:#d4a017}
+  .header .subtitle{font-size:11px;color:rgba(232,228,222,0.4);margin-top:4px;letter-spacing:0.05em}
+
+  .inbox{padding:8px 0}
+  .msg{display:flex;align-items:center;gap:14px;padding:14px 20px;cursor:pointer;transition:background 0.2s;border-bottom:1px solid rgba(255,255,255,0.03)}
+  .msg:hover{background:rgba(255,255,255,0.03)}
+  .msg.active{background:rgba(212,160,23,0.06)}
+
+  .avatar{width:42px;height:42px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:16px;font-weight:700;flex-shrink:0}
+  .avatar.safe{background:rgba(74,222,128,0.12);color:#4ade80}
+  .avatar.scam{background:rgba(239,68,68,0.12);color:#ef4444}
+
+  .msg-body{flex:1;min-width:0}
+  .msg-sender{font-size:14px;font-weight:600;color:#e8e4de;display:flex;align-items:center;gap:8px}
+  .msg-preview{font-size:12px;color:rgba(232,228,222,0.45);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-top:2px}
+  .msg-time{font-size:10px;color:rgba(232,228,222,0.3);flex-shrink:0;align-self:flex-start;margin-top:2px}
+
+  .badge{display:inline-block;font-size:8px;font-weight:800;letter-spacing:0.08em;text-transform:uppercase;padding:2px 7px;border-radius:6px}
+  .badge.quarantine{background:rgba(239,68,68,0.15);color:#f87171;border:1px solid rgba(239,68,68,0.2)}
+  .badge.warning{background:rgba(251,191,36,0.12);color:#fbbf24;border:1px solid rgba(251,191,36,0.15)}
+  .badge.safe-badge{background:rgba(74,222,128,0.1);color:#4ade80;border:1px solid rgba(74,222,128,0.12)}
+
+  .analysis{overflow:hidden;max-height:0;transition:max-height 0.4s ease,opacity 0.3s;opacity:0;background:rgba(0,0,0,0.3);border-top:1px solid rgba(255,255,255,0.04)}
+  .analysis.open{max-height:500px;opacity:1}
+  .analysis-inner{padding:16px 20px}
+  .analysis h3{font-size:11px;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;color:#d4a017;margin-bottom:10px}
+  .threat-level{display:flex;align-items:center;gap:8px;margin-bottom:12px}
+  .threat-dot{width:8px;height:8px;border-radius:50%}
+  .threat-dot.high{background:#ef4444;box-shadow:0 0 8px rgba(239,68,68,0.5)}
+  .threat-dot.medium{background:#fbbf24;box-shadow:0 0 8px rgba(251,191,36,0.5)}
+  .threat-label{font-size:13px;font-weight:600}
+  .threat-label.high{color:#f87171}
+  .threat-label.medium{color:#fbbf24}
+
+  .score-bar{height:4px;background:rgba(255,255,255,0.06);border-radius:4px;margin-bottom:14px;overflow:hidden}
+  .score-fill{height:100%;border-radius:4px;transition:width 0.8s ease}
+  .score-fill.high{background:linear-gradient(90deg,#ef4444,#f87171)}
+  .score-fill.medium{background:linear-gradient(90deg,#f59e0b,#fbbf24)}
+
+  .signals{margin-bottom:14px}
+  .signal{display:flex;align-items:flex-start;gap:8px;font-size:12px;color:rgba(232,228,222,0.6);padding:4px 0}
+  .signal::before{content:'';display:inline-block;width:4px;height:4px;border-radius:50%;background:#d4a017;margin-top:6px;flex-shrink:0}
+
+  .safe-steps{background:rgba(74,222,128,0.06);border:1px solid rgba(74,222,128,0.1);border-radius:10px;padding:12px 14px}
+  .safe-steps h4{font-size:10px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:#4ade80;margin-bottom:8px}
+  .safe-steps ul{list-style:none;font-size:12px;color:rgba(232,228,222,0.55)}
+  .safe-steps li{padding:3px 0;padding-left:14px;position:relative}
+  .safe-steps li::before{content:'';position:absolute;left:0;top:10px;width:5px;height:5px;border-radius:50%;background:rgba(74,222,128,0.4)}
+
+  .footer{padding:14px 20px;border-top:1px solid rgba(255,255,255,0.04);text-align:center}
+  .footer p{font-size:9px;color:rgba(232,228,222,0.25);line-height:1.5}
+</style>
+</head>
+<body>
+
+<div class="phone">
+  <div class="header">
+    <h1>STING Messages Companion</h1>
+    <div class="subtitle">Demo Simulation</div>
+  </div>
+
+  <div class="inbox" id="inbox"></div>
+
+  <div class="footer">
+    <p>Demo simulation. STING analyzes shared/imported messages where platform APIs allow.</p>
+  </div>
+</div>
+
+<script>
+(function () {
+  /* ── Inline scoring engine (mirrors src/scamSignals.js core) ── */
+  var URGENCY = ['act now','urgent','immediately','within 24 hours','within 24hrs','final notice','account locked','account suspended','verify now','limited time'];
+  var PAYMENT = ['wire transfer','gift card','crypto','bitcoin','zelle','cash app','processing fee','redelivery fee','customs fee','pay to release'];
+  var IMPERSONATION = ['bank security','fraud department','irs','usps','fedex','dhl','apple support','microsoft support','verification center'];
+  var SECRET = ['do not tell','keep this confidential','do not contact','avoid calling','only through this page','ignore other messages'];
+  var RANSOM = ['ransom','kidnap','hostage','we have your','pay or else','wire the money',"don't call the police",'do not call the police','will be harmed'];
+
+  function normalize(t){return String(t||'').toLowerCase().replace(/\s+/g,' ').trim();}
+  function containsAny(t,terms){return terms.filter(function(x){return t.includes(x);});}
+
+  function analyzeText(text){
+    var n=normalize(text),findings=[];
+    containsAny(n,URGENCY).forEach(function(t){findings.push({type:'copy',label:'Urgency pressure',weight:12,evidence:t});});
+    containsAny(n,PAYMENT).forEach(function(t){findings.push({type:'payment',label:'Unusual payment request',weight:18,evidence:t});});
+    containsAny(n,IMPERSONATION).forEach(function(t){findings.push({type:'impersonation',label:'Trusted institution language',weight:14,evidence:t});});
+    containsAny(n,SECRET).forEach(function(t){findings.push({type:'pressure',label:'Isolation / secrecy pressure',weight:18,evidence:t});});
+    containsAny(n,RANSOM).forEach(function(t){findings.push({type:'ransom',label:'Hostage / ransom threat',weight:22,evidence:t});});
+    var urls=text.match(/https?:\/\/\S+|[a-z0-9-]+\.[a-z]{2,}\/\S*/gi);
+    if(urls){
+      urls.forEach(function(u){
+        if(/bit\.ly|tinyurl|t\.co/i.test(u)) findings.push({type:'link',label:'Shortened/suspicious URL',weight:10,evidence:u});
+        else if(/secure|verify|login|claim/i.test(u)) findings.push({type:'link',label:'Suspicious link keywords',weight:8,evidence:u});
+      });
+    }
+    var raw=findings.reduce(function(s,f){return s+f.weight;},0);
+    var score=Math.min(100,raw);
+    var level=score>=65?'high':score>=35?'medium':'low';
+    return {score:score,level:level,findings:findings};
+  }
+
+  /* ── Message data ── */
+  var messages = [
+    {sender:'Mom',preview:'Hey honey, dinner at 7?',time:'6:42 PM',body:'Hey honey, dinner at 7?',initials:'M',safe:true},
+    {sender:'USPS',preview:'Your package cannot be delivered...',time:'3:18 PM',body:'Your package cannot be delivered. Click here to reschedule: bit.ly/usps-redeliver. Redelivery fee of $1.99 required. Act now or package will be returned.',initials:'US',safe:false},
+    {sender:'Bank Alert',preview:'Unusual activity detected...',time:'1:05 PM',body:'Unusual activity detected on your account. Verify now to avoid suspension: secure-bank-verify.com. Bank security fraud department. Account locked within 24 hours if unverified.',initials:'BA',safe:false},
+    {sender:'Sarah',preview:'Running 10 min late!',time:'12:30 PM',body:'Running 10 min late!',initials:'S',safe:true},
+    {sender:'Prize Center',preview:'Congratulations! You won $500K!',time:'11:47 AM',body:'Congratulations! You won $500K! Claim within 24hrs at prize-claim-center.com. Processing fee of $49.99 via gift card required. Act now — limited time offer. Do not tell anyone until verified.',initials:'PC',safe:false},
+    {sender:'Dr. Chen',preview:'Reminder: appointment tomorrow at 2pm',time:'9:15 AM',body:'Reminder: appointment tomorrow at 2pm. Please arrive 10 minutes early. Call our office if you need to reschedule.',initials:'DC',safe:true}
+  ];
+
+  /* ── Render ── */
+  var inbox=document.getElementById('inbox');
+  var openIndex=-1;
+
+  function renderMessages(){
+    inbox.innerHTML='';
+    messages.forEach(function(m,i){
+      var result=analyzeText(m.body);
+      var isScam=result.level==='high'||result.level==='medium';
+      var isOpen=openIndex===i&&isScam;
+
+      var row=document.createElement('div');
+      row.className='msg'+(isOpen?' active':'');
+      row.onclick=function(){openIndex=(openIndex===i?-1:i);renderMessages();};
+
+      var badgeHTML='';
+      if(result.level==='high') badgeHTML='<span class="badge quarantine">Quarantined</span>';
+      else if(result.level==='medium') badgeHTML='<span class="badge warning">Warning</span>';
+      else badgeHTML='<span class="badge safe-badge">Safe</span>';
+
+      row.innerHTML=
+        '<div class="avatar '+(m.safe?'safe':'scam')+'">'+m.initials+'</div>'+
+        '<div class="msg-body">'+
+          '<div class="msg-sender">'+m.sender+' '+badgeHTML+'</div>'+
+          '<div class="msg-preview">'+m.preview+'</div>'+
+        '</div>'+
+        '<div class="msg-time">'+m.time+'</div>';
+      inbox.appendChild(row);
+
+      if(isOpen){
+        var panel=document.createElement('div');
+        panel.className='analysis open';
+        var signalsHTML=result.findings.map(function(f){return '<div class="signal">'+f.label+': <em>'+f.evidence+'</em></div>';}).join('');
+        var safeSteps=[];
+        if(result.findings.some(function(f){return f.type==='impersonation';}))
+          safeSteps.push('Do not click any links — verify through the official app or website');
+        if(result.findings.some(function(f){return f.type==='payment';}))
+          safeSteps.push('Never pay fees via gift card, crypto, or wire transfer');
+        if(result.findings.some(function(f){return f.type==='link';}))
+          safeSteps.push('Shortened/suspicious URLs are a red flag — do not open them');
+        safeSteps.push('Report this message as spam/junk on your device');
+        safeSteps.push('Forward suspicious texts to 7726 (SPAM)');
+
+        panel.innerHTML=
+          '<div class="analysis-inner">'+
+            '<h3>STING Analysis</h3>'+
+            '<div class="threat-level">'+
+              '<div class="threat-dot '+result.level+'"></div>'+
+              '<div class="threat-label '+result.level+'">Threat Level: '+result.level.toUpperCase()+' — Score '+result.score+'/100</div>'+
+            '</div>'+
+            '<div class="score-bar"><div class="score-fill '+result.level+'" style="width:'+result.score+'%"></div></div>'+
+            '<div class="signals">'+signalsHTML+'</div>'+
+            '<div class="safe-steps">'+
+              '<h4>Safe Next Steps</h4>'+
+              '<ul>'+safeSteps.map(function(s){return '<li>'+s+'</li>';}).join('')+'</ul>'+
+            '</div>'+
+          '</div>';
+        inbox.appendChild(panel);
+      }
+    });
+  }
+
+  renderMessages();
+})();
+</script>
+</body>
+</html>
