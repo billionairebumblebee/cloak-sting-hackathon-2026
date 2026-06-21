@@ -7,7 +7,7 @@ sting is an ambient scam-defense layer that warns people before they type, pay, 
 1. Grandma opens a fake bank/shipping page.
 2. sting detects urgency, impersonation, payment pressure, and credential grabs.
 3. A calm overlay interrupts the scam in the danger moment.
-4. Cloak saves a threat receipt.
+4. STING saves a threat receipt.
 5. The receipt becomes a case file / authority-ready dossier.
 6. Optional sponsor layers: Browserbase inspects the link in isolation; Claude writes grounded safe next steps; Redis stores case memory; Arize evaluates safety; Sentry proves reliability.
 

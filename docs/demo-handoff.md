@@ -64,4 +64,4 @@ Run before presenting:
 npm run build
 ```
 
-Current expected result: syntax check passes, Node tests pass, and `dist/cloak-sting-extension.zip` is packaged.
+Current expected result: syntax check passes, Node tests pass, and `dist/sting-extension.zip` is packaged.

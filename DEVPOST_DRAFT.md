@@ -1,4 +1,4 @@
-# cloak STING
+# STING
 
 **STING = Scam Tracking & Intelligence Network Guard**
 
@@ -27,7 +27,7 @@ Built from scratch during the hackathon in a clean repo. No code carried from pr
 - **Chrome Extension (Manifest V3)**: Content script reads DOM text, input fields, URL/hostname; injects warning overlay when risk threshold met
 - **Case persistence**: Node.js Redis client (official `redis` package v6) with automatic fallback to local JSON
 - **Browserbase integration**: Creates isolated browser sessions via API to safely inspect suspicious links and extract evidence without user exposure
-- **Testing**: Node.js built-in test runner (`node --test`), 177 tests across 17 files covering signal detection, case storage, dossier rendering, fixture classification, accessibility, and sponsor integration paths
+- **Testing**: Node.js built-in test runner (`node --test`), 197 tests across 19 files covering signal detection, case storage, dossier rendering, fixture classification, accessibility, token compression, and sponsor integration paths
 - **Packaging**: Python script zips the extension for Chrome Web Store or unpacked loading
 
 ## Sponsor Usage
@@ -36,9 +36,15 @@ Built from scratch during the hackathon in a clean repo. No code carried from pr
 |---------|-------|--------|
 | **Redis** (MLH) | Case database — stores scam case records with full evidence, findings, jurisdiction, and reporting metadata. Uses `redis` npm package connecting to Redis Cloud (host/port/password). Falls back to local JSON when Redis unavailable. | ✅ Implemented |
 | **Browserbase** | Isolated link inspection — opens suspicious URLs in a sandboxed Browserbase session, extracts page content/signals, returns a STING receipt without exposing the user's browser or device. | ✅ Implemented |
-| **Anthropic/Claude** | Planned: grounded safe-next-steps generation from case evidence. Architecture wired but not yet calling the API. | 🔜 Planned |
-| **Arize** | Planned: safety evaluation of detector outputs and dossier quality. | 🔜 Planned |
-| **Deepgram** | Planned: voice scam transcription path (voicemail → transcript → scam detector → receipt). Branch in progress. | 🔜 In progress |
+| **Anthropic/Claude** | Grounded safe-next-steps generation from case evidence. Falls back to deterministic template engine without API key. | ✅ Implemented |
+| **Arize / Phoenix** | 5-criteria eval pipeline for AI explanation quality (groundedness, safe action, no overclaiming, no secrets, clarity). Runs locally. | ✅ Implemented |
+| **Deepgram** | Voice scam transcription path (audio → transcript → 8-family pattern matcher → receipt). Falls back to local fixtures without API key. | ✅ Implemented |
+| **Sentry** | Error + event monitoring with envelope construction. Falls back to local log without DSN. | ✅ Implemented |
+| **Fetch.ai / ASI:One** | Agent coordination wrapper (4 HTTP endpoints). Local-only, no Agentverse registration. | ✅ Implemented |
+| **Simular** | Autonomous cloud QA testing — not in runtime. Found 19 actionable findings. | ✅ Used |
+| **Token Company** | Risk-preserving evidence compression (66% token reduction, 5/5 quality maintained). | ✅ Implemented |
+| **OpenAI Codex** | AI pair programming throughout development. | DEV TOOL |
+| **Devin (Cognition)** | Full-stack engineering agent that built the product. | DEV TOOL |
 
 ## Challenges
 
@@ -56,12 +62,10 @@ Built from scratch during the hackathon in a clean repo. No code carried from pr
 
 ## What's Next
 
-- Deepgram voice scam path (voicemail/call → transcript → detection → receipt)
-- Anthropic Claude integration for grounded safe next steps
-- Arize safety evaluation layer
-- Non-English term list expansion (Chinese, Spanish, Hindi)
+- Non-English term list expansion (Spanish, Hindi, Vietnamese)
 - Android Accessibility Service for SMS/app-level ambient detection
 - iOS Safari extension + Share Sheet for suspicious messages
+- Chrome Web Store public listing (under review)
 - Family dashboard for shared case visibility
 
 ## Setup / Demo Instructions
