@@ -1,0 +1,8 @@
+{
+  "buildCommand": "cd site && npm install && npm run build",
+  "outputDirectory": "site/dist",
+  "framework": "vite",
+  "rewrites": [
+    { "source": "/(.*)", "destination": "/index.html" }
+  ]
+}
