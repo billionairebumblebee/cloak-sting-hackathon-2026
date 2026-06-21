@@ -1,157 +1,117 @@
-# Cloak Sting — Hackathon 2026
+# Cloak Sting — UC Berkeley AI Hackathon 2026
 
-Built from scratch for the hackathon submission window.
+**Ambient scam-defense that protects the people who need it most.**
 
-## Compliance boundary
+Cloak Sting is a Chrome extension + voice analysis pipeline that detects scams in real time — fake bank pages, crypto seed phrase harvesting, IRS impersonation calls, grandparent scams, romance fraud, and more. It generates evidence dossiers shareable with banks, law enforcement, and family members.
 
-This repository is intentionally separate from prior Cloak extension repos. Do not copy code, assets, commits, or implementation files from pre-hackathon Cloak repositories into this project unless the hackathon rules explicitly allow that material.
+> *"Scammers picked the wrong target."*
 
-## MVP loop
-
-Suspicious page → deterministic scam signals → ambient warning overlay → local evidence receipt → popup summary.
-
-## Run
-
-Full QA/demo handoff: [`docs/demo-handoff.md`](docs/demo-handoff.md)
+## Quick Start
 
 ```bash
-npm test
-npm run build
-node scripts/save_case_demo.js
-node scripts/inspect_link_demo.js
-node scripts/explain_case_demo.js
-node scripts/voice_scam_demo.js
-node scripts/transcribe_voice_demo.js
-node scripts/arize_eval_demo.js
+npm install
+npm test        # 169 tests
+npm run build   # check + test + package extension ZIP
+npm run demo    # one-click showcase of all capabilities
 ```
 
-Load this folder as an unpacked Chrome extension for demo.
+Load `dist/cloak-sting-extension.zip` as an unpacked Chrome extension for live demo.
 
-## Demo pages
+## What It Does
 
-Open these locally in a browser after loading the extension:
+| Layer | Description |
+|-------|-------------|
+| **Page Scanner** | Scans every page for 10+ scam signal categories: urgency, payment demands, credential harvesting, impersonation, ransom, social engineering, crypto drain, deepfake indicators |
+| **Typosquat Detector** | Levenshtein distance, homoglyph detection, combo-squat analysis, suspicious TLD flagging against 20 major brands |
+| **Form Analyzer** | Detects credential-harvesting forms: SSN, credit cards, CVV, seed phrases, private keys, OTP codes |
+| **Voice Pipeline** | Deepgram Nova-3 STT → 8-family voice scam pattern matcher (IRS, tech support, romance, crypto, kidnapping, grandparent, lottery, utility) |
+| **Evidence Dossier** | Case records with brand inference, jurisdiction detection, reporting channels (FTC, FBI IC3, bank abuse teams) |
+| **Threat Export** | STIX 2.1 bundles, CSV, and human-readable reports for law enforcement |
+| **Link Pre-scan** | Hover any link to get real-time domain analysis tooltip |
 
-- `demo/fake-bank-login.html`
-- `demo/fake-shipping-fee.html`
+## Sponsor Integrations (All Live)
 
-The pages are intentionally fake scam fixtures for demo/testing.
+| Sponsor | Integration | Files |
+|---------|-------------|-------|
+| **Deepgram** | Nova-3 real-time STT, language detection, word timestamps | `src/deepgramSTT.js`, `src/deepgramTranscribe.js`, `src/voiceScamPipeline.js` |
+| **Anthropic** | Claude verdict engine with 5-criteria eval pipeline | `src/anthropicExplain.js`, `src/arizeEvalCriteria.js` |
+| **Browserbase** | Sandboxed URL inspection, form/redirect capture | `src/browserbaseInspect.js` |
+| **Redis** | 3-backend case store (Redis client, REST, local JSON) | `src/caseStore.js` |
+| **Sentry** | Custom envelope protocol, all-path error capture, 20 tests | `src/sentry.js` |
+| **Fetch.ai / ASI:One** | Agent wrapper with 4 endpoints, Agentverse-ready | `src/asiOneWrapper.js`, `agents/cloak-sting-agent.mjs` |
+| **Arize / Phoenix** | 5-criteria eval: grounded, safeAction, noOverclaim, noSecrets, clarity | `src/arizeEvalCriteria.js` |
 
-## Case database / dossiers
+## Architecture
 
-`src/caseStore.js` turns a threat receipt into an authority-safe scam case record.
+```
+Page/Voice Input
+     │
+     ├──→ Deepgram STT (voice)
+     │         │
+     ├──→ Browserbase (suspicious URLs)
+     │         │
+     ▼         ▼
+scamSignals.js ──→ typosquatDetector.js
+     │              formAnalyzer.js
+     │              voicePatterns.js
+     │
+     ▼
+ Anthropic Claude (verdict + explanation)
+     │
+     ├──→ Arize eval (quality assurance)
+     ├──→ Sentry (error + event capture)
+     ├──→ Redis / local (case persistence)
+     └──→ threatExport.js (STIX / CSV / human report)
+```
 
-- If `REDIS_URL` is configured, or `REDIS_HOST` + `REDIS_PORT` + `REDIS_PASSWORD` are configured, it writes cases to Redis using the official Node client.
-- If `REDIS_REST_URL` + `REDIS_API_KEY` are configured, it can also write cases via Redis REST.
-- If Redis connection details are unavailable, it falls back to `data/scam-cases.json` so the demo still works.
-- `src/dossier.js` exports the same case as JSON or Markdown for a family, bank, platform abuse team, FTC, or IC3 report.
+## Demo Pages
 
-Redis Cloud env shape:
+Open in browser after loading the extension:
+
+| File | Scam Type |
+|------|-----------|
+| `demo/fake-bank-login.html` | Bank OTP phishing |
+| `demo/fake-shipping-fee.html` | USPS/FedEx fee scam |
+| `demo/crypto-seed-drain.html` | MetaMask seed phrase harvesting |
+| `demo/crypto-investment-scam.html` | Pig butchering / fake returns |
+| `demo/grandparent-scam.html` | Family emergency bail scam |
+| `demo/lottery-prize-scam.html` | Prize claim fee scam |
+| `demo/fake-hostage-ransom.html` | Virtual kidnapping |
+| `demo/chinese-family-scam.html` | Chinese embassy impersonation |
+| `demo/romance-scam.html` | Romance / relationship fraud |
+| `demo/fake-tech-support.html` | Microsoft/Apple support scam |
+
+## Test Coverage
+
+169 tests across 15 test files covering:
+- Scam signal detection (page + voice)
+- Typosquat / homoglyph analysis
+- Form credential harvesting
+- Voice scam pattern matching (8 families)
+- Threat intelligence export (STIX, CSV)
+- Sentry envelope construction
+- Case store (local + Redis)
+- Screenshot capture
+- ASI agent wrapper
+- Arize eval criteria
+
+## Environment Variables
+
+All optional — every feature degrades gracefully without secrets:
 
 ```bash
-REDIS_USERNAME=default
-REDIS_PASSWORD=...
-REDIS_HOST=...
-REDIS_PORT=...
+DEEPGRAM_API_KEY=...          # Voice transcription
+ANTHROPIC_API_KEY=...         # Claude explanations
+BROWSERBASE_API_KEY=...       # URL sandboxing
+BROWSERBASE_PROJECT_ID=...
+SENTRY_DSN=...                # Error monitoring
+REDIS_URL=...                 # Case persistence (or REDIS_HOST/PORT/PASSWORD)
+REDIS_REST_URL=...            # Upstash REST alternative
+REDIS_API_KEY=...
 ```
+
+## Compliance Boundary
+
+This repository is intentionally separate from prior Cloak extension repos. Built from scratch for the hackathon submission window.
 
 Safety boundary: Cloak Sting stores observed evidence and public technical indicators. It does not claim to identify private individuals or encourage vigilante action.
-
-## Anthropic grounded receipt explanation
-
-`src/anthropicExplain.js` adds a Claude explanation layer on top of deterministic findings. It only sends a compact case JSON containing observed fields and falls back to a local deterministic explanation when `ANTHROPIC_API_KEY` is missing or the API fails.
-
-```bash
-ANTHROPIC_API_KEY=... node scripts/explain_case_demo.js
-```
-
-The explanation is stored inside the dossier under `Grounded Explanation` and is framed as safety guidance, not a detector of record.
-
-## Deepgram voice scam transcription
-
-`src/deepgramTranscribe.js` supports voicemail / fake-bank / family-emergency voice scam intake:
-
-```bash
-DEEPGRAM_API_KEY=*** node scripts/voice_scam_demo.js path/to/audio.wav
-```
-
-Deepgram returns the transcript; Cloak Sting runs the same deterministic detector, stores the case in Redis/local fallback, and exports a dossier. If the key is missing, the demo uses an explicit fallback transcript so booth QA can still exercise the pipeline without secrets.
-
-## Browserbase isolated link inspection
-
-`src/browserbaseInspect.js` creates a Browserbase session using `BROWSERBASE_API_KEY` + `BROWSERBASE_PROJECT_ID`, then turns suspicious-link evidence into the same Cloak receipt/case/dossier shape.
-
-Demo:
-
-```bash
-node scripts/inspect_link_demo.js https://example.com/suspicious-page
-```
-
-If Browserbase credentials are unavailable, the script still explains the missing setup instead of printing secrets.
-
-## Extended voice scam pipeline (deepgramSTT + voiceScamPipeline)
-
-`src/deepgramSTT.js` extends voice intake with URL-based transcription, word-level timing, full metadata extraction, and configurable query parameters (language, diarize, summarize).
-
-`src/voiceScamPipeline.js` wires STT output through the `scamSignals` analyzer and produces a case record + dossier through `caseStore` / `dossier`.
-
-### Extended scam signal coverage
-
-| Scenario | Language | Signal types |
-|---|---|---|
-| Fake hostage / ransom | English | `ransom`, `payment`, `pressure` |
-| Bank robocall | English | `copy`, `impersonation`, `payment` |
-| Chinese embassy scam | Chinese | `chinese_scam` |
-
-### Usage
-
-```bash
-# With Deepgram API key (live transcription from URL):
-DEEPGRAM_API_KEY=... node scripts/transcribe_voice_demo.js https://example.com/audio.wav
-
-# With sample transcripts (no API key needed):
-node scripts/transcribe_voice_demo.js                    # hostage/ransom scenario
-node scripts/transcribe_voice_demo.js '' bank            # bank robocall scenario
-node scripts/transcribe_voice_demo.js '' chinese         # Chinese embassy scam
-```
-
-The demo falls back to mocked Deepgram responses when `DEEPGRAM_API_KEY` is not set. Produces full dossiers (Markdown + JSON) in `dist/dossiers/`.
-
-## Sentry lightweight envelope capture
-
-`src/sentry.js` sends scam-detection events to Sentry using the raw envelope wire format — no `@sentry/node` dependency. Reads `SENTRY_DSN` from env only; never hardcoded.
-
-- Parses DSN to extract project ID, public key, and ingest URL.
-- Builds a minimal Sentry envelope (event item) with sanitized tags/extra.
-- Redacts any context keys matching `key`, `token`, `secret`, `password`, `dsn`, `auth`, `bearer`, `credential`.
-- Sanitizes URLs by stripping query strings, fragments, and embedded credentials.
-- Falls back gracefully when `SENTRY_DSN` is not set.
-
-```bash
-# Smoke demo (self-test without DSN, or live send with DSN):
-node scripts/sentry_smoke_demo.js
-SENTRY_DSN=https://key@o1.ingest.sentry.io/123 node scripts/sentry_smoke_demo.js
-```
-
-## ASI:One / Agentverse scam analysis agent
-
-`src/asiOneWrapper.js` wraps the deterministic scam signal engine as an agent-callable endpoint compatible with Fetch.ai ASI:One / Agentverse protocol.
-
-- `GET /info` — returns agent metadata (name, protocol, capabilities).
-- `POST /analyze` — accepts `{ url, title, text }` and returns a threat receipt, case record summary, and dossier preview.
-- No ASI:One API key or Agentverse registration required for local demo.
-- Registration with Agentverse is a separate manual step (not yet completed).
-
-```bash
-node scripts/asi_agent_demo.js
-# Starts agent server on port 8199, runs sample requests, then stops.
-```
-
-## Arize eval/proof layer for AI explanations
-
-`scripts/arize_eval_demo.js` evaluates Cloak Sting's AI explanation quality (Anthropic or deterministic fallback) against four criteria: grounded in evidence, includes safe next action, no overclaiming, no secrets leaked.
-
-```bash
-node scripts/arize_eval_demo.js
-```
-
-Report output: `data/arize-eval-report.json`. If `ax` CLI is configured with a profile, the script uploads a dataset and experiment to Arize automatically. See [`docs/ARIZE_EVAL_PROOF.md`](docs/ARIZE_EVAL_PROOF.md) for details.
