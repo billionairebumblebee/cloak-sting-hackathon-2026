@@ -10,6 +10,7 @@ const VoiceScanner = lazy(() => import("./components/VoiceScanner"));
 const InteractiveDemo = lazy(() => import("./components/InteractiveDemo"));
 const HallOfFame = lazy(() => import("./components/HallOfFame"));
 const SponsorShowcase = lazy(() => import("./components/SponsorShowcase"));
+const ScamIntelligence = lazy(() => import("./components/ScamIntelligence"));
 
 const Footer = lazy(() => import("./components/Footer"));
 const ArsenalPage = lazy(() => import("./pages/ArsenalPage"));
@@ -36,6 +37,8 @@ function LandingPage() {
             <VoiceScanner />
             <div className="section-divider mx-6" />
             <InteractiveDemo />
+            <div className="section-divider mx-6" />
+            <ScamIntelligence />
             <div className="section-divider mx-6" />
             <HallOfFame />
             <div className="section-divider mx-6" />

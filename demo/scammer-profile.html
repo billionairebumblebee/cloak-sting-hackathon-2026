@@ -1,0 +1,438 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>STING — Scam Infrastructure Profiles</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, monospace;
+      background: #0a0a0f;
+      color: #e0e0e0;
+      min-height: 100vh;
+      padding: 2rem;
+    }
+
+    .header {
+      text-align: center;
+      margin-bottom: 3rem;
+    }
+
+    .header h1 {
+      font-size: 2rem;
+      color: #f5a623;
+      margin-bottom: 0.5rem;
+      letter-spacing: -0.02em;
+    }
+
+    .header p {
+      color: #888;
+      font-size: 0.95rem;
+    }
+
+    .disclaimer-banner {
+      background: rgba(220, 38, 38, 0.08);
+      border: 1px solid rgba(220, 38, 38, 0.3);
+      border-radius: 8px;
+      padding: 1rem 1.5rem;
+      margin-bottom: 2.5rem;
+      text-align: center;
+      font-size: 0.85rem;
+      color: #f87171;
+      max-width: 800px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    .clusters {
+      display: grid;
+      gap: 2rem;
+      max-width: 1100px;
+      margin: 0 auto;
+    }
+
+    .cluster-card {
+      background: rgba(255, 255, 255, 0.02);
+      border: 1px solid rgba(255, 255, 255, 0.06);
+      border-radius: 16px;
+      padding: 2rem;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .cluster-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 2px;
+      background: linear-gradient(90deg, transparent, #f5a623, transparent);
+    }
+
+    .cluster-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: 1.5rem;
+    }
+
+    .cluster-name {
+      font-size: 1.4rem;
+      font-weight: 700;
+      color: #fff;
+    }
+
+    .risk-badge {
+      padding: 0.3rem 0.8rem;
+      border-radius: 20px;
+      font-size: 0.75rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    .risk-critical {
+      background: rgba(220, 38, 38, 0.15);
+      color: #f87171;
+      border: 1px solid rgba(220, 38, 38, 0.3);
+    }
+
+    .risk-high {
+      background: rgba(245, 166, 35, 0.15);
+      color: #f5a623;
+      border: 1px solid rgba(245, 166, 35, 0.3);
+    }
+
+    .cluster-meta {
+      display: flex;
+      gap: 1.5rem;
+      margin-bottom: 1.5rem;
+      font-size: 0.85rem;
+      color: #888;
+    }
+
+    .cluster-meta span {
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+    }
+
+    .section-title {
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: #666;
+      margin-bottom: 0.75rem;
+      font-weight: 600;
+    }
+
+    .network-viz {
+      background: rgba(0, 0, 0, 0.3);
+      border-radius: 12px;
+      padding: 2rem;
+      margin-bottom: 1.5rem;
+      position: relative;
+      min-height: 180px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .network-graph {
+      position: relative;
+      width: 100%;
+      max-width: 500px;
+      height: 160px;
+    }
+
+    .node {
+      position: absolute;
+      width: 48px;
+      height: 48px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.6rem;
+      font-weight: 600;
+      text-align: center;
+      z-index: 2;
+    }
+
+    .node-center {
+      width: 64px;
+      height: 64px;
+      background: rgba(245, 166, 35, 0.2);
+      border: 2px solid #f5a623;
+      color: #f5a623;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      font-size: 0.65rem;
+    }
+
+    .node-domain {
+      background: rgba(139, 92, 246, 0.15);
+      border: 1px solid rgba(139, 92, 246, 0.5);
+      color: #a78bfa;
+    }
+
+    .node-payment {
+      background: rgba(220, 38, 38, 0.15);
+      border: 1px solid rgba(220, 38, 38, 0.5);
+      color: #f87171;
+    }
+
+    .node-infra {
+      background: rgba(34, 197, 94, 0.15);
+      border: 1px solid rgba(34, 197, 94, 0.5);
+      color: #4ade80;
+    }
+
+    .connection {
+      position: absolute;
+      height: 1px;
+      background: linear-gradient(90deg, rgba(245, 166, 35, 0.4), rgba(245, 166, 35, 0.1));
+      transform-origin: left center;
+      z-index: 1;
+    }
+
+    .indicators {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 1rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .indicator-group {
+      background: rgba(255, 255, 255, 0.02);
+      border: 1px solid rgba(255, 255, 255, 0.04);
+      border-radius: 10px;
+      padding: 1rem;
+    }
+
+    .indicator-group h4 {
+      font-size: 0.8rem;
+      color: #aaa;
+      margin-bottom: 0.5rem;
+      font-weight: 500;
+    }
+
+    .indicator-item {
+      font-size: 0.82rem;
+      color: #ccc;
+      padding: 0.25rem 0;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.03);
+      font-family: 'SF Mono', 'Fira Code', monospace;
+    }
+
+    .indicator-item:last-child {
+      border-bottom: none;
+    }
+
+    .timeline-bar {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      margin-bottom: 1.5rem;
+      padding: 0.75rem 1rem;
+      background: rgba(255, 255, 255, 0.02);
+      border-radius: 8px;
+    }
+
+    .timeline-track {
+      flex: 1;
+      height: 4px;
+      background: rgba(255, 255, 255, 0.06);
+      border-radius: 2px;
+      position: relative;
+    }
+
+    .timeline-fill {
+      position: absolute;
+      top: 0;
+      left: 0;
+      height: 100%;
+      border-radius: 2px;
+      background: linear-gradient(90deg, #f5a623, #dc2626);
+    }
+
+    .timeline-label {
+      font-size: 0.75rem;
+      color: #888;
+      white-space: nowrap;
+    }
+
+    .report-count {
+      font-size: 0.85rem;
+      color: #f5a623;
+      font-weight: 600;
+    }
+
+    .footer-disclaimer {
+      text-align: center;
+      margin-top: 3rem;
+      padding: 1.5rem;
+      color: #666;
+      font-size: 0.8rem;
+      border-top: 1px solid rgba(255, 255, 255, 0.04);
+      max-width: 700px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+  </style>
+</head>
+<body>
+  <div class="header">
+    <h1>STING Intelligence — Suspected Scam Clusters</h1>
+    <p>Infrastructure profiles derived from reported scam indicators</p>
+  </div>
+
+  <div class="disclaimer-banner">
+    This is intelligence, not conviction. Profiles represent suspected patterns from reported
+    indicators and require law-enforcement verification. No individuals are identified.
+  </div>
+
+  <div class="clusters">
+    <!-- Cluster 1: Fake Bank Network -->
+    <div class="cluster-card">
+      <div class="cluster-header">
+        <div class="cluster-name">Fake Bank Cluster #1</div>
+        <span class="risk-badge risk-critical">Critical</span>
+      </div>
+
+      <div class="cluster-meta">
+        <span>3 linked reports</span>
+        <span>First seen: Jun 15, 2026</span>
+        <span>Last seen: Jun 17, 2026</span>
+      </div>
+
+      <div class="section-title">Network Visualization</div>
+      <div class="network-viz">
+        <div class="network-graph">
+          <!-- Center node -->
+          <div class="node node-center">Cluster<br/>Core</div>
+          <!-- Domain nodes -->
+          <div class="node node-domain" style="top: 10%; left: 5%;">login.*</div>
+          <div class="node node-domain" style="top: 10%; right: 5%;">update.*</div>
+          <div class="node node-domain" style="bottom: 10%; left: 25%;">verify.*</div>
+          <!-- Infrastructure -->
+          <div class="node node-infra" style="bottom: 10%; right: 5%;">*.example</div>
+          <!-- Connection lines (CSS) -->
+          <div class="connection" style="top: 34%; left: 14%; width: 34%; transform: rotate(12deg);"></div>
+          <div class="connection" style="top: 34%; left: 52%; width: 34%; transform: rotate(-12deg);"></div>
+          <div class="connection" style="top: 66%; left: 32%; width: 18%; transform: rotate(-8deg);"></div>
+          <div class="connection" style="top: 66%; left: 52%; width: 30%; transform: rotate(15deg);"></div>
+        </div>
+      </div>
+
+      <div class="section-title">Linked Indicators</div>
+      <div class="indicators">
+        <div class="indicator-group">
+          <h4>Domains</h4>
+          <div class="indicator-item">login.secure-banking-verify.example</div>
+          <div class="indicator-item">update.secure-banking-verify.example</div>
+          <div class="indicator-item">verify.secure-banking-verify.example</div>
+        </div>
+        <div class="indicator-group">
+          <h4>Shared Infrastructure</h4>
+          <div class="indicator-item">Root: secure-banking-verify.example</div>
+          <div class="indicator-item">Pattern: subdomain rotation</div>
+          <div class="indicator-item">Registrar: Unknown</div>
+        </div>
+        <div class="indicator-group">
+          <h4>Tactics</h4>
+          <div class="indicator-item">Brand impersonation (banking)</div>
+          <div class="indicator-item">Urgency pressure</div>
+          <div class="indicator-item">Credential harvesting</div>
+        </div>
+      </div>
+
+      <div class="section-title">Timeline</div>
+      <div class="timeline-bar">
+        <span class="timeline-label">Jun 15</span>
+        <div class="timeline-track">
+          <div class="timeline-fill" style="width: 100%;"></div>
+        </div>
+        <span class="timeline-label">Jun 17</span>
+        <span class="report-count">3 reports</span>
+      </div>
+    </div>
+
+    <!-- Cluster 2: Prize Claim Network -->
+    <div class="cluster-card">
+      <div class="cluster-header">
+        <div class="cluster-name">Prize Claim Network #2</div>
+        <span class="risk-badge risk-critical">Critical</span>
+      </div>
+
+      <div class="cluster-meta">
+        <span>3 linked reports</span>
+        <span>First seen: Jun 14, 2026</span>
+        <span>Last seen: Jun 18, 2026</span>
+      </div>
+
+      <div class="section-title">Network Visualization</div>
+      <div class="network-viz">
+        <div class="network-graph">
+          <!-- Center node -->
+          <div class="node node-center">Cluster<br/>Core</div>
+          <!-- Domain nodes -->
+          <div class="node node-domain" style="top: 5%; left: 8%;">*.top</div>
+          <div class="node node-domain" style="top: 5%; right: 8%;">*.click</div>
+          <div class="node node-domain" style="bottom: 5%; left: 8%;">*.xyz</div>
+          <!-- Payment node -->
+          <div class="node node-payment" style="bottom: 5%; right: 8%;">Gift<br/>Cards</div>
+          <!-- Connection lines -->
+          <div class="connection" style="top: 30%; left: 16%; width: 32%; transform: rotate(15deg);"></div>
+          <div class="connection" style="top: 30%; left: 52%; width: 32%; transform: rotate(-15deg);"></div>
+          <div class="connection" style="top: 68%; left: 16%; width: 32%; transform: rotate(-10deg);"></div>
+          <div class="connection" style="top: 68%; left: 52%; width: 32%; transform: rotate(10deg);"></div>
+        </div>
+      </div>
+
+      <div class="section-title">Linked Indicators</div>
+      <div class="indicators">
+        <div class="indicator-group">
+          <h4>Domains</h4>
+          <div class="indicator-item">prizes-winner-2026.top</div>
+          <div class="indicator-item">mega-prize-claim.click</div>
+          <div class="indicator-item">lucky-draw-rewards.xyz</div>
+        </div>
+        <div class="indicator-group">
+          <h4>Payment Methods</h4>
+          <div class="indicator-item">Gift cards (all 3 reports)</div>
+          <div class="indicator-item">Processing fee demand</div>
+          <div class="indicator-item">Cheap novelty TLD registrars</div>
+        </div>
+        <div class="indicator-group">
+          <h4>Tactics</h4>
+          <div class="indicator-item">Fake prize notification</div>
+          <div class="indicator-item">Urgency/deadline pressure</div>
+          <div class="indicator-item">Fee-advance fraud</div>
+        </div>
+      </div>
+
+      <div class="section-title">Timeline</div>
+      <div class="timeline-bar">
+        <span class="timeline-label">Jun 14</span>
+        <div class="timeline-track">
+          <div class="timeline-fill" style="width: 100%;"></div>
+        </div>
+        <span class="timeline-label">Jun 18</span>
+        <span class="report-count">3 reports</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="footer-disclaimer">
+    <strong>Safety Disclaimer:</strong> These profiles represent suspected scam clusters based on
+    reported indicators. They do not identify individuals, make legal conclusions, or constitute
+    evidence. All profiles require verification by appropriate law-enforcement authorities before
+    any action is taken. This is intelligence, not conviction.
+  </div>
+</body>
+</html>
