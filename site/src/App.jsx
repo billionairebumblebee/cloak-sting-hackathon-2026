@@ -15,6 +15,7 @@ const ArsenalPage = lazy(() => import("./pages/ArsenalPage"));
 const PrivacyPolicy = lazy(() => import("./components/PrivacyPolicy"));
 const TermsOfService = lazy(() => import("./components/TermsOfService"));
 const Legal = lazy(() => import("./components/Legal"));
+const Support = lazy(() => import("./components/Support"));
 
 function LandingPage() {
   return (
@@ -83,6 +84,7 @@ export default function App() {
           <Route path="/privacy" element={<Suspense fallback={<div />}><PrivacyPolicy /></Suspense>} />
           <Route path="/terms" element={<Suspense fallback={<div />}><TermsOfService /></Suspense>} />
           <Route path="/legal" element={<Suspense fallback={<div />}><Legal /></Suspense>} />
+          <Route path="/support" element={<Suspense fallback={<div />}><Support /></Suspense>} />
         </Routes>
       </div>
     </BrowserRouter>
