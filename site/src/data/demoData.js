@@ -511,7 +511,7 @@ export const architectureNodes = [
     name: "Redis",
     role: "Threat memory & dossiers",
     description:
-      "Stores evidence dossiers, case records, and attack pattern signatures. Enables pattern matching so sting can say 'we\u2019ve convicted 47 variants of this attack' with real data.",
+      "Stores evidence dossiers, case records, and attack pattern signatures. Enables pattern matching so sting can recognize repeat scam domains and warn future visitors.",
     color: "#dc2626",
     position: "left",
   },

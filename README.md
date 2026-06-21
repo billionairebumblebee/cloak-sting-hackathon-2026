@@ -1,23 +1,39 @@
-# cloak sting — UC Berkeley AI Hackathon 2026
+# sting — UC Berkeley AI Hackathon 2026
 
 **Ambient scam-defense that protects the people who need it most.**
 
-cloak sting is a Chrome extension + voice analysis pipeline that detects scams in real time — fake bank pages, crypto seed phrase harvesting, IRS impersonation calls, grandparent scams, romance fraud, and more. It generates evidence dossiers shareable with banks, law enforcement, and family members.
+sting is a Chrome extension + voice analysis pipeline that detects scams in real time — fake bank pages, crypto seed phrase harvesting, IRS impersonation calls, grandparent scams, romance fraud, and more. It generates evidence dossiers shareable with banks, law enforcement, and family members.
 
 > *"Scammers picked the wrong target."*
 
-## Quick Start
+---
+
+## How to demo in 90 seconds (no API keys needed)
 
 ```bash
+git clone https://github.com/billionairebumblebee/cloak-sting-hackathon-2026.git
+cd cloak-sting-hackathon-2026
 npm install
-npm test        # 169 tests
-npm run build   # check + test + package extension ZIP
-npm run demo    # one-click showcase of all capabilities
+npm test          # 177 tests pass — zero keys required
+npm run build     # packages extension ZIP
 ```
 
-Load `dist/cloak-sting-extension.zip` as an unpacked Chrome extension for live demo.
+Then:
+1. Open Chrome → `chrome://extensions` → enable Developer Mode
+2. Click "Load unpacked" → select the repo root folder
+3. Open `demo/fake-bank-login.html` — warning overlay fires in <1s
+4. Open `demo/crypto-seed-drain.html` — seed phrase harvesting caught
+5. Open `demo/grandparent-scam.html` — family emergency scam caught
+6. Click the extension popup — see scan results + history
 
-## What It Does
+**One-click full demo (shows all capabilities):**
+```bash
+npm run demo      # runs scripts/full_demo.js — voice pipeline, evidence, export
+```
+
+---
+
+## What it does
 
 | Layer | Description |
 |-------|-------------|
@@ -29,42 +45,54 @@ Load `dist/cloak-sting-extension.zip` as an unpacked Chrome extension for live d
 | **Threat Export** | STIX 2.1 bundles, CSV, and human-readable reports for law enforcement |
 | **Link Pre-scan** | Hover any link to get real-time domain analysis tooltip |
 
-## Sponsor Integrations (All Live)
+---
 
-| Sponsor | Integration | Files |
-|---------|-------------|-------|
-| **Deepgram** | Nova-3 real-time STT, language detection, word timestamps | `src/deepgramSTT.js`, `src/deepgramTranscribe.js`, `src/voiceScamPipeline.js` |
-| **Anthropic** | Claude verdict engine with 5-criteria eval pipeline | `src/anthropicExplain.js`, `src/arizeEvalCriteria.js` |
-| **Browserbase** | Sandboxed URL inspection, form/redirect capture | `src/browserbaseInspect.js` |
-| **Redis** | 3-backend case store (Redis client, REST, local JSON) | `src/caseStore.js` |
-| **Sentry** | Custom envelope protocol, all-path error capture, 20 tests | `src/sentry.js` |
-| **Fetch.ai / ASI:One** | Agent wrapper with 4 endpoints, Agentverse-ready | `src/asiOneWrapper.js`, `agents/cloak-sting-agent.mjs` |
-| **Arize / Phoenix** | 5-criteria eval: grounded, safeAction, noOverclaim, noSecrets, clarity | `src/arizeEvalCriteria.js` |
+## Sponsor integrations — honest status
 
-## Architecture
+Every sponsor technology is integrated with real code, real tests, and graceful fallbacks. **Nothing requires an API key to demo.**
 
-```
-Page/Voice Input
-     │
-     ├──→ Deepgram STT (voice)
-     │         │
-     ├──→ Browserbase (suspicious URLs)
-     │         │
-     ▼         ▼
-scamSignals.js ──→ typosquatDetector.js
-     │              formAnalyzer.js
-     │              voicePatterns.js
-     │
-     ▼
- Anthropic Claude (verdict + explanation)
-     │
-     ├──→ Arize eval (quality assurance)
-     ├──→ Sentry (error + event capture)
-     ├──→ Redis / local (case persistence)
-     └──→ threatExport.js (STIX / CSV / human report)
-```
+| Sponsor | What it does | Without key | With key | Proof |
+|---------|-------------|-------------|----------|-------|
+| **Deepgram** | Voice STT → scam pattern matching | Local audio fixtures + transcript fallback | Live real-time transcription | `npm run demo` voice path |
+| **Anthropic** | Plain-English explanation of findings | Deterministic template engine (same structure) | Claude generates grounded verdicts | `scripts/explain_case_demo.js` |
+| **Browserbase** | Isolated URL detonation | Local DOM analysis only | Sandboxed cloud browser inspection | `scripts/inspect_link_demo.js` |
+| **Redis** | Case persistence + pattern retrieval | Local JSON storage (automatic) | Cloud persistence via Upstash/Redis | `scripts/save_case_demo.js` |
+| **Sentry** | Error + event monitoring | Local event log | Cloud envelope delivery | `scripts/sentry_smoke_demo.js` |
+| **Fetch.ai / ASI:One** | Agent coordination (4 endpoints) | Local wrapper, no registration | Agentverse-registered agent | `scripts/asi_agent_demo.js` |
+| **Arize / Phoenix** | 5-criteria eval pipeline | Local eval report generation | Cloud observability traces | `scripts/arize_eval_demo.js` |
+| **Simular** | Autonomous QA testing | Used for testing only — not in runtime | N/A | QA_REPORT.md |
+| **Pika / Midjourney** | Visual design support | Logo + site design assistance | N/A | Site assets |
 
-## Demo Pages
+### Key distinction
+- **Core detection is 100% local** — `scamSignals.js`, `typosquatDetector.js`, `formAnalyzer.js`, `voicePatterns.js` run entirely in-browser with zero API calls.
+- **Sponsor APIs are enhancement layers** — explanation quality (Anthropic), voice transcription (Deepgram), URL sandboxing (Browserbase), persistence (Redis), monitoring (Sentry), coordination (ASI), eval (Arize).
+- **Every path has a working fallback** — the demo runs fully offline, judges see real protection behavior without any credentials.
+
+---
+
+## Proof checklist
+
+| # | What to verify | How | Status |
+|---|---------------|-----|--------|
+| 1 | Extension loads without errors | `chrome://extensions` → no error badge | LIVE |
+| 2 | Scam page triggers warning overlay | Open any `demo/*.html` file | LIVE |
+| 3 | Safe page does NOT trigger warning | Open `example.com` or any normal site | LIVE |
+| 4 | Warning blocks form inputs | Try typing in the scam form behind the overlay | LIVE |
+| 5 | "Take me somewhere safe" navigates away | Click primary CTA | LIVE |
+| 6 | Evidence receipt is copyable | Click "Save proof" button | LIVE |
+| 7 | Popup shows scan results | Click extension icon | LIVE |
+| 8 | History tab shows past scans | Switch to History in popup | LIVE |
+| 9 | Voice pipeline processes fixture | `npm run demo` (voice section) | LIVE |
+| 10 | Threat export generates STIX/CSV | `npm run demo` (export section) | LIVE |
+| 11 | All 177 tests pass | `npm test` | LIVE |
+| 12 | Eval criteria script runs | `node scripts/arize_eval_demo.js` | LIVE |
+| 13 | Sentry smoke test passes | `node scripts/sentry_smoke_demo.js` | LIVE |
+| 14 | Link pre-scan tooltip appears | Hover a link on any page | LIVE |
+| 15 | Typosquat detection works | Visit a typosquatted domain | LIVE |
+
+---
+
+## Demo pages
 
 Open in browser after loading the extension:
 
@@ -81,9 +109,11 @@ Open in browser after loading the extension:
 | `demo/romance-scam.html` | Romance / relationship fraud |
 | `demo/fake-tech-support.html` | Microsoft/Apple support scam |
 
-## Test Coverage
+---
 
-169 tests across 15 test files covering:
+## Test coverage
+
+177 tests across 17 test files covering:
 - Scam signal detection (page + voice)
 - Typosquat / homoglyph analysis
 - Form credential harvesting
@@ -95,23 +125,58 @@ Open in browser after loading the extension:
 - ASI agent wrapper
 - Arize eval criteria
 
-## Environment Variables
+---
+
+## Environment variables
 
 All optional — every feature degrades gracefully without secrets:
 
 ```bash
-DEEPGRAM_API_KEY=...          # Voice transcription
-ANTHROPIC_API_KEY=...         # Claude explanations
-BROWSERBASE_API_KEY=...       # URL sandboxing
+DEEPGRAM_API_KEY=...          # Voice transcription (fallback: local fixtures)
+ANTHROPIC_API_KEY=...         # Claude explanations (fallback: template engine)
+BROWSERBASE_API_KEY=...       # URL sandboxing (fallback: local DOM analysis)
 BROWSERBASE_PROJECT_ID=...
-SENTRY_DSN=...                # Error monitoring
-REDIS_URL=...                 # Case persistence (or REDIS_HOST/PORT/PASSWORD)
+SENTRY_DSN=...                # Error monitoring (fallback: local log)
+REDIS_URL=...                 # Case persistence (fallback: local JSON)
 REDIS_REST_URL=...            # Upstash REST alternative
 REDIS_API_KEY=...
 ```
 
-## Compliance Boundary
+---
+
+## Architecture
+
+```
+Page/Voice Input
+     │
+     ├──→ Deepgram STT (voice) [fallback: local fixture]
+     │         │
+     ├──→ Browserbase (suspicious URLs) [fallback: local DOM]
+     │         │
+     ▼         ▼
+scamSignals.js ──→ typosquatDetector.js     ← 100% local, no API
+     │              formAnalyzer.js
+     │              voicePatterns.js
+     │
+     ▼
+ Anthropic Claude (explanation) [fallback: template engine]
+     │
+     ├──→ Arize eval (quality assurance) [local]
+     ├──→ Sentry (error + event capture) [fallback: local log]
+     ├──→ Redis / local JSON (case persistence)
+     └──→ threatExport.js (STIX / CSV / human report) [local]
+```
+
+---
+
+## Compliance boundary
 
 This repository is intentionally separate from prior Cloak extension repos. Built from scratch for the hackathon submission window.
 
-Safety boundary: cloak sting stores observed evidence and public technical indicators. It does not claim to identify private individuals or encourage vigilante action.
+Safety boundary: sting stores observed evidence and public technical indicators. It does not claim to identify private individuals or encourage vigilante action.
+
+---
+
+## Platform note
+
+Chrome MV3 extensions are desktop-only. sting does not run on mobile Chrome (Android/iOS). This is a Chrome platform limitation, not a bug.

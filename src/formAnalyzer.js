@@ -1,5 +1,5 @@
 /**
- * Form / input field analyzer for cloak sting.
+ * Form / input field analyzer for sting.
  *
  * Detects credential-harvesting forms by examining the combination
  * and density of sensitive input fields on a page.

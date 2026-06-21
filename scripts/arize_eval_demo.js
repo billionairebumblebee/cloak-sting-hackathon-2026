@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 
 /**
- * Arize eval/proof script for cloak sting scam explanations.
+ * Arize eval/proof script for sting scam explanations.
  *
  * Runs scam fixtures through:
  *   1. Deterministic scam signal engine
@@ -67,7 +67,7 @@ const FIXTURES = [
 //
 // Shows how Arize eval feedback improved explanation quality.
 // "Before" = a hypothetical bad explanation that fails eval criteria.
-// "After"  = the actual cloak sting explanation that passes all criteria.
+// "After"  = the actual sting explanation that passes all criteria.
 
 function runBeforeAfterDemo(caseRecord) {
   const beforeExplanation = {
@@ -148,7 +148,7 @@ async function main() {
 
   const passCount = results.filter((r) => r.pass).length;
   const report = {
-    evalName: 'cloak-sting-explanation-quality',
+    evalName: 'sting-explanation-quality',
     timestamp: new Date().toISOString(),
     fixtureCount: results.length,
     passCount,
@@ -162,7 +162,7 @@ async function main() {
   const reportPath = path.join(process.cwd(), 'data', 'arize-eval-report.json');
   fs.mkdirSync(path.dirname(reportPath), { recursive: true });
   fs.writeFileSync(reportPath, JSON.stringify(report, null, 2));
-  console.log(`\n=== cloak sting Arize Eval Report ===`);
+  console.log(`\n=== sting Arize Eval Report ===`);
   console.log(`Eval report written to ${reportPath}`);
   console.log(`${passCount}/${results.length} fixtures passed all 5 checks (${report.passRate})\n`);
 
@@ -208,7 +208,7 @@ async function main() {
     fs.writeFileSync(datasetFile, JSON.stringify(datasetRows, null, 2));
 
     const space = process.env.ARIZE_SPACE || 'billionairebumblebee Space';
-    const datasetName = 'cloak-sting-scam-explanations';
+    const datasetName = 'sting-scam-explanations';
 
     try {
       execSync(`ax datasets delete "${datasetName}" --space "${space}" --force 2>/dev/null`, { stdio: 'pipe' });
@@ -260,7 +260,7 @@ async function main() {
     }
 
     if (experimentRows[0].example_id) {
-      const experimentName = `cloak-sting-eval-${new Date().toISOString().slice(0, 10)}`;
+      const experimentName = `sting-eval-${new Date().toISOString().slice(0, 10)}`;
       try {
         execSync(
           `ax experiments create --name "${experimentName}" --dataset "${datasetName}" --space "${space}" --file "${runsFile}" -o json`,

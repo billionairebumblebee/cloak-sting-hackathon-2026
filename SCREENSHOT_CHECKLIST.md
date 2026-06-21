@@ -4,7 +4,7 @@
 
 | # | Screenshot | What to capture | Notes |
 |---|-----------|-----------------|-------|
-| 1 | **Warning overlay on fake bank page** | `demo/fake-bank-login.html` with cloak sting overlay visible showing HIGH RISK, score, and findings | Hero image for Devpost |
+| 1 | **Warning overlay on fake bank page** | `demo/fake-bank-login.html` with sting overlay visible showing HIGH RISK, score, and findings | Hero image for Devpost |
 | 2 | **Warning overlay on romance scam** | `demo/romance-scam.html` with overlay showing gift card/wire transfer/secrecy signals | Shows breadth beyond phishing |
 | 3 | **Warning overlay on Chinese family scam** | `demo/chinese-family-scam.html` with overlay | Shows multilingual coverage |
 | 4 | **Clean page with no overlay** | Normal page (google.com or amazon.com) — extension loaded but no warning | Proves no false-positive noise |
@@ -12,8 +12,8 @@
 | 6 | **Copied receipt text** | Paste receipt into text editor after clicking "Copy receipt" | Shows structured evidence output |
 | 7 | **Terminal: case dossier output** | Run `node scripts/save_case_demo.js` → show markdown dossier in terminal | Shows authority-ready export |
 | 8 | **Terminal: Browserbase inspection** | Run `node scripts/inspect_link_demo.js` → show isolated inspection flow | Shows sponsor integration |
-| 9 | **Test suite passing** | Run `npm test` → show all 29 tests passing | Proves reliability |
-| 10 | **Extension loaded in Chrome** | `chrome://extensions` page showing cloak sting loaded with Manifest V3 | Proves it's a real extension |
+| 9 | **Test suite passing** | Run `npm test` → show all 177 tests passing | Proves reliability |
+| 10 | **Extension loaded in Chrome** | `chrome://extensions` page showing sting loaded with Manifest V3 | Proves it's a real extension |
 
 ## Required Video Clips
 

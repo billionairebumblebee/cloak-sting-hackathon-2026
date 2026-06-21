@@ -21,7 +21,7 @@ async function startAgent() {
   }
 
   const AGENT_DESCRIPTOR = {
-    name: 'cloak-sting',
+    name: 'sting',
     version: '0.1.0',
     description: 'Ambient scam-warning agent.',
     capabilities: ['threat-analysis', 'scam-detection', 'receipt-generation'],
@@ -34,7 +34,7 @@ async function startAgent() {
     const url = req.url.split('?')[0];
 
     if (method === 'GET' && url === '/status') {
-      return jsonResponse(res, 200, { status: 'ok', agent: 'cloak-sting', version: '0.1.0' });
+      return jsonResponse(res, 200, { status: 'ok', agent: 'sting', version: '0.1.0' });
     }
     if (method === 'GET' && url === '/.well-known/agent.json') {
       return jsonResponse(res, 200, AGENT_DESCRIPTOR);
@@ -92,7 +92,7 @@ async function request(method, path, body) {
   });
 }
 
-describe('cloak-sting agent wrapper', () => {
+describe('sting agent wrapper', () => {
   it('starts and stops cleanly', async () => {
     await startAgent();
     assert.ok(baseUrl);
@@ -105,7 +105,7 @@ describe('cloak-sting agent wrapper', () => {
       const res = await request('GET', '/status');
       assert.equal(res.status, 200);
       assert.equal(res.body.status, 'ok');
-      assert.equal(res.body.agent, 'cloak-sting');
+      assert.equal(res.body.agent, 'sting');
     } finally { await stopAgent(); }
   });
 
@@ -114,7 +114,7 @@ describe('cloak-sting agent wrapper', () => {
     try {
       const res = await request('GET', '/.well-known/agent.json');
       assert.equal(res.status, 200);
-      assert.equal(res.body.name, 'cloak-sting');
+      assert.equal(res.body.name, 'sting');
       assert.ok(res.body.capabilities.includes('threat-analysis'));
       assert.equal(res.body.protocol, 'asi-one-v0');
     } finally { await stopAgent(); }

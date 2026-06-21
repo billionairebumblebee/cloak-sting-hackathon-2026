@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 /**
- * full_demo.js — One-click showcase of every cloak sting capability.
+ * full_demo.js — One-click showcase of every sting capability.
  *
  * Runs without any API keys. Demonstrates:
  *  1. Page scam signal detection (9 demo scenarios)
@@ -42,7 +42,7 @@ function riskColor(risk) {
 }
 
 console.log(`\n${BOLD}${CYAN}╔══════════════════════════════════════════════════════════════╗${RESET}`);
-console.log(`${BOLD}${CYAN}║          CLOAK STING — FULL CAPABILITY DEMO                  ║${RESET}`);
+console.log(`${BOLD}${CYAN}║          STING — FULL CAPABILITY DEMO                  ║${RESET}`);
 console.log(`${BOLD}${CYAN}║          UC Berkeley AI Hackathon 2026                        ║${RESET}`);
 console.log(`${BOLD}${CYAN}╚══════════════════════════════════════════════════════════════╝${RESET}\n`);
 
@@ -194,7 +194,7 @@ const receipt = {
 };
 
 const caseRecord = normalizeReceiptToCase(receipt, {
-  source: 'cloak-sting-demo',
+  source: 'sting-demo',
   victimSafeNotes: 'Demo case — no real victim involved.'
 });
 
@@ -240,7 +240,7 @@ const distDir = path.join(process.cwd(), 'dist');
 fs.mkdirSync(distDir, { recursive: true });
 
 const proofArtifact = {
-  product: 'cloak-sting',
+  product: 'sting',
   version: '0.1.0',
   generatedAt: new Date().toISOString(),
   capabilities: {

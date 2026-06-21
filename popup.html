@@ -3,10 +3,10 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>cloak sting — Scam Protection</title>
+  <title>sting — scam protection</title>
   <style>
     *{box-sizing:border-box;margin:0;padding:0}
-    body{width:380px;max-height:500px;overflow-y:auto;font-family:'Inter',system-ui,-apple-system,sans-serif;background:#030303;color:#e8e8e8;font-size:0.875rem;line-height:1.4;position:relative}
+    body{width:380px;max-height:520px;overflow-y:auto;font-family:'Inter',system-ui,-apple-system,sans-serif;background:#030303;color:#e8e8e8;font-size:0.875rem;line-height:1.4;position:relative}
     body::-webkit-scrollbar{width:5px}
     body::-webkit-scrollbar-track{background:transparent}
     body::-webkit-scrollbar-thumb{background:#222;border-radius:3px}
@@ -28,10 +28,11 @@
     .header::after{content:'';position:absolute;bottom:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,#f5a623 30%,#9333ea 70%,transparent)}
     .header svg{width:28px;height:28px;flex-shrink:0;filter:drop-shadow(0 0 6px rgba(245,166,35,.5))}
     .header h1{font-size:16px;font-weight:700;letter-spacing:-.02em;color:#f5a623;text-shadow:0 0 12px rgba(245,166,35,.3)}
+    .header .version{font-size:10px;color:#444;font-weight:500;margin-left:auto;letter-spacing:.02em}
 
     /* Tabs */
     .tabs{display:flex;border-bottom:1px solid rgba(255,255,255,.04);position:relative;z-index:1}
-    .tab{flex:1;padding:10px 0;text-align:center;font-size:12px;font-weight:600;letter-spacing:.04em;text-transform:uppercase;color:#555;cursor:pointer;border-bottom:2px solid transparent;transition:color .3s,border-color .3s,text-shadow .3s}
+    .tab{flex:1;padding:10px 0;text-align:center;font-size:11px;font-weight:600;letter-spacing:.04em;text-transform:uppercase;color:#555;cursor:pointer;border-bottom:2px solid transparent;transition:color .3s,border-color .3s,text-shadow .3s}
     .tab.active{color:#f5a623;border-bottom-color:#f5a623;text-shadow:0 0 8px rgba(245,166,35,.3)}
     .tab:hover{color:#aaa}
 
@@ -39,6 +40,41 @@
     .panel{display:none;padding:16px 18px;position:relative;z-index:1;animation:panelFadeIn .3s ease}
     .panel.active{display:block}
     @keyframes panelFadeIn{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:translateY(0)}}
+
+    /* Status dashboard (default view) */
+    .status-dash{padding:4px 0}
+    .status-indicator{display:flex;align-items:center;gap:10px;padding:12px 14px;background:rgba(74,222,128,.04);border:1px solid rgba(74,222,128,.12);border-radius:12px;margin-bottom:14px}
+    .status-indicator .pulse{width:10px;height:10px;border-radius:50%;background:#4ade80;box-shadow:0 0 8px rgba(74,222,128,.6);animation:statusPulse 2s ease-in-out infinite}
+    .status-indicator .text{flex:1}
+    .status-indicator .text h3{font-size:13px;font-weight:700;color:#4ade80;margin-bottom:1px}
+    .status-indicator .text p{font-size:11px;color:#666}
+    @keyframes statusPulse{0%,100%{box-shadow:0 0 8px rgba(74,222,128,.6)}50%{box-shadow:0 0 16px rgba(74,222,128,.9),0 0 4px rgba(74,222,128,1)}}
+
+    .stats-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:14px}
+    .stat-card{padding:12px;background:rgba(255,255,255,.02);border:1px solid rgba(255,255,255,.05);border-radius:10px;text-align:center;backdrop-filter:blur(4px);-webkit-backdrop-filter:blur(4px)}
+    .stat-card .value{font-size:20px;font-weight:800;color:#e8e8e8;letter-spacing:-.02em;font-variant-numeric:tabular-nums}
+    .stat-card .value.highlight{color:#f5a623;text-shadow:0 0 8px rgba(245,166,35,.3)}
+    .stat-card .label{font-size:10px;color:#555;text-transform:uppercase;letter-spacing:.06em;margin-top:2px;font-weight:600}
+
+    .modules-section{margin-bottom:14px}
+    .modules-section h4{font-size:10px;text-transform:uppercase;letter-spacing:.06em;color:#555;margin-bottom:8px;font-weight:700}
+    .module-row{display:flex;align-items:center;gap:8px;padding:7px 10px;background:rgba(255,255,255,.015);border:1px solid rgba(255,255,255,.04);border-radius:8px;margin-bottom:4px;font-size:11px}
+    .module-row .dot{width:6px;height:6px;border-radius:50%;flex-shrink:0}
+    .module-row .dot.active{background:#4ade80;box-shadow:0 0 4px rgba(74,222,128,.5)}
+    .module-row .dot.standby{background:#f5a623;box-shadow:0 0 4px rgba(245,166,35,.4)}
+    .module-row .name{flex:1;color:#999;font-weight:500}
+    .module-row .badge{font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.04em;padding:2px 6px;border-radius:4px}
+    .module-row .badge.live{background:rgba(74,222,128,.1);color:#4ade80}
+    .module-row .badge.ready{background:rgba(245,166,35,.08);color:#f5a623}
+    .module-row .badge.local{background:rgba(147,51,234,.08);color:#a78bfa}
+
+    .page-target{padding:10px 12px;background:rgba(255,255,255,.02);border:1px solid rgba(255,255,255,.05);border-radius:10px;margin-bottom:14px}
+    .page-target .label{font-size:10px;color:#555;text-transform:uppercase;letter-spacing:.06em;margin-bottom:4px;font-weight:600}
+    .page-target .hostname{font-size:13px;font-weight:600;color:#e8e8e8;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+    .page-target .url{font-size:10px;color:#333;word-break:break-all;margin-top:2px}
+
+    .scan-btn{width:100%;padding:12px;border:0;border-radius:10px;font-size:12px;font-weight:700;cursor:pointer;background:linear-gradient(135deg,#f5a623,#e09000);color:#050505;box-shadow:0 2px 8px rgba(245,166,35,.2);transition:all .25s;min-height:44px;letter-spacing:.02em}
+    .scan-btn:hover{box-shadow:0 0 16px rgba(245,166,35,.45),0 2px 8px rgba(245,166,35,.3);transform:translateY(-1px)}
 
     /* Loading state */
     .loading{display:flex;flex-direction:column;align-items:center;justify-content:center;padding:40px 18px;text-align:center;color:#555}
@@ -118,7 +154,6 @@
     .history-card .info{flex:1;min-width:0}
     .history-card .info .host{font-weight:600;font-size:12px;color:#ddd;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
     .history-card .info .time{font-size:10px;color:#444;margin-top:2px}
-    .history-card .score-pill{font-size:11px;font-weight:700;padding:4px 8px;border-radius:6px;white-space:nowrap}
 
     .history-empty{text-align:center;padding:30px 0;color:#444;font-size:12px}
 
@@ -153,11 +188,13 @@
       <circle cx="18.5" cy="12" r="1.5" fill="#f5a623"/>
       <path d="M12 17c0 0 2 2.5 4 2.5s4-2.5 4-2.5" stroke="#f5a623" stroke-width="1.2" stroke-linecap="round" fill="none"/>
     </svg>
-    <h1>cloak sting</h1>
+    <h1>sting</h1>
+    <span class="version">v0.3.0</span>
   </div>
 
   <div class="tabs" role="tablist" aria-label="Scan navigation">
-    <div class="tab active" data-tab="scan" role="tab" aria-selected="true" aria-controls="panel-scan" tabindex="0">Current Scan</div>
+    <div class="tab active" data-tab="scan" role="tab" aria-selected="true" aria-controls="panel-scan" tabindex="0">Status</div>
+    <div class="tab" data-tab="threats" role="tab" aria-selected="false" aria-controls="panel-threats" tabindex="-1">Threats</div>
     <div class="tab" data-tab="history" role="tab" aria-selected="false" aria-controls="panel-history" tabindex="-1">History</div>
   </div>
 
@@ -166,6 +203,10 @@
       <div class="spinner"></div>
       <p>Analyzing page...</p>
     </div>
+  </div>
+
+  <div id="panel-threats" class="panel" role="tabpanel" aria-labelledby="tab-threats">
+    <div id="threats-content"></div>
   </div>
 
   <div id="panel-history" class="panel" role="tabpanel" aria-labelledby="tab-history">

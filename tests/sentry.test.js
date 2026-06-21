@@ -84,7 +84,7 @@ describe('buildEnvelope', () => {
     assert.equal(event.event_id, eventId);
     assert.equal(event.platform, 'node');
     assert.equal(event.message.formatted, 'test event');
-    assert.equal(event.logger, 'cloak-sting');
+    assert.equal(event.logger, 'sting');
   });
 
   it('sanitizes tags and extra', () => {

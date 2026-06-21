@@ -1,5 +1,5 @@
 /**
- * Lightweight Sentry envelope capture for cloak sting.
+ * Lightweight Sentry envelope capture for sting.
  *
  * Reads SENTRY_DSN from env/config only — never hardcoded.
  * Builds a minimal Sentry envelope (event item) and POSTs it
@@ -84,9 +84,9 @@ function buildEnvelope({ message, level = 'info', tags = {}, extra = {} }, dsn) 
     timestamp,
     platform: 'node',
     level,
-    logger: 'cloak-sting',
-    server_name: 'cloak-sting-extension',
-    message: { formatted: String(message || 'cloak-sting event').slice(0, 1000) },
+    logger: 'sting',
+    server_name: 'sting-extension',
+    message: { formatted: String(message || 'sting event').slice(0, 1000) },
     tags: sanitizeContext(tags),
     extra: sanitizeContext(extra)
   };
@@ -116,7 +116,7 @@ async function sendEnvelope({ message, level = 'info', tags = {}, extra = {} }, 
     method: 'POST',
     headers: {
       'Content-Type': 'application/x-sentry-envelope',
-      'X-Sentry-Auth': `Sentry sentry_version=7, sentry_client=cloak-sting/0.1.0, sentry_key=${parsed.publicKey}`
+      'X-Sentry-Auth': `Sentry sentry_version=7, sentry_client=sting/0.3.0, sentry_key=${parsed.publicKey}`
     },
     body
   });

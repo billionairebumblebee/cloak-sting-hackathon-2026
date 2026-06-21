@@ -1,18 +1,18 @@
-# cloak sting brand + pitch brief
+# sting brand + pitch brief
 
 ## One-liner
-cloak sting is an ambient scam-defense layer that warns people before they type, pay, or trust — then turns the scam attempt into an evidence dossier their family, bank, or authorities can actually use.
+sting is an ambient scam-defense layer that warns people before they type, pay, or trust — then turns the scam attempt into an evidence dossier their family, bank, or authorities can actually use.
 
 ## Core demo story
 1. Grandma opens a fake bank/shipping page.
-2. cloak sting detects urgency, impersonation, payment pressure, and credential grabs.
+2. sting detects urgency, impersonation, payment pressure, and credential grabs.
 3. A calm overlay interrupts the scam in the danger moment.
 4. Cloak saves a threat receipt.
 5. The receipt becomes a case file / authority-ready dossier.
 6. Optional sponsor layers: Browserbase inspects the link in isolation; Claude writes grounded safe next steps; Redis stores case memory; Arize evaluates safety; Sentry proves reliability.
 
 ## Brand direction
-- Name: cloak sting
+- Name: sting
 - Voice: calm, protective, precise, not paranoid
 - Visual: premium safety, black/cream, quiet-luxury forensic dossier, Ray-like guardian energy
 - Avoid: cyberpunk hacker UI, generic shield logos, scary red-alert panic screens, “AI chatbot for scams” framing
@@ -21,7 +21,7 @@ cloak sting is an ambient scam-defense layer that warns people before they type,
 - Stop the scam before the click becomes a crisis.
 - A warning layer for the internet’s most expensive moments.
 - Scam defense that catches the pattern and keeps the receipt.
-- Before grandma wires the money, cloak stings.
+- Before grandma wires the money, stings.
 
 ## UI/UX assets to make
 - Chrome extension popup mockup: latest threat receipt
@@ -39,7 +39,7 @@ cloak sting is an ambient scam-defense layer that warns people before they type,
 6. Why now: AI makes scams cheaper; families need AI-native defense.
 
 ## Slide outline if needed
-1. Title: cloak sting — scam defense before the mistake
+1. Title: sting — scam defense before the mistake
 2. Problem: online scams exploit urgency + trust + isolation
 3. Demo moment: warning overlay screenshot
 4. Product loop: detect → warn → receipt → report

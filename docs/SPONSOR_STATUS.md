@@ -1,4 +1,4 @@
-# cloak sting — Sponsor Integration Status
+# sting — Sponsor Integration Status
 
 Honest status of each sponsor integration as of the hackathon submission.
 

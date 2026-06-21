@@ -135,7 +135,7 @@ sting analyzes suspicious web pages, messages, and links using a combination of 
 
 - Connect Browserbase for live suspicious page inspection
 - Wire up Claude for real-time grounded explanations
-- Build Redis-backed case memory for "we've seen 47 variants of this scam"
+- Build Redis-backed case memory for repeat-scam recognition
 - Add browser extension for one-click scanning of the current page
 - Voice scam analysis via Deepgram STT integration
 - Mobile-responsive progressive web app

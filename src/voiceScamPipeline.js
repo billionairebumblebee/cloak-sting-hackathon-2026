@@ -49,7 +49,7 @@ async function analyzeVoice(audioInput, options = {}) {
   };
 
   const caseRecord = normalizeReceiptToCase(receipt, {
-    source: 'cloak-sting-voice-pipeline',
+    source: 'sting-voice-pipeline',
     transcript: sttResult.transcript
   });
 

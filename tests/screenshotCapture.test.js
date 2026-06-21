@@ -57,7 +57,7 @@ test('saveScreenshot stores data and returns storage key', async () => {
   const { mod, mockChrome } = loadModule();
   const dataUrl = 'data:image/png;base64,abc123';
   const key = await mod.saveScreenshot('case-001', dataUrl);
-  assert.equal(key, 'cloak:screenshot:case-001');
+  assert.equal(key, 'sting:screenshot:case-001');
   assert.equal(mockChrome.storage._store[key], dataUrl);
 });
 
@@ -88,8 +88,8 @@ test('evicts oldest screenshots when at capacity', async () => {
   assert.equal(indexAfter.length, 10);
   assert.ok(!indexAfter.includes('old-0'));
   assert.ok(indexAfter.includes('new-case'));
-  assert.equal(mockChrome.storage._store['cloak:screenshot:old-0'], undefined);
-  assert.equal(mockChrome.storage._store['cloak:screenshot:new-case'], 'data:image/png;base64,newdata');
+  assert.equal(mockChrome.storage._store['sting:screenshot:old-0'], undefined);
+  assert.equal(mockChrome.storage._store['sting:screenshot:new-case'], 'data:image/png;base64,newdata');
 });
 
 test('screenshot index tracks insertion order', async () => {
@@ -103,7 +103,7 @@ test('screenshot index tracks insertion order', async () => {
 
 test('constants are exported correctly', () => {
   const { mod } = loadModule();
-  assert.equal(mod.SCREENSHOT_PREFIX, 'cloak:screenshot:');
-  assert.equal(mod.SCREENSHOT_INDEX_KEY, 'cloak:screenshotIndex');
+  assert.equal(mod.SCREENSHOT_PREFIX, 'sting:screenshot:');
+  assert.equal(mod.SCREENSHOT_INDEX_KEY, 'sting:screenshotIndex');
   assert.equal(mod.MAX_SCREENSHOTS, 10);
 });
