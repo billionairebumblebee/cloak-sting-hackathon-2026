@@ -1,12 +1,12 @@
 {
   "manifest_version": 3,
-  "name": "sting — scam protection",
+  "name": "STING — scam protection",
   "version": "0.3.0",
   "description": "Protects you from online scams, phishing, and fraud with real-time warnings.",
   "permissions": ["storage", "activeTab", "scripting"],
   "host_permissions": ["<all_urls>"],
   "action": {
-    "default_title": "sting — scan this page for scams",
+    "default_title": "STING — scan this page for scams",
     "default_popup": "popup.html"
   },
   "content_scripts": [

@@ -1,12 +1,14 @@
-# sting
+# cloak STING
+
+**STING = Scam Tracking & Intelligence Network Guard**
 
 ## Elevator Pitch
 
-sting is a Chrome extension that detects scam patterns in real time — urgency, payment pressure, credential grabs, impersonation — and interrupts the user with a calm warning overlay before they type, pay, or trust. Every scam attempt becomes a shareable evidence dossier for family, banks, or authorities.
+STING is a Chrome extension that spots scam patterns in real time — urgency, payment pressure, credential grabs, impersonation — and guards users with a calm warning overlay before they type, pay, or trust. Every scam attempt becomes a shareable evidence dossier for family, banks, or authorities.
 
 ## What It Does
 
-sting runs silently on every page. When it detects scam signals (urgency language, unusual payment methods, trusted-institution impersonation, secrecy pressure, credential harvesting), it surfaces a non-panic overlay grading the threat as high/medium risk with specific evidence. The user can copy a structured receipt, dismiss the warning, or save the case for later reporting.
+STING runs silently on every page. When it spots scam signals (urgency language, unusual payment methods, trusted-institution impersonation, secrecy pressure, credential harvesting), it surfaces a non-panic overlay grading the threat as high/medium risk with specific evidence. The user can copy a structured receipt, dismiss the warning, or save the case for later reporting.
 
 Key capabilities implemented during this hackathon:
 
@@ -33,7 +35,7 @@ Built from scratch during the hackathon in a clean repo. No code carried from pr
 | Sponsor | Usage | Status |
 |---------|-------|--------|
 | **Redis** (MLH) | Case database — stores scam case records with full evidence, findings, jurisdiction, and reporting metadata. Uses `redis` npm package connecting to Redis Cloud (host/port/password). Falls back to local JSON when Redis unavailable. | ✅ Implemented |
-| **Browserbase** | Isolated link inspection — opens suspicious URLs in a sandboxed Browserbase session, extracts page content/signals, returns a Cloak receipt without exposing the user's browser or device. | ✅ Implemented |
+| **Browserbase** | Isolated link inspection — opens suspicious URLs in a sandboxed Browserbase session, extracts page content/signals, returns a STING receipt without exposing the user's browser or device. | ✅ Implemented |
 | **Anthropic/Claude** | Planned: grounded safe-next-steps generation from case evidence. Architecture wired but not yet calling the API. | 🔜 Planned |
 | **Arize** | Planned: safety evaluation of detector outputs and dossier quality. | 🔜 Planned |
 | **Deepgram** | Planned: voice scam transcription path (voicemail → transcript → scam detector → receipt). Branch in progress. | 🔜 In progress |

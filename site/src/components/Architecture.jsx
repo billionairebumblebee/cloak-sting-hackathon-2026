@@ -42,7 +42,7 @@ const architectureNodes = [
     role: "Case memory & receipts",
     color: "#dc2626",
     description:
-      "Stores evidence receipts, case records, and scam pattern signatures. Enables similar-scam retrieval so sting can recognize repeat scam patterns with real data.",
+      "Stores evidence receipts, case records, and scam pattern signatures. Enables similar-scam retrieval so STING can recognize repeat scam patterns with real data.",
   },
   {
     id: "arize",
