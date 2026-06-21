@@ -102,18 +102,10 @@ export function StaggerItem({
 export function GlowCard({
   children,
   className = "",
-  glowColor = "rgba(245, 166, 35, 0.06)",
 }) {
-  const [hovered, setHovered] = useState(false);
   return (
     <div
-      className={`group glass glass-hover rounded-2xl transition-transform duration-300 ${className}`}
-      style={{
-        transform: hovered ? "translateY(-2px)" : "translateY(0)",
-        boxShadow: hovered ? `0 8px 40px ${glowColor}` : "none",
-      }}
-      onMouseEnter={() => setHovered(true)}
-      onMouseLeave={() => setHovered(false)}
+      className={`glass rounded-2xl ${className}`}
     >
       {children}
     </div>
@@ -139,8 +131,8 @@ export function FloatingOrb({ color, size, x, y, delay = 0 }) {
 export function SectionLabel({ children }) {
   return (
     <FadeIn>
-      <div className="mb-5 inline-flex items-center gap-2 rounded-full border border-white/[0.06] bg-white/[0.02] px-4 py-1.5 text-[11px] font-medium tracking-[0.15em] text-text-muted uppercase">
-        <span className="h-1 w-1 rounded-full bg-honey/60" />
+      <div className="mb-6 inline-flex items-center gap-2.5 rounded-full border border-honey/15 bg-honey/[0.04] px-5 py-2 text-[12px] font-semibold tracking-[0.15em] text-honey/80 uppercase">
+        <span className="h-1.5 w-1.5 rounded-full bg-honey/70" />
         {children}
       </div>
     </FadeIn>

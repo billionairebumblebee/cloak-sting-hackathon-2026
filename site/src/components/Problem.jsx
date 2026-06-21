@@ -51,14 +51,14 @@ export default function Problem() {
         <div className="mb-16 max-w-2xl">
           <SectionLabel>The Threat</SectionLabel>
           <FadeIn delay={0.1}>
-            <h2 className="mb-5 text-[clamp(2rem,4vw,3rem)] font-bold leading-[1.12] tracking-[-0.025em] text-text-primary sm:text-4xl">
+            <h2 className="mb-5 text-[clamp(2.25rem,4.5vw,3.5rem)] font-extrabold leading-[1.08] tracking-[-0.03em] text-text-primary">
               Scams don&apos;t look
               <br />
               <span className="text-red-400/80">fake anymore.</span>
             </h2>
           </FadeIn>
           <FadeIn delay={0.2}>
-            <p className="max-w-lg text-[15px] leading-[1.7] text-text-secondary">
+            <p className="max-w-lg text-[16px] leading-[1.7] text-text-secondary">
               They look flawless. They sound real. They fool smart people every
               day. You need a weapon, not a warning — Sting gives you a
               plain-English verdict in seconds.
@@ -70,13 +70,13 @@ export default function Problem() {
           {threats.map((threat) => (
             <StaggerItem key={threat.title}>
               <GlowCard className="p-6" glowColor="rgba(220, 38, 38, 0.06)">
-                <div className="mb-4 flex h-10 w-10 items-center justify-center rounded-xl bg-red-500/[0.06] text-red-400/80 transition-colors duration-300 group-hover:text-red-400">
+                <div className="mb-4 flex h-10 w-10 items-center justify-center rounded-xl bg-red-500/[0.06] text-red-400/80">
                   <threat.icon size={18} strokeWidth={1.5} />
                 </div>
-                <h3 className="mb-2 text-[14px] font-semibold tracking-[-0.01em] text-text-primary">
+                <h3 className="mb-2 text-[15px] font-semibold tracking-[-0.01em] text-text-primary">
                   {threat.title}
                 </h3>
-                <p className="text-[13px] leading-[1.65] text-text-secondary">
+                <p className="text-[14px] leading-[1.65] text-text-secondary">
                   {threat.desc}
                 </p>
               </GlowCard>

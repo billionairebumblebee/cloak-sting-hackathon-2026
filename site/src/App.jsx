@@ -13,6 +13,15 @@ const Footer = lazy(() => import("./components/Footer"));
 export default function App() {
   return (
     <div className="relative min-h-screen">
+      {/* Gradient mesh background */}
+      <div className="gradient-mesh">
+        <div className="mesh-orb-amber" />
+        <div className="mesh-orb-teal" />
+      </div>
+
+      {/* Film grain */}
+      <div className="grain-overlay" />
+
       <Navbar />
       <main>
         <Hero />
@@ -20,10 +29,15 @@ export default function App() {
           <div className="relative">
             <div className="pointer-events-none absolute inset-0 bg-gradient-to-b from-transparent via-honey/[0.01] to-transparent" />
             <Problem />
+            <div className="section-divider mx-6" />
             <ProductFlow />
+            <div className="section-divider mx-6" />
             <VoiceScanner />
+            <div className="section-divider mx-6" />
             <InteractiveDemo />
+            <div className="section-divider mx-6" />
             <HallOfFame />
+            <div className="section-divider mx-6" />
             <Architecture />
           </div>
         </Suspense>
