@@ -33,6 +33,89 @@
   --font-mono: "JetBrains Mono", "Fira Code", monospace;
 }
 
+/* ---------- Light mode overrides ---------- */
+
+html.light {
+  --color-surface: #f8f8fa;
+  --color-surface-raised: #ffffff;
+  --color-surface-overlay: #f0f0f2;
+  --color-border: #e0e0e0;
+  --color-border-light: #d4d4d4;
+  --color-text-primary: #1a1a1a;
+  --color-text-secondary: #555555;
+  --color-text-muted: #888888;
+  --color-glass: rgba(0, 0, 0, 0.03);
+  --color-glass-border: rgba(0, 0, 0, 0.08);
+  --color-glass-hover: rgba(0, 0, 0, 0.05);
+}
+
+html.light body {
+  background-color: #f8f8fa;
+  color: #1a1a1a;
+}
+
+html.light .glass {
+  background: rgba(255, 255, 255, 0.7);
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  box-shadow:
+    0 1px 3px rgba(0, 0, 0, 0.06),
+    0 4px 16px rgba(0, 0, 0, 0.04);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+}
+
+html.light .gradient-text-subtle {
+  background: linear-gradient(135deg, #1a1a1a 0%, #444444 50%, #666666 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+html.light .gradient-mesh::before {
+  background: radial-gradient(circle, rgba(255, 167, 38, 0.08) 0%, rgba(255, 143, 0, 0.04) 40%, transparent 70%);
+}
+
+html.light .gradient-mesh::after {
+  background: radial-gradient(circle, rgba(120, 60, 180, 0.06) 0%, transparent 60%);
+}
+
+html.light .mesh-orb-amber {
+  background: radial-gradient(circle, rgba(255, 143, 0, 0.06) 0%, transparent 60%);
+}
+
+html.light .mesh-orb-teal {
+  background: radial-gradient(circle, rgba(10, 100, 100, 0.05) 0%, transparent 60%);
+}
+
+html.light .mesh-orb-purple {
+  background: radial-gradient(circle, rgba(139, 92, 246, 0.04) 0%, transparent 60%);
+}
+
+html.light .mesh-orb-rose {
+  background: radial-gradient(circle, rgba(244, 63, 94, 0.03) 0%, transparent 60%);
+}
+
+html.light .grain-overlay { opacity: 0; }
+
+html.light .text-glow-honey { text-shadow: none; }
+html.light .text-glow-subtle { text-shadow: none; }
+
+html.light .hero-spotlight {
+  background: radial-gradient(ellipse at center, rgba(255, 167, 38, 0.06) 0%, transparent 60%);
+}
+
+html.light .footer-glow {
+  background: radial-gradient(ellipse 80% 60% at 50% 100%, rgba(139, 92, 246, 0.03) 0%, transparent 60%);
+}
+
+html.light ::-webkit-scrollbar-thumb { background: rgba(0,0,0,0.1); }
+html.light ::-webkit-scrollbar-thumb:hover { background: rgba(0,0,0,0.2); }
+
+html.light ::selection {
+  background: rgba(245, 166, 35, 0.2);
+  color: #1a1a1a;
+}
+
 /* ---------- Base ---------- */
 
 html {
@@ -49,6 +132,7 @@ body {
   overflow-x: hidden;
   font-size: 16px;
   line-height: 1.6;
+  transition: background-color 0.3s ease, color 0.3s ease;
 }
 
 /* ---------- Focus ---------- */

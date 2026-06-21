@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import StingLogo from "../assets/StingLogo";
 import { Menu, X } from "lucide-react";
 import { playClick } from "../utils/sounds";
+import ThemeToggle from "./ThemeToggle";
 
 const navLinks = [
   { label: "Problem", href: "#problem" },
@@ -55,6 +56,7 @@ export default function Navbar() {
               {link.label}
             </a>
           ))}
+          <ThemeToggle />
           <a
             href="#demo"
             className="group relative overflow-hidden rounded-full bg-honey px-6 py-2.5 text-[14px] font-semibold text-surface transition-all duration-300 hover:scale-[1.03] hover:shadow-lg hover:shadow-honey/20 active:scale-[0.97]"
@@ -90,13 +92,16 @@ export default function Navbar() {
                 {link.label}
               </a>
             ))}
-            <a
-              href="#demo"
-              className="mt-2 mb-2 flex h-12 items-center justify-center rounded-xl bg-honey text-[16px] font-semibold text-surface"
-              onClick={() => setOpen(false)}
-            >
-              Try Demo
-            </a>
+            <div className="mt-2 mb-2 flex items-center gap-3">
+              <ThemeToggle />
+              <a
+                href="#demo"
+                className="flex h-12 flex-1 items-center justify-center rounded-xl bg-honey text-[16px] font-semibold text-surface"
+                onClick={() => setOpen(false)}
+              >
+                Try Demo
+              </a>
+            </div>
           </div>
         </div>
       )}
