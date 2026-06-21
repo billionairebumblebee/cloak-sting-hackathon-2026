@@ -1,5 +1,5 @@
-const STORAGE_KEY = 'cloakStingLatestReceipt';
-const HISTORY_KEY = 'cloakStingScanHistory';
+const STORAGE_KEY = 'stingLatestReceipt';
+const HISTORY_KEY = 'stingScanHistory';
 const SAFE_THRESHOLD = 35;
 
 let latestReceipt = null;

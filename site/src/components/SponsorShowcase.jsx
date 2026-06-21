@@ -81,7 +81,7 @@ const sponsors = [
     role: "Agent Coordination",
     detail: "Exposes sting as an agent-callable service. Other agents can request scam analysis via /analyze-threat without building their own detector.",
     stats: "4 endpoints \u2022 8 tests \u2022 Agent-ready protocol",
-    files: ["src/asiOneWrapper.js", "agents/cloak-sting-agent.mjs"],
+    files: ["src/asiOneWrapper.js", "agents/sting-agent.mjs"],
   },
   {
     name: "Simular",

@@ -197,7 +197,7 @@
     else if (score >= 35) risk = 'medium';
 
     return {
-      product: 'cloak sting',
+      product: 'sting',
       risk,
       score,
       findingCount: findings.length,

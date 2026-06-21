@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 /**
- * Token compression demo harness for cloak sting.
+ * Token compression demo harness for sting.
  *
  * Demonstrates risk-preserving evidence compression:
  * 1. Builds a realistic scam case record

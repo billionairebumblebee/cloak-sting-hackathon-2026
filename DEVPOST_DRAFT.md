@@ -1,12 +1,12 @@
-# cloak sting
+# sting
 
 ## Elevator Pitch
 
-cloak sting is a Chrome extension that detects scam patterns in real time — urgency, payment pressure, credential grabs, impersonation — and interrupts the user with a calm warning overlay before they type, pay, or trust. Every scam attempt becomes a shareable evidence dossier for family, banks, or authorities.
+sting is a Chrome extension that detects scam patterns in real time — urgency, payment pressure, credential grabs, impersonation — and interrupts the user with a calm warning overlay before they type, pay, or trust. Every scam attempt becomes a shareable evidence dossier for family, banks, or authorities.
 
 ## What It Does
 
-cloak sting runs silently on every page. When it detects scam signals (urgency language, unusual payment methods, trusted-institution impersonation, secrecy pressure, credential harvesting), it surfaces a non-panic overlay grading the threat as high/medium risk with specific evidence. The user can copy a structured receipt, dismiss the warning, or save the case for later reporting.
+sting runs silently on every page. When it detects scam signals (urgency language, unusual payment methods, trusted-institution impersonation, secrecy pressure, credential harvesting), it surfaces a non-panic overlay grading the threat as high/medium risk with specific evidence. The user can copy a structured receipt, dismiss the warning, or save the case for later reporting.
 
 Key capabilities implemented during this hackathon:
 

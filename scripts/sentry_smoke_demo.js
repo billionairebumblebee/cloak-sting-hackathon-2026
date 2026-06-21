@@ -24,7 +24,7 @@ function saveProof(proof) {
 }
 
 async function main() {
-  console.log('=== cloak sting — Sentry Smoke Demo ===\n');
+  console.log('=== sting — Sentry Smoke Demo ===\n');
 
   if (!sentryConfigured()) {
     console.log('SENTRY_DSN is not set. Sentry capture is disabled.');
@@ -71,7 +71,7 @@ async function main() {
 
   console.log('1. Sending raw envelope…');
   const rawResult = await sendEnvelope({
-    message: 'cloak sting smoke test: scam detection event',
+    message: 'sting smoke test: scam detection event',
     level: 'info',
     tags: { component: 'smoke-demo', risk: 'test' },
     extra: { score: 42, scenario: 'sentry-smoke-demo' }

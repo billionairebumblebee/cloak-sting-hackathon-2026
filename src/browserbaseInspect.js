@@ -29,7 +29,7 @@ async function createBrowserbaseSession({ env = process.env, fetchImpl = fetch }
         viewport: { width: 1440, height: 1000 }
       },
       userMetadata: {
-        product: 'cloak-sting',
+        product: 'sting',
         purpose: 'isolated-scam-link-inspection'
       }
     })
@@ -68,7 +68,7 @@ async function fetchPageEvidence(url, { fetchImpl = fetch } = {}) {
   const response = await fetchImpl(url, {
     redirect: 'follow',
     headers: {
-      'User-Agent': 'cloak-sting-hackathon/0.1 isolated-link-inspector'
+      'User-Agent': 'sting/0.3 isolated-link-inspector'
     }
   });
   const html = await response.text();
