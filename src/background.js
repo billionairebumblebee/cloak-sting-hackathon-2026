@@ -1,5 +1,5 @@
 if (typeof importScripts === 'function') {
-  importScripts('screenshotCapture.js');
+  importScripts('./screenshotCapture.js');
 }
 
 (() => {
