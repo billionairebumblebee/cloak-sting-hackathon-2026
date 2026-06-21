@@ -38,7 +38,7 @@ function formatReceipt(receipt) {
   return [
     'CLOAK STING - SCAM WARNING RECEIPT',
     '------------------------------------',
-    `Verdict: ${verdictText(receipt.risk)} (${receipt.score}/100)`,
+    `Verdict: ${verdictText(receipt.risk)}`,
     `Page: ${receipt.title || receipt.hostname}`,
     `URL: ${receipt.url}`,
     '',
@@ -122,10 +122,10 @@ function renderScanPanel(receipt) {
           <svg viewBox="0 0 24 24" fill="none"><path d="M5 13l4 4L19 7" stroke="#4ade80" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
         </div>
         <h3>Page looks safe</h3>
-        <p>${escapeHtml(receipt.hostname || receipt.url)}<br>Risk score: ${receipt.score}/100</p>
+        <p>${escapeHtml(receipt.hostname || receipt.url)}<br>No strong scam signals detected.</p>
       </div>
       <div class="actions">
-        <button class="btn-secondary" id="btn-copy">Copy Receipt</button>
+        <button class="btn-secondary" id="btn-copy">Save proof</button>
       </div>`;
     bindActions();
     return;
@@ -150,7 +150,7 @@ function renderScanPanel(receipt) {
       <span class="risk-badge ${riskClass}">${escapeHtml(receipt.risk)}</span>
     </div>
     <div class="score-meter">
-      <div class="label"><span>Threat Score</span><span>${receipt.score}/100</span></div>
+      <div class="label"><span>Threat level</span><span>${verdictText(receipt.risk)}</span></div>
       <div class="meter-bar"><div class="meter-fill ${getMeterGlowClass(receipt.score)}" style="width:${receipt.score}%;background:${meterColor}"></div></div>
     </div>
     <div class="page-info">
@@ -158,15 +158,15 @@ function renderScanPanel(receipt) {
       <div class="url">${escapeHtml(receipt.url || '')}</div>
     </div>
     <div class="signals-section">
-      <h4>Signals detected</h4>
+      <h4>Why we\u2019re worried</h4>
       ${signalCards}
     </div>
-    ${receipt.advice ? `<div class="advice-section"><h4>Advice</h4><p>${escapeHtml(receipt.advice)}</p></div>` : ''}
+    ${receipt.advice ? `<div class="advice-section"><h4>What to do</h4><p>${escapeHtml(receipt.advice)}</p></div>` : ''}
     ${receipt.evidence?.screenshotCaptured ? '<div class="actions"><button class="btn-secondary" id="btn-screenshot">View Screenshot</button></div>' : ''}
     <div class="actions">
-      <button class="btn-primary" id="btn-copy">Copy Receipt</button>
-      <button class="btn-secondary" id="btn-download">Download JSON</button>
-      <button class="btn-danger" id="btn-report">Report Scam</button>
+      <button class="btn-primary" id="btn-copy">Save proof for my bank or family</button>
+      <button class="btn-secondary" id="btn-download">Download evidence</button>
+      <button class="btn-danger" id="btn-report">Report this scam</button>
     </div>`;
   bindActions();
 }
@@ -176,8 +176,8 @@ function bindActions() {
   if (copyBtn) {
     copyBtn.addEventListener('click', async () => {
       await navigator.clipboard?.writeText(formatReceipt(latestReceipt));
-      copyBtn.textContent = 'Copied!';
-      setTimeout(() => { copyBtn.textContent = 'Copy Receipt'; }, 2000);
+      copyBtn.textContent = '\u2705 Saved! Paste to share with someone you trust.';
+      setTimeout(() => { copyBtn.textContent = 'Save proof for my bank or family'; }, 4000);
     });
   }
 
@@ -253,13 +253,12 @@ function renderHistoryPanel() {
     const riskClass = getRiskClass(item.risk);
     const pillBg = item.score >= 75 ? '#3d0a0a' : item.score >= 55 ? '#3d1f0a' : item.score >= 35 ? '#3d350a' : '#0f2e1a';
     const pillColor = item.score >= 75 ? '#ff4444' : item.score >= 55 ? '#ff8c42' : item.score >= 35 ? '#ffc42e' : '#4ade80';
-    return `<div class="history-card" data-index="${index}">
+    return `<div class="history-card" role="button" tabindex="0" aria-label="View scan for ${escapeHtml(item.hostname || item.title || 'Unknown')}" data-index="${index}">
       <div class="info">
         <div class="host">${escapeHtml(item.hostname || item.title || 'Unknown')}</div>
         <div class="time">${formatTimestamp(item.id)}</div>
       </div>
-      <span class="risk-badge ${riskClass}" style="font-size:10px;padding:3px 7px">${escapeHtml(item.risk || 'SAFE')}</span>
-      <span class="score-pill" style="background:${pillBg};color:${pillColor}">${item.score}</span>
+      <span class="risk-badge ${riskClass}" style="font-size:10px;padding:3px 7px">${escapeHtml(item.risk || 'safe')}</span>
     </div>`;
   }).join('');
 
@@ -295,7 +294,7 @@ function renderHistoryDetail(item) {
       <span class="risk-badge ${riskClass}">${escapeHtml(item.risk)}</span>
     </div>
     <div class="score-meter">
-      <div class="label"><span>Threat Score</span><span>${item.score}/100</span></div>
+      <div class="label"><span>Threat level</span><span>${verdictText(item.risk)}</span></div>
       <div class="meter-bar"><div class="meter-fill ${getMeterGlowClass(item.score)}" style="width:${item.score}%;background:${meterColor}"></div></div>
     </div>
     <div class="page-info">
@@ -323,16 +322,34 @@ function initTabs() {
   const tabs = document.querySelectorAll('.tab');
   const panels = document.querySelectorAll('.panel');
 
-  tabs.forEach((tab) => {
-    tab.addEventListener('click', () => {
-      tabs.forEach((t) => t.classList.remove('active'));
-      panels.forEach((p) => p.classList.remove('active'));
-      tab.classList.add('active');
-      document.getElementById(`panel-${tab.dataset.tab}`).classList.add('active');
+  function activateTab(tab) {
+    tabs.forEach((t) => {
+      t.classList.remove('active');
+      t.setAttribute('aria-selected', 'false');
+      t.setAttribute('tabindex', '-1');
+    });
+    panels.forEach((p) => p.classList.remove('active'));
+    tab.classList.add('active');
+    tab.setAttribute('aria-selected', 'true');
+    tab.setAttribute('tabindex', '0');
+    document.getElementById(`panel-${tab.dataset.tab}`).classList.add('active');
 
-      if (tab.dataset.tab === 'history') {
-        currentDetailItem = null;
-        renderHistoryPanel();
+    if (tab.dataset.tab === 'history') {
+      currentDetailItem = null;
+      renderHistoryPanel();
+    }
+  }
+
+  tabs.forEach((tab) => {
+    tab.addEventListener('click', () => activateTab(tab));
+    tab.addEventListener('keydown', (e) => {
+      const tabArr = Array.from(tabs);
+      const idx = tabArr.indexOf(tab);
+      if (e.key === 'ArrowRight' || e.key === 'ArrowLeft') {
+        e.preventDefault();
+        const next = e.key === 'ArrowRight' ? (idx + 1) % tabArr.length : (idx - 1 + tabArr.length) % tabArr.length;
+        tabArr[next].focus();
+        activateTab(tabArr[next]);
       }
     });
   });
