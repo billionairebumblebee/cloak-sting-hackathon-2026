@@ -40,6 +40,9 @@ export default function Footer() {
                 <Link to="/support" className="text-[11px] text-amber-400/60 hover:text-amber-400 transition-colors">
                   Support
                 </Link>
+                <Link to="/report" className="text-[11px] text-amber-400/60 hover:text-amber-400 transition-colors">
+                  Report a Scam
+                </Link>
               </div>
             </div>
           </div>
