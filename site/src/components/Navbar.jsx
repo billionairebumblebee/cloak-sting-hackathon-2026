@@ -1,5 +1,4 @@
 import { useState, useEffect } from "react";
-import { motion, AnimatePresence } from "framer-motion";
 import StingLogo from "../assets/StingLogo";
 import { Menu, X } from "lucide-react";
 
@@ -7,29 +6,34 @@ const navLinks = [
   { label: "Problem", href: "#problem" },
   { label: "How It Works", href: "#flow" },
   { label: "Demo", href: "#demo" },
+  { label: "Hall of Fame", href: "#hall-of-fame" },
   { label: "Architecture", href: "#architecture" },
 ];
 
 export default function Navbar() {
   const [open, setOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
+  const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
+    requestAnimationFrame(() => setMounted(true));
     const onScroll = () => setScrolled(window.scrollY > 50);
     window.addEventListener("scroll", onScroll, { passive: true });
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
   return (
-    <motion.nav
-      initial={{ y: -20, opacity: 0 }}
-      animate={{ y: 0, opacity: 1 }}
-      transition={{ duration: 0.6, ease: [0.25, 0.4, 0.25, 1] }}
+    <nav
       className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 ${
         scrolled
           ? "border-b border-white/[0.04] bg-surface/80 backdrop-blur-2xl"
           : "bg-transparent"
       }`}
+      style={{
+        opacity: mounted ? 1 : 0,
+        transform: mounted ? "translateY(0)" : "translateY(-20px)",
+        transition: `opacity 0.6s cubic-bezier(0.25,0.4,0.25,1), transform 0.6s cubic-bezier(0.25,0.4,0.25,1), background 0.5s ease, border-color 0.5s ease`,
+      }}
     >
       <div className="mx-auto flex max-w-6xl items-center justify-between px-6 py-5">
         <a href="#" className="flex items-center gap-2.5">
@@ -66,40 +70,34 @@ export default function Navbar() {
         </button>
       </div>
 
-      <AnimatePresence>
-        {open && (
-          <motion.div
-            initial={{ height: 0, opacity: 0 }}
-            animate={{ height: "auto", opacity: 1 }}
-            exit={{ height: 0, opacity: 0 }}
-            transition={{ duration: 0.3, ease: [0.25, 0.4, 0.25, 1] }}
-            className="overflow-hidden border-t border-white/[0.04] bg-surface/95 backdrop-blur-2xl md:hidden"
-          >
-            <div className="px-6 py-3">
-              {navLinks.map((link, i) => (
-                <motion.a
-                  key={link.href}
-                  href={link.href}
-                  initial={{ x: -12, opacity: 0 }}
-                  animate={{ x: 0, opacity: 1 }}
-                  transition={{ delay: i * 0.04 }}
-                  className="flex h-12 items-center text-[15px] font-medium text-text-muted transition-colors hover:text-text-primary"
-                  onClick={() => setOpen(false)}
-                >
-                  {link.label}
-                </motion.a>
-              ))}
+      {open && (
+        <div
+          className="overflow-hidden border-t border-white/[0.04] bg-surface/95 backdrop-blur-2xl md:hidden animate-slide-down"
+        >
+          <div className="px-6 py-3">
+            {navLinks.map((link, i) => (
               <a
-                href="#demo"
-                className="mt-2 mb-2 flex h-12 items-center justify-center rounded-xl border border-honey/20 bg-honey/[0.06] text-[15px] font-medium text-honey"
+                key={link.href}
+                href={link.href}
+                className="flex h-12 items-center text-[15px] font-medium text-text-muted transition-colors hover:text-text-primary"
+                style={{
+                  animation: `slideInLeft 0.3s ease ${i * 0.04}s both`,
+                }}
                 onClick={() => setOpen(false)}
               >
-                Try Demo
+                {link.label}
               </a>
-            </div>
-          </motion.div>
-        )}
-      </AnimatePresence>
-    </motion.nav>
+            ))}
+            <a
+              href="#demo"
+              className="mt-2 mb-2 flex h-12 items-center justify-center rounded-xl border border-honey/20 bg-honey/[0.06] text-[15px] font-medium text-honey"
+              onClick={() => setOpen(false)}
+            >
+              Try Demo
+            </a>
+          </div>
+        </div>
+      )}
+    </nav>
   );
 }

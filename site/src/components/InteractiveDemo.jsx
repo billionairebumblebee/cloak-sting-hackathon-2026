@@ -1,6 +1,4 @@
-import { useState } from "react";
-import { motion, AnimatePresence } from "framer-motion";
-import { demoCases } from "../data/demoData";
+import { useState, useEffect, useRef } from "react";
 import {
   MessageSquare,
   Globe,
@@ -31,6 +29,12 @@ function SignalBadge({ severity }) {
 }
 
 function RiskMeter({ score }) {
+  const [width, setWidth] = useState(0);
+  useEffect(() => {
+    const t = setTimeout(() => setWidth(score), 200);
+    return () => clearTimeout(t);
+  }, [score]);
+
   const color =
     score >= 90
       ? "bg-gradient-to-r from-red-600 to-red-400"
@@ -48,21 +52,17 @@ function RiskMeter({ score }) {
   return (
     <div className="flex items-center gap-3">
       <div className="h-1.5 flex-1 overflow-hidden rounded-full bg-white/[0.04]">
-        <motion.div
+        <div
           className={`h-full rounded-full ${color}`}
-          initial={{ width: 0 }}
-          animate={{ width: `${score}%` }}
-          transition={{ duration: 1.2, ease: [0.25, 0.4, 0.25, 1], delay: 0.2 }}
+          style={{
+            width: `${width}%`,
+            transition: "width 1.2s cubic-bezier(0.25,0.4,0.25,1)",
+          }}
         />
       </div>
-      <motion.span
-        className={`font-mono text-2xl font-bold tabular-nums ${textColor}`}
-        initial={{ opacity: 0, scale: 1.5 }}
-        animate={{ opacity: 1, scale: 1 }}
-        transition={{ delay: 0.5, type: "spring", stiffness: 200 }}
-      >
+      <span className={`font-mono text-2xl font-bold tabular-nums animate-verdict-slam ${textColor}`}>
         {score}
-      </motion.span>
+      </span>
     </div>
   );
 }
@@ -98,32 +98,25 @@ function Receipt({ caseData }) {
   };
 
   return (
-    <motion.div
-      initial={{ opacity: 0, height: 0 }}
-      animate={{ opacity: 1, height: "auto" }}
-      exit={{ opacity: 0, height: 0 }}
-      className="mt-4 overflow-hidden"
-    >
+    <div className="mt-4 overflow-hidden animate-slide-down">
       <div className="rounded-xl border border-white/[0.04] bg-white/[0.015] p-5">
         <div className="mb-3 flex items-center justify-between">
           <h4 className="font-mono text-[10px] font-medium tracking-widest text-text-muted uppercase">
             Evidence Dossier
           </h4>
-          <motion.button
+          <button
             onClick={handleDownload}
-            className="flex h-8 items-center gap-1.5 rounded-lg px-3 text-[11px] text-text-muted transition-colors hover:bg-white/[0.04] hover:text-text-secondary"
-            whileHover={{ scale: 1.03 }}
-            whileTap={{ scale: 0.97 }}
+            className="flex h-8 items-center gap-1.5 rounded-lg px-3 text-[11px] text-text-muted transition-colors hover:bg-white/[0.04] hover:text-text-secondary hover:scale-[1.03] active:scale-[0.97]"
           >
             <Download size={11} />
             Download JSON
-          </motion.button>
+          </button>
         </div>
         <pre className="max-h-48 overflow-auto font-mono text-[10px] leading-[1.7] text-text-muted">
           {JSON.stringify(receipt, null, 2)}
         </pre>
       </div>
-    </motion.div>
+    </div>
   );
 }
 
@@ -135,11 +128,29 @@ const scanPhases = [
 ];
 
 export default function InteractiveDemo() {
+  const [demoCases, setDemoCases] = useState(null);
   const [selectedCase, setSelectedCase] = useState(null);
   const [scanning, setScanning] = useState(false);
   const [showResult, setShowResult] = useState(false);
   const [showReceipt, setShowReceipt] = useState(false);
   const [scanPhase, setScanPhase] = useState(0);
+  const sectionRef = useRef(null);
+
+  useEffect(() => {
+    const el = sectionRef.current;
+    if (!el) return;
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          import("../data/demoData").then((m) => setDemoCases(m.demoCases));
+          observer.disconnect();
+        }
+      },
+      { rootMargin: "200px" }
+    );
+    observer.observe(el);
+    return () => observer.disconnect();
+  }, []);
 
   const handleSelect = (caseItem) => {
     setSelectedCase(caseItem);
@@ -168,7 +179,7 @@ export default function InteractiveDemo() {
   const activeCase = selectedCase;
 
   return (
-    <section id="demo" className="relative px-6 py-28 sm:py-36">
+    <section id="demo" ref={sectionRef} className="relative px-6 py-28 sm:py-36">
       {/* Ambient glow */}
       <div className="pointer-events-none absolute right-0 top-1/4 h-[500px] w-[500px] rounded-full bg-honey/[0.015] blur-[180px]" />
 
@@ -191,20 +202,18 @@ export default function InteractiveDemo() {
         {/* Case selector */}
         <FadeIn delay={0.3}>
           <div className="mb-8 grid gap-3 sm:grid-cols-3">
-            {demoCases.map((c) => {
+            {(demoCases || []).map((c) => {
               const Icon = typeIcons[c.type] || Globe;
               const isActive = activeCase?.id === c.id;
               return (
-                <motion.button
+                <button
                   key={c.id}
                   onClick={() => handleSelect(c)}
-                  className={`group min-h-[72px] rounded-xl border p-5 text-left transition-all duration-300 ${
+                  className={`group min-h-[72px] rounded-xl border p-5 text-left transition-all duration-300 hover:scale-[1.015] active:scale-[0.985] ${
                     isActive
                       ? "border-honey/15 bg-honey/[0.04]"
                       : "glass glass-hover"
                   }`}
-                  whileHover={{ scale: 1.015 }}
-                  whileTap={{ scale: 0.985 }}
                 >
                   <div className="mb-3 flex items-center gap-2">
                     <Icon
@@ -223,280 +232,202 @@ export default function InteractiveDemo() {
                   >
                     {c.title}
                   </h3>
-                </motion.button>
+                </button>
               );
             })}
           </div>
         </FadeIn>
 
         {/* Empty state */}
-        <AnimatePresence mode="wait">
-          {!activeCase && (
-            <motion.div
-              key="empty"
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              className="glass flex flex-col items-center justify-center rounded-2xl py-24 text-center"
-            >
-              <motion.div
-                animate={{ rotate: [0, 360] }}
-                transition={{ duration: 8, repeat: Infinity, ease: "linear" }}
-              >
-                <Crosshair size={36} className="mb-4 text-white/[0.06]" strokeWidth={1} />
-              </motion.div>
-              <p className="text-[14px] font-medium text-text-secondary">
-                Select a target to begin the hunt
-              </p>
-              <p className="mt-1.5 text-[12px] text-text-muted">
-                Choose a scam scenario and watch Sting tear it apart
-              </p>
-            </motion.div>
-          )}
-        </AnimatePresence>
+        {!activeCase && (
+          <div className="glass flex flex-col items-center justify-center rounded-2xl py-24 text-center animate-fade-in">
+            <div className="animate-spin-slow">
+              <Crosshair size={36} className="mb-4 text-white/[0.06]" strokeWidth={1} />
+            </div>
+            <p className="text-[14px] font-medium text-text-secondary">
+              Select a target to begin the hunt
+            </p>
+            <p className="mt-1.5 text-[12px] text-text-muted">
+              Choose a scam scenario and watch Sting tear it apart
+            </p>
+          </div>
+        )}
 
         {/* Active case display */}
-        <AnimatePresence mode="wait">
-          {activeCase && (
-            <motion.div
-              key={activeCase.id}
-              initial={{ opacity: 0, y: 8 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -8 }}
-              transition={{ duration: 0.4, ease: [0.25, 0.4, 0.25, 1] }}
-              className="glass overflow-hidden rounded-2xl"
-            >
-              {/* Input preview */}
-              <div className="border-b border-white/[0.04] p-6">
-                <div className="mb-3 flex items-center gap-2 text-[10px] font-medium tracking-widest uppercase">
-                  <Crosshair size={10} className="text-red-400/80" />
-                  <span className="text-red-400/70">Target acquired</span>
-                </div>
-                <p className="mb-1.5 font-mono text-[11px] text-honey/70">
-                  {activeCase.input.source}
-                </p>
-                <p className="text-[13px] leading-[1.65] text-text-secondary">
-                  {activeCase.input.content}
-                </p>
+        {activeCase && (
+          <div
+            key={activeCase.id}
+            className="glass overflow-hidden rounded-2xl animate-fade-in"
+          >
+            {/* Input preview — target acquired */}
+            <div className="border-b border-white/[0.04] p-6">
+              <div className="mb-3 flex items-center gap-2 text-[10px] font-medium tracking-widest uppercase">
+                <Crosshair size={10} className="text-red-400/80" />
+                <span className="text-red-400/70">Target acquired</span>
               </div>
+              <p className="mb-1.5 font-mono text-[11px] text-honey/70">
+                {activeCase.input.source}
+              </p>
+              <p className="text-[13px] leading-[1.65] text-text-secondary">
+                {activeCase.input.content}
+              </p>
+            </div>
 
-              {/* Scanning state — predator lock-on */}
-              <AnimatePresence mode="wait">
-                {scanning && (
-                  <motion.div
-                    key="scanning"
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 1 }}
-                    exit={{ opacity: 0 }}
-                    className="relative flex items-center justify-center overflow-hidden py-24"
-                  >
-                    {/* Red sweep lines */}
-                    <motion.div
-                      className="absolute top-0 left-0 h-full w-px bg-gradient-to-b from-transparent via-red-500/30 to-transparent"
-                      animate={{ left: ["0%", "100%"] }}
-                      transition={{ duration: 1.8, repeat: Infinity, ease: "linear" }}
-                    />
-                    <motion.div
-                      className="absolute top-0 left-0 h-px w-full bg-gradient-to-r from-transparent via-red-500/20 to-transparent"
-                      animate={{ top: ["0%", "100%"] }}
-                      transition={{ duration: 2.2, repeat: Infinity, ease: "linear" }}
-                    />
+            {/* Scanning state — predator lock-on */}
+            {scanning && (
+              <div className="relative flex items-center justify-center overflow-hidden py-24 animate-fade-in">
+                {/* Red sweep lines */}
+                <div className="absolute top-0 left-0 h-full w-px bg-gradient-to-b from-transparent via-red-500/30 to-transparent animate-sweep-h" />
+                <div className="absolute top-0 left-0 h-px w-full bg-gradient-to-r from-transparent via-red-500/20 to-transparent animate-sweep-v" />
 
-                    <div className="flex flex-col items-center gap-5">
-                      <div className="relative">
-                        <motion.div
-                          animate={{ rotate: 360 }}
-                          transition={{ duration: 2, repeat: Infinity, ease: "linear" }}
+                <div className="flex flex-col items-center gap-5">
+                  <div className="relative">
+                    <Crosshair size={28} className="text-red-400/80 animate-spin-slow" strokeWidth={1.5} />
+                    <div className="absolute -inset-3 rounded-full border border-red-500/20 animate-pulse-ring" />
+                  </div>
+                  <p className="text-[14px] font-medium text-text-secondary">
+                    {scanPhases[scanPhase]}
+                  </p>
+                  <div className="relative h-1 w-48 overflow-hidden rounded-full bg-white/[0.04]">
+                    <div
+                      className="h-full rounded-full bg-gradient-to-r from-red-500 to-honey"
+                      style={{
+                        width: scanning ? "100%" : "0%",
+                        transition: "width 2.4s ease-in-out",
+                      }}
+                    />
+                    <div className="absolute inset-0 h-full w-1/4 bg-gradient-to-r from-transparent via-white/20 to-transparent animate-scan-bar" />
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {/* Result */}
+            {showResult && (
+              <div className="p-6 animate-fade-in">
+                {/* Verdict header — judgment style */}
+                <div
+                  className={`mb-8 rounded-xl p-5 animate-slide-up ${
+                    activeCase.result.riskLevel === "CRITICAL"
+                      ? "glow-border-danger bg-red-500/[0.04]"
+                      : "glow-border bg-orange-500/[0.03]"
+                  }`}
+                >
+                  <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
+                    <div className="flex items-start gap-3">
+                      <ShieldAlert
+                        size={20}
+                        strokeWidth={1.5}
+                        className={
+                          activeCase.result.riskScore >= 90
+                            ? "mt-0.5 text-red-400"
+                            : "mt-0.5 text-orange-400"
+                        }
+                      />
+                      <div>
+                        <p
+                          className={`mb-1.5 text-[11px] font-bold tracking-widest uppercase ${
+                            activeCase.result.riskLevel === "CRITICAL"
+                              ? "text-red-400"
+                              : "text-orange-400"
+                          }`}
                         >
-                          <Crosshair size={28} className="text-red-400/80" strokeWidth={1.5} />
-                        </motion.div>
-                        <motion.div
-                          className="absolute -inset-3 rounded-full border border-red-500/20"
-                          animate={{ scale: [1, 1.4, 1], opacity: [0.3, 0, 0.3] }}
-                          transition={{ duration: 1.5, repeat: Infinity }}
-                        />
-                      </div>
-                      <p className="text-[14px] font-medium text-text-secondary">
-                        {scanPhases[scanPhase]}
-                      </p>
-                      <div className="relative h-1 w-48 overflow-hidden rounded-full bg-white/[0.04]">
-                        <motion.div
-                          className="h-full rounded-full bg-gradient-to-r from-red-500 to-honey"
-                          initial={{ width: "0%" }}
-                          animate={{ width: "100%" }}
-                          transition={{ duration: 2.4, ease: "easeInOut" }}
-                        />
-                        <motion.div
-                          className="absolute inset-0 h-full w-1/4 bg-gradient-to-r from-transparent via-white/20 to-transparent"
-                          animate={{ x: ["-100%", "500%"] }}
-                          transition={{ duration: 1, repeat: Infinity, ease: "easeInOut" }}
-                        />
+                          {activeCase.result.riskLevel === "CRITICAL"
+                            ? "GUILTY — CRITICAL THREAT"
+                            : "GUILTY — HIGH THREAT"}
+                        </p>
+                        <p className="text-base font-bold text-cream">
+                          {activeCase.result.verdict}
+                        </p>
                       </div>
                     </div>
-                  </motion.div>
-                )}
-              </AnimatePresence>
+                    <div className="w-full sm:w-52">
+                      <RiskMeter score={activeCase.result.riskScore} />
+                    </div>
+                  </div>
+                </div>
 
-              {/* Result */}
-              <AnimatePresence>
-                {showResult && (
-                  <motion.div
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 1 }}
-                    transition={{ duration: 0.5 }}
-                    className="p-6"
-                  >
-                    {/* Verdict header — judgment style */}
-                    <motion.div
-                      initial={{ opacity: 0, scale: 0.95 }}
-                      animate={{ opacity: 1, scale: 1 }}
-                      transition={{ delay: 0.1, type: "spring", stiffness: 200 }}
-                      className={`mb-8 rounded-xl p-5 ${
-                        activeCase.result.riskLevel === "CRITICAL"
-                          ? "glow-border-danger bg-red-500/[0.04]"
-                          : "glow-border bg-orange-500/[0.03]"
-                      }`}
-                    >
-                      <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
-                        <div className="flex items-start gap-3">
-                          <ShieldAlert
-                            size={20}
-                            strokeWidth={1.5}
-                            className={
-                              activeCase.result.riskScore >= 90
-                                ? "mt-0.5 text-red-400"
-                                : "mt-0.5 text-orange-400"
-                            }
-                          />
-                          <div>
-                            <motion.p
-                              initial={{ opacity: 0, x: -10 }}
-                              animate={{ opacity: 1, x: 0 }}
-                              transition={{ delay: 0.2 }}
-                              className={`mb-1.5 text-[11px] font-bold tracking-widest uppercase ${
-                                activeCase.result.riskLevel === "CRITICAL"
-                                  ? "text-red-400"
-                                  : "text-orange-400"
-                              }`}
-                            >
-                              {activeCase.result.riskLevel === "CRITICAL"
-                                ? "GUILTY — CRITICAL THREAT"
-                                : "GUILTY — HIGH THREAT"}
-                            </motion.p>
-                            <p className="text-base font-bold text-cream">
-                              {activeCase.result.verdict}
-                            </p>
-                          </div>
-                        </div>
-                        <div className="w-full sm:w-52">
-                          <RiskMeter score={activeCase.result.riskScore} />
-                        </div>
-                      </div>
-                    </motion.div>
-
-                    {/* Signals */}
-                    <motion.div
-                      initial={{ opacity: 0, y: 8 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      transition={{ delay: 0.25 }}
-                      className="mb-8"
-                    >
-                      <h4 className="mb-4 flex items-center gap-2 text-[10px] font-medium tracking-widest text-text-muted uppercase">
-                        <Zap size={11} className="text-honey/60" />
-                        Threat signals identified
-                      </h4>
-                      <div className="space-y-2">
-                        {activeCase.result.signals.map((s, i) => (
-                          <motion.div
-                            key={i}
-                            initial={{ opacity: 0, x: -8 }}
-                            animate={{ opacity: 1, x: 0 }}
-                            transition={{ delay: 0.3 + i * 0.06 }}
-                            className="rounded-xl border border-white/[0.04] bg-white/[0.015] p-4"
-                          >
-                            <div className="mb-1.5 flex items-center gap-2">
-                              <SignalBadge severity={s.severity} />
-                              <span className="text-[13px] font-medium text-text-primary">
-                                {s.label}
-                              </span>
-                            </div>
-                            <p className="text-[12px] leading-[1.65] text-text-secondary">
-                              {s.detail}
-                            </p>
-                          </motion.div>
-                        ))}
-                      </div>
-                    </motion.div>
-
-                    {/* Explanation */}
-                    <motion.div
-                      initial={{ opacity: 0, y: 8 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      transition={{ delay: 0.6 }}
-                      className="glow-border mb-8 rounded-xl bg-honey/[0.02] p-6"
-                    >
-                      <h4 className="mb-2.5 text-[11px] font-medium tracking-wider text-honey/70 uppercase">
-                        The Breakdown
-                      </h4>
-                      <p className="text-[13px] leading-[1.7] text-text-secondary">
-                        {activeCase.result.explanation}
-                      </p>
-                    </motion.div>
-
-                    {/* Counter-strike steps */}
-                    <motion.div
-                      initial={{ opacity: 0, y: 8 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      transition={{ delay: 0.7 }}
-                      className="mb-8"
-                    >
-                      <h4 className="mb-4 text-[10px] font-medium tracking-widest text-text-muted uppercase">
-                        Your counter-strike
-                      </h4>
-                      <ol className="space-y-3">
-                        {activeCase.result.nextSteps.map((step, i) => (
-                          <motion.li
-                            key={i}
-                            initial={{ opacity: 0, x: -8 }}
-                            animate={{ opacity: 1, x: 0 }}
-                            transition={{ delay: 0.75 + i * 0.05 }}
-                            className="flex items-start gap-3 text-[13px]"
-                          >
-                            <span className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-honey/10 font-mono text-[9px] font-bold text-honey/80">
-                              {i + 1}
-                            </span>
-                            <span className="leading-[1.6] text-text-secondary">{step}</span>
-                          </motion.li>
-                        ))}
-                      </ol>
-                    </motion.div>
-
-                    {/* Dossier toggle */}
-                    <motion.div
-                      initial={{ opacity: 0 }}
-                      animate={{ opacity: 1 }}
-                      transition={{ delay: 0.9 }}
-                    >
-                      <motion.button
-                        onClick={() => setShowReceipt(!showReceipt)}
-                        className="flex h-10 items-center gap-2 rounded-full border border-white/[0.04] bg-white/[0.02] px-5 text-[12px] font-medium text-text-muted transition-all hover:border-white/[0.08] hover:text-text-secondary"
-                        whileHover={{ scale: 1.02 }}
-                        whileTap={{ scale: 0.98 }}
+                {/* Signals */}
+                <div className="mb-8 animate-slide-up" style={{ animationDelay: "0.15s" }}>
+                  <h4 className="mb-4 flex items-center gap-2 text-[10px] font-medium tracking-widest text-text-muted uppercase">
+                    <Zap size={11} className="text-honey/60" />
+                    Threat signals identified
+                  </h4>
+                  <div className="space-y-2">
+                    {activeCase.result.signals.map((s, i) => (
+                      <div
+                        key={i}
+                        className="rounded-xl border border-white/[0.04] bg-white/[0.015] p-4"
+                        style={{
+                          animation: `slideInLeft 0.4s ease ${0.3 + i * 0.06}s both`,
+                        }}
                       >
-                        <CheckCircle size={13} strokeWidth={1.5} />
-                        {showReceipt ? "Hide" : "View"} Evidence Dossier
-                      </motion.button>
+                        <div className="mb-1.5 flex items-center gap-2">
+                          <SignalBadge severity={s.severity} />
+                          <span className="text-[13px] font-medium text-text-primary">
+                            {s.label}
+                          </span>
+                        </div>
+                        <p className="text-[12px] leading-[1.65] text-text-secondary">
+                          {s.detail}
+                        </p>
+                      </div>
+                    ))}
+                  </div>
+                </div>
 
-                      <AnimatePresence>
-                        {showReceipt && <Receipt caseData={activeCase} />}
-                      </AnimatePresence>
-                    </motion.div>
-                  </motion.div>
-                )}
-              </AnimatePresence>
-            </motion.div>
-          )}
-        </AnimatePresence>
+                {/* Explanation — The Breakdown */}
+                <div
+                  className="glow-border mb-8 rounded-xl bg-honey/[0.02] p-6 animate-slide-up"
+                  style={{ animationDelay: "0.5s" }}
+                >
+                  <h4 className="mb-2.5 text-[11px] font-medium tracking-wider text-honey/70 uppercase">
+                    The Breakdown
+                  </h4>
+                  <p className="text-[13px] leading-[1.7] text-text-secondary">
+                    {activeCase.result.explanation}
+                  </p>
+                </div>
+
+                {/* Counter-strike steps */}
+                <div className="mb-8 animate-slide-up" style={{ animationDelay: "0.6s" }}>
+                  <h4 className="mb-4 text-[10px] font-medium tracking-widest text-text-muted uppercase">
+                    Your counter-strike
+                  </h4>
+                  <ol className="space-y-3">
+                    {activeCase.result.nextSteps.map((step, i) => (
+                      <li
+                        key={i}
+                        className="flex items-start gap-3 text-[13px]"
+                        style={{
+                          animation: `slideInLeft 0.3s ease ${0.65 + i * 0.05}s both`,
+                        }}
+                      >
+                        <span className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-honey/10 font-mono text-[9px] font-bold text-honey/80">
+                          {i + 1}
+                        </span>
+                        <span className="leading-[1.6] text-text-secondary">{step}</span>
+                      </li>
+                    ))}
+                  </ol>
+                </div>
+
+                {/* Dossier toggle */}
+                <div className="animate-fade-in" style={{ animationDelay: "0.8s" }}>
+                  <button
+                    onClick={() => setShowReceipt(!showReceipt)}
+                    className="flex h-10 items-center gap-2 rounded-full border border-white/[0.04] bg-white/[0.02] px-5 text-[12px] font-medium text-text-muted transition-all hover:border-white/[0.08] hover:text-text-secondary hover:scale-[1.02] active:scale-[0.98]"
+                  >
+                    <CheckCircle size={13} strokeWidth={1.5} />
+                    {showReceipt ? "Hide" : "View"} Evidence Dossier
+                  </button>
+
+                  {showReceipt && <Receipt caseData={activeCase} />}
+                </div>
+              </div>
+            )}
+          </div>
+        )}
       </div>
     </section>
   );

@@ -1,5 +1,4 @@
 import { Crosshair, Scan, Gavel } from "lucide-react";
-import { motion } from "framer-motion";
 import { FadeIn, StaggerContainer, StaggerItem, SectionLabel } from "./Motion";
 
 const steps = [
@@ -71,12 +70,8 @@ export default function ProductFlow() {
         <StaggerContainer className="grid gap-4 lg:grid-cols-3" stagger={0.1}>
           {steps.map((step, i) => (
             <StaggerItem key={step.num}>
-              <motion.div
-                className="glass glass-hover group relative rounded-2xl p-8"
-                whileHover={{
-                  y: -3,
-                  transition: { duration: 0.35, ease: [0.25, 0.4, 0.25, 1] },
-                }}
+              <div
+                className="glass glass-hover group relative rounded-2xl p-8 transition-transform duration-300 hover:-translate-y-[3px]"
               >
                 {/* Step connector line (desktop only) */}
                 {i < steps.length - 1 && (
@@ -88,14 +83,12 @@ export default function ProductFlow() {
                   <span className="font-mono text-4xl font-bold text-white/[0.03]">
                     {step.num}
                   </span>
-                  <motion.div
-                    className="flex h-11 w-11 items-center justify-center rounded-xl"
+                  <div
+                    className="flex h-11 w-11 items-center justify-center rounded-xl transition-transform duration-200 hover:scale-110 hover:rotate-[3deg]"
                     style={{ backgroundColor: step.color + "0d" }}
-                    whileHover={{ scale: 1.08, rotate: 3 }}
-                    transition={{ type: "spring", stiffness: 300 }}
                   >
                     <step.icon size={19} style={{ color: step.color }} strokeWidth={1.5} />
-                  </motion.div>
+                  </div>
                 </div>
 
                 <h3 className="mb-3 text-lg font-semibold tracking-[-0.01em] text-text-primary">
@@ -116,7 +109,7 @@ export default function ProductFlow() {
                     </span>
                   ))}
                 </div>
-              </motion.div>
+              </div>
             </StaggerItem>
           ))}
         </StaggerContainer>
