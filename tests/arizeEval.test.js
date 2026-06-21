@@ -3,74 +3,16 @@ const assert = require('node:assert/strict');
 const { analyzeScamSurface } = require('../src/scamSignals.js');
 const { normalizeReceiptToCase } = require('../src/caseStore.js');
 const { buildGroundedExplanation } = require('../src/anthropicExplain.js');
+const {
+  evalGrounded,
+  evalSafeAction,
+  evalNoOverclaim,
+  evalNoSecrets,
+  evalClarity,
+  evaluateExplanation
+} = require('../src/arizeEvalCriteria.js');
 
-// ── Eval helpers (mirrored from scripts/arize_eval_demo.js) ─────────────
-
-const SECRET_PATTERNS = [
-  /sk-[a-zA-Z0-9]{20,}/,
-  /ANTHROPIC_API_KEY/i,
-  /ARIZE_API_KEY/i,
-  /OPENAI_API_KEY/i,
-  /REDIS_PASSWORD/i,
-  /Bearer\s+[a-zA-Z0-9_\-.]{20,}/,
-  /-----BEGIN\s+(RSA\s+)?PRIVATE KEY-----/
-];
-
-function evalGrounded(explanation, caseRecord) {
-  const text = JSON.stringify(explanation).toLowerCase();
-  const findings = caseRecord.findings || [];
-  if (findings.length === 0) {
-    return { pass: true, reason: 'No findings to ground against (benign case).' };
-  }
-  const groundingTerms = new Set();
-  for (const f of findings) {
-    if (f.evidence) groundingTerms.add(f.evidence.toLowerCase());
-    if (f.label) groundingTerms.add(f.label.toLowerCase());
-    if (f.type) groundingTerms.add(f.type.toLowerCase());
-  }
-  const terms = [...groundingTerms];
-  const matched = terms.filter((term) => text.includes(term));
-  if (matched.length >= 1) {
-    return { pass: true, reason: `References ${matched.length}/${terms.length} grounding terms.` };
-  }
-  return { pass: false, reason: `References only ${matched.length}/${terms.length} grounding terms.` };
-}
-
-function evalSafeAction(explanation) {
-  const text = JSON.stringify(explanation).toLowerCase();
-  const safeTerms = ['verify', 'official', 'pause', 'do not pay', 'do not share', 'report', 'safe', 'contact', 'alert'];
-  const found = safeTerms.filter((t) => text.includes(t));
-  if (found.length >= 1) {
-    return { pass: true, reason: `Includes safe action guidance: ${found.join(', ')}.` };
-  }
-  return { pass: false, reason: 'No safe next action language found.' };
-}
-
-function evalNoOverclaim(explanation) {
-  const text = JSON.stringify(explanation).toLowerCase();
-  const overclaimTerms = [
-    'confirmed scam', 'definitely a scam', 'this is fraud', 'criminal',
-    'we have identified the person', 'the scammer is', 'guilty',
-    'arrested', 'prosecute', 'convicted'
-  ];
-  const found = overclaimTerms.filter((t) => text.includes(t));
-  if (found.length === 0) {
-    return { pass: true, reason: 'No overclaiming language detected.' };
-  }
-  return { pass: false, reason: `Overclaiming language found: ${found.join(', ')}.` };
-}
-
-function evalNoSecrets(explanation) {
-  const text = JSON.stringify(explanation);
-  for (const pattern of SECRET_PATTERNS) {
-    if (pattern.test(text)) {
-      return { pass: false, reason: `Secret pattern detected: ${pattern.source}` };
-    }
-  }
-  return { pass: true, reason: 'No secrets detected in explanation.' };
-}
-
-// ── Test cases ──────────────────────────────────────────────────────────────
+// ── Grounded ────────────────────────────────────────────────────────────────
 
 test('grounded eval passes for deterministic explanation of high-risk case', () => {
   const receipt = analyzeScamSurface({
@@ -85,6 +27,20 @@ test('grounded eval passes for deterministic explanation of high-risk case', () 
   assert.ok(result.pass, result.reason);
 });
 
+test('grounded eval passes for benign case with no findings', () => {
+  const receipt = analyzeScamSurface({
+    hostname: 'www.wikipedia.org',
+    title: 'Wikipedia',
+    text: 'The free encyclopedia that anyone can edit.'
+  });
+  const caseRecord = normalizeReceiptToCase(receipt);
+  const explanation = buildGroundedExplanation(caseRecord);
+  const result = evalGrounded(explanation, caseRecord);
+  assert.ok(result.pass, result.reason);
+});
+
+// ── Safe Action ─────────────────────────────────────────────────────────────
+
 test('safeAction eval passes for deterministic explanation', () => {
   const receipt = analyzeScamSurface({
     title: 'Bank Security Alert',
@@ -95,6 +51,13 @@ test('safeAction eval passes for deterministic explanation', () => {
   const result = evalSafeAction(explanation);
   assert.ok(result.pass, result.reason);
 });
+
+test('safeAction eval fails for vague explanation without safe guidance', () => {
+  const result = evalSafeAction({ summary: 'Something happened.', whyItMatters: 'Unknown.' });
+  assert.ok(!result.pass, 'Should fail without safe action terms');
+});
+
+// ── No Overclaim ────────────────────────────────────────────────────────────
 
 test('noOverclaim eval passes for deterministic explanation', () => {
   const receipt = analyzeScamSurface({
@@ -116,6 +79,8 @@ test('noOverclaim eval fails on overclaiming explanation', () => {
   assert.ok(!result.pass, 'Should fail for overclaiming language');
 });
 
+// ── No Secrets ──────────────────────────────────────────────────────────────
+
 test('noSecrets eval passes for clean explanation', () => {
   const explanation = { summary: 'Scam signals detected.', safeNextSteps: 'Pause and verify.' };
   const result = evalNoSecrets(explanation);
@@ -128,43 +93,110 @@ test('noSecrets eval fails when API key is present', () => {
   assert.ok(!result.pass, 'Should fail when secret pattern is present');
 });
 
-test('grounded eval passes for benign case with no findings', () => {
+// ── Clarity ─────────────────────────────────────────────────────────────────
+
+test('clarity eval passes for deterministic explanation', () => {
   const receipt = analyzeScamSurface({
-    hostname: 'www.bbc.com',
-    title: 'BBC News',
-    text: 'Latest headlines around the globe.'
+    hostname: 'secure-login-bank-verify.example',
+    title: 'Bank Security',
+    text: 'Account suspended. Verify now with password. Bank security fraud department. Act now within 24 hours.'
   });
   const caseRecord = normalizeReceiptToCase(receipt);
   const explanation = buildGroundedExplanation(caseRecord);
-  const result = evalGrounded(explanation, caseRecord);
+  const result = evalClarity(explanation);
   assert.ok(result.pass, result.reason);
 });
 
-test('full eval pipeline passes for hostage/ransom fixture', () => {
-  const receipt = analyzeScamSurface({
-    title: 'Urgent Family Emergency',
-    text: 'We have your daughter. Do not call the police. Pay 5000 in bitcoin immediately. Wire the money via Zelle. Act now. Final notice. Keep this confidential.'
-  });
-  const caseRecord = normalizeReceiptToCase(receipt);
-  const explanation = buildGroundedExplanation(caseRecord);
-
-  assert.ok(evalGrounded(explanation, caseRecord).pass);
-  assert.ok(evalSafeAction(explanation).pass);
-  assert.ok(evalNoOverclaim(explanation).pass);
-  assert.ok(evalNoSecrets(explanation).pass);
+test('clarity eval fails for jargon-heavy explanation', () => {
+  const jargonExplanation = {
+    summary: 'The heuristic signal engine used deterministic score normalization with regex payload analysis via embeddings inference tokenization at the api endpoint.'
+  };
+  const result = evalClarity(jargonExplanation);
+  assert.ok(!result.pass, 'Should fail with too much jargon');
 });
 
-test('full eval pipeline passes for Chinese-language scam fixture', () => {
+// ── Full pipeline ───────────────────────────────────────────────────────────
+
+test('full 5-criteria eval passes for fake-bank-login fixture', () => {
   const receipt = analyzeScamSurface({
-    hostname: 'cn-embassy-notice.top',
-    title: '中国大使馆紧急通知',
-    text: '大使馆通知：您的包裹被警察扣留，涉嫌洗钱。请立即转账配合调查。Act now. Do not tell anyone. Wire transfer only.'
+    hostname: 'secure-login-bank-verify.example',
+    title: 'Secure Bank Verification Center',
+    text: 'URGENT: Your account has been suspended. Verify now within 24 hours. Password. One-time security code. Do not contact your local branch. Only through this page.'
   });
   const caseRecord = normalizeReceiptToCase(receipt);
   const explanation = buildGroundedExplanation(caseRecord);
+  const evals = evaluateExplanation(explanation, caseRecord);
+  for (const [criterion, result] of Object.entries(evals)) {
+    assert.ok(result.pass, `${criterion}: ${result.reason}`);
+  }
+});
 
-  assert.ok(evalGrounded(explanation, caseRecord).pass);
-  assert.ok(evalSafeAction(explanation).pass);
-  assert.ok(evalNoOverclaim(explanation).pass);
-  assert.ok(evalNoSecrets(explanation).pass);
+test('full 5-criteria eval passes for fake-shipping-fee fixture', () => {
+  const receipt = analyzeScamSurface({
+    hostname: 'usps-redelivery-fee-secure.example',
+    title: 'USPS Redelivery Fee Notice',
+    text: 'USPS final notice. Pay a redelivery fee immediately. Processing fee. Limited time. Security code. Pay to release package.'
+  });
+  const caseRecord = normalizeReceiptToCase(receipt);
+  const explanation = buildGroundedExplanation(caseRecord);
+  const evals = evaluateExplanation(explanation, caseRecord);
+  for (const [criterion, result] of Object.entries(evals)) {
+    assert.ok(result.pass, `${criterion}: ${result.reason}`);
+  }
+});
+
+test('full 5-criteria eval passes for safe-normal-page fixture', () => {
+  const receipt = analyzeScamSurface({
+    hostname: 'www.wikipedia.org',
+    title: 'Wikipedia',
+    text: 'The free encyclopedia that anyone can edit. Browse categories.'
+  });
+  const caseRecord = normalizeReceiptToCase(receipt);
+  const explanation = buildGroundedExplanation(caseRecord);
+  const evals = evaluateExplanation(explanation, caseRecord);
+  for (const [criterion, result] of Object.entries(evals)) {
+    assert.ok(result.pass, `${criterion}: ${result.reason}`);
+  }
+});
+
+test('full 5-criteria eval passes for crypto-seed-phrase fixture', () => {
+  const receipt = analyzeScamSurface({
+    hostname: 'wallet-sync-verify.xyz',
+    title: 'Wallet Recovery - Enter Seed Phrase',
+    text: 'Your crypto wallet compromised. Act now. Enter seed phrase immediately. Do not tell anyone. Only through this page. Processing fee via gift card or Zelle. Limited time.'
+  });
+  const caseRecord = normalizeReceiptToCase(receipt);
+  const explanation = buildGroundedExplanation(caseRecord);
+  const evals = evaluateExplanation(explanation, caseRecord);
+  for (const [criterion, result] of Object.entries(evals)) {
+    assert.ok(result.pass, `${criterion}: ${result.reason}`);
+  }
+});
+
+// ── Before/after improvement ────────────────────────────────────────────────
+
+test('before-arize explanation fails multiple criteria, after-arize passes all', () => {
+  const receipt = analyzeScamSurface({
+    hostname: 'secure-login-bank-verify.example',
+    title: 'Bank Security',
+    text: 'URGENT: Account suspended. Verify now with password and OTP. Bank security fraud department. Do not contact branch. Act now within 24 hours.'
+  });
+  const caseRecord = normalizeReceiptToCase(receipt);
+
+  const badExplanation = {
+    provider: 'hypothetical-v0',
+    summary: 'This is definitely a scam. The criminal is guilty. Our heuristic signal engine used deterministic score normalization with regex payload analysis at the api endpoint with embeddings inference tokenization.',
+    whyItMatters: 'Confirmed scam.',
+    safeNextSteps: 'Avoid.',
+    reportingNote: 'Report.'
+  };
+  const badEvals = evaluateExplanation(badExplanation, caseRecord);
+  const badPassCount = Object.values(badEvals).filter((e) => e.pass).length;
+
+  const goodExplanation = buildGroundedExplanation(caseRecord);
+  const goodEvals = evaluateExplanation(goodExplanation, caseRecord);
+  const goodPassCount = Object.values(goodEvals).filter((e) => e.pass).length;
+
+  assert.ok(badPassCount < goodPassCount, `Bad explanation should pass fewer criteria (${badPassCount}) than good (${goodPassCount})`);
+  assert.equal(goodPassCount, 5, 'Good explanation should pass all 5 criteria');
 });
