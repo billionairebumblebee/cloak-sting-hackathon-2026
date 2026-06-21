@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import StingLogo from "../assets/StingLogo";
-import { FileText, Crosshair } from "lucide-react";
+import { FileText, Crosshair, Phone } from "lucide-react";
 import { FloatingOrb } from "./Motion";
 
 export default function Hero() {
@@ -80,7 +80,7 @@ export default function Hero() {
         >
           We hunt scams so you don&apos;t have to.
           <br className="hidden sm:block" />
-          AI-powered detection. Zero mercy for fraud.
+          Voice calls. Links. Messages. Zero mercy for fraud.
         </p>
 
         {/* CTAs — action-oriented */}
@@ -93,18 +93,18 @@ export default function Hero() {
           }}
         >
           <a
+            href="#voice-scanner"
+            className="group flex h-12 items-center gap-2.5 rounded-full bg-[#13ef93] px-8 text-[14px] font-semibold text-surface transition-all duration-300 hover:scale-[1.03] hover:shadow-xl hover:shadow-[#13ef93]/20 active:scale-[0.97]"
+          >
+            <Phone size={15} />
+            Scan a suspicious call
+          </a>
+          <a
             href="#demo"
             className="group flex h-12 items-center gap-2.5 rounded-full bg-honey px-8 text-[14px] font-semibold text-surface transition-all duration-300 hover:scale-[1.03] hover:shadow-xl hover:shadow-honey/20 active:scale-[0.97]"
           >
             <Crosshair size={15} className="transition-transform duration-300 group-hover:rotate-90" />
-            Launch a scan
-          </a>
-          <a
-            href="#demo"
-            className="glass flex h-12 items-center gap-2.5 rounded-full px-8 text-[14px] font-medium text-text-secondary transition-all duration-300 hover:scale-[1.03] hover:text-text-primary active:scale-[0.97]"
-          >
-            <FileText size={14} />
-            See the evidence dossier
+            Scan links &amp; text
           </a>
         </div>
 
