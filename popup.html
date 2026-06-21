@@ -3,16 +3,133 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>cloak sting</title>
-  <link rel="stylesheet" href="popup.css">
+  <title>Sting</title>
+  <style>
+    *{box-sizing:border-box;margin:0;padding:0}
+    body{width:380px;max-height:500px;overflow-y:auto;font-family:'Inter',system-ui,-apple-system,sans-serif;background:#050505;color:#e8e8e8;font-size:13px;line-height:1.4}
+    body::-webkit-scrollbar{width:6px}
+    body::-webkit-scrollbar-track{background:#111}
+    body::-webkit-scrollbar-thumb{background:#333;border-radius:3px}
+
+    .header{display:flex;align-items:center;gap:10px;padding:16px 18px 12px;border-bottom:1px solid #1a1a1a}
+    .header svg{width:28px;height:28px;flex-shrink:0}
+    .header h1{font-size:16px;font-weight:700;letter-spacing:-.02em;color:#f5a623}
+
+    .tabs{display:flex;border-bottom:1px solid #1a1a1a}
+    .tab{flex:1;padding:10px 0;text-align:center;font-size:12px;font-weight:600;letter-spacing:.04em;text-transform:uppercase;color:#666;cursor:pointer;border-bottom:2px solid transparent;transition:color .2s,border-color .2s}
+    .tab.active{color:#f5a623;border-bottom-color:#f5a623}
+    .tab:hover{color:#ccc}
+
+    .panel{display:none;padding:16px 18px}
+    .panel.active{display:block}
+
+    /* Loading state */
+    .loading{display:flex;flex-direction:column;align-items:center;justify-content:center;padding:40px 18px;text-align:center;color:#666}
+    .loading .spinner{width:32px;height:32px;border:3px solid #222;border-top-color:#f5a623;border-radius:50%;animation:spin .8s linear infinite;margin-bottom:12px}
+    @keyframes spin{to{transform:rotate(360deg)}}
+
+    /* Empty state */
+    .empty-state{text-align:center;padding:30px 18px;color:#666}
+    .empty-state svg{width:48px;height:48px;margin-bottom:12px;opacity:.4}
+    .empty-state p{font-size:13px;line-height:1.5}
+
+    /* Safe state */
+    .safe-state{text-align:center;padding:30px 18px}
+    .safe-state .checkmark{width:48px;height:48px;border-radius:50%;background:#0f2e1a;display:flex;align-items:center;justify-content:center;margin:0 auto 12px}
+    .safe-state .checkmark svg{width:24px;height:24px}
+    .safe-state h3{color:#4ade80;font-size:15px;margin-bottom:6px}
+    .safe-state p{color:#666;font-size:12px}
+
+    /* Risk badge */
+    .risk-header{margin-bottom:14px}
+    .risk-badge{display:inline-flex;align-items:center;gap:6px;padding:5px 10px;border-radius:999px;font-size:11px;font-weight:800;letter-spacing:.08em;text-transform:uppercase}
+    .risk-badge.critical{background:#3d0a0a;color:#ff4444;border:1px solid #5c1111}
+    .risk-badge.high{background:#3d1f0a;color:#ff8c42;border:1px solid #5c3011}
+    .risk-badge.medium{background:#3d350a;color:#ffc42e;border:1px solid #5c4f11}
+    .risk-badge.low{background:#0f2e1a;color:#4ade80;border:1px solid #1a5c33}
+    .risk-badge.safe{background:#0f2e1a;color:#4ade80;border:1px solid #1a5c33}
+
+    /* Score meter */
+    .score-meter{margin:12px 0 16px}
+    .score-meter .label{display:flex;justify-content:space-between;margin-bottom:6px;font-size:11px;color:#888}
+    .meter-bar{height:8px;background:#1a1a1a;border-radius:4px;overflow:hidden}
+    .meter-fill{height:100%;border-radius:4px;transition:width .4s ease}
+
+    /* Page info */
+    .page-info{margin-bottom:14px;padding:10px 12px;background:#0d0d0d;border:1px solid #1a1a1a;border-radius:12px}
+    .page-info .hostname{font-weight:600;font-size:13px;color:#e8e8e8;margin-bottom:2px}
+    .page-info .url{font-size:11px;color:#555;word-break:break-all}
+
+    /* Signals */
+    .signals-section h4{font-size:11px;text-transform:uppercase;letter-spacing:.06em;color:#888;margin-bottom:8px}
+    .signal-card{display:flex;gap:10px;padding:10px 12px;background:#0d0d0d;border:1px solid #1a1a1a;border-radius:12px;margin-bottom:8px}
+    .signal-card .icon{width:28px;height:28px;border-radius:8px;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:14px}
+    .signal-card .icon.urgency{background:#3d0a0a}
+    .signal-card .icon.payment{background:#3d1f0a}
+    .signal-card .icon.impersonation{background:#1a0a3d}
+    .signal-card .icon.pressure{background:#3d350a}
+    .signal-card .icon.default{background:#1a1a1a}
+    .signal-card .content{flex:1;min-width:0}
+    .signal-card .content .label{font-weight:600;font-size:12px;color:#e0e0e0;margin-bottom:2px}
+    .signal-card .content .evidence{font-size:11px;color:#777;word-break:break-word}
+
+    /* Advice */
+    .advice-section{margin-top:14px;padding:12px;background:#0d0d0d;border:1px solid #1a1a1a;border-radius:12px}
+    .advice-section h4{font-size:11px;text-transform:uppercase;letter-spacing:.06em;color:#888;margin-bottom:6px}
+    .advice-section p{font-size:12px;color:#ccc;line-height:1.5}
+
+    /* Actions */
+    .actions{display:flex;gap:8px;margin-top:16px;padding-bottom:4px}
+    .actions button{flex:1;padding:10px 8px;border:0;border-radius:10px;font-size:11px;font-weight:700;cursor:pointer;transition:opacity .2s}
+    .actions button:hover{opacity:.85}
+    .btn-primary{background:#f5a623;color:#050505}
+    .btn-secondary{background:#1a1a1a;color:#e0e0e0;border:1px solid #333 !important}
+    .btn-danger{background:#2d0a0a;color:#ff6b6b;border:1px solid #441111 !important}
+
+    /* History */
+    .history-card{display:flex;align-items:center;gap:10px;padding:10px 12px;background:#0d0d0d;border:1px solid #1a1a1a;border-radius:12px;margin-bottom:8px;cursor:pointer;transition:border-color .2s}
+    .history-card:hover{border-color:#333}
+    .history-card .info{flex:1;min-width:0}
+    .history-card .info .host{font-weight:600;font-size:12px;color:#e0e0e0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+    .history-card .info .time{font-size:10px;color:#555;margin-top:2px}
+    .history-card .score-pill{font-size:11px;font-weight:700;padding:4px 8px;border-radius:6px;white-space:nowrap}
+
+    .history-empty{text-align:center;padding:30px 0;color:#555;font-size:12px}
+
+    /* Detail overlay for history items */
+    .detail-back{display:flex;align-items:center;gap:6px;margin-bottom:14px;padding:6px 0;cursor:pointer;font-size:12px;color:#f5a623;font-weight:600}
+    .detail-back:hover{opacity:.8}
+  </style>
 </head>
 <body>
-  <main>
-    <p class="eyebrow">Sting — Scam Protection</p>
-    <h1>Your Safety Report</h1>
-    <section id="receipt" class="card muted">No warnings yet. This page looks safe so far.</section>
-    <button id="copy">Copy safety report</button>
-  </main>
+  <div class="header">
+    <svg viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path d="M16 2C10 2 5 6 4 11c-1 5 1 9 4 12 2 2 4 4 4 7h8c0-3 2-5 4-7 3-3 5-7 4-12-1-5-4-9-8-9z" fill="#f5a623" opacity=".15"/>
+      <path d="M16 4c-4.5 0-8.5 3.5-9.5 8-.8 4 .8 7.5 3.2 10 2.2 2.2 3.8 4.5 3.8 7.5h5c0-3 1.6-5.3 3.8-7.5 2.4-2.5 4-6 3.2-10C24.5 7.5 20.5 4 16 4z" stroke="#f5a623" stroke-width="1.5" fill="none"/>
+      <path d="M16 8c-1 0-2 .5-2.5 1.5L11 14l3.5 1.5c.3.1.7.1 1 0l2-1 2 1c.3.1.7.1 1 0L24 14l-2.5-4.5C21 8.5 20 8 19 8h-3z" fill="#f5a623" opacity=".6"/>
+      <circle cx="13.5" cy="12" r="1.5" fill="#f5a623"/>
+      <circle cx="18.5" cy="12" r="1.5" fill="#f5a623"/>
+      <path d="M12 17c0 0 2 2.5 4 2.5s4-2.5 4-2.5" stroke="#f5a623" stroke-width="1.2" stroke-linecap="round" fill="none"/>
+    </svg>
+    <h1>Sting</h1>
+  </div>
+
+  <div class="tabs">
+    <div class="tab active" data-tab="scan">Current Scan</div>
+    <div class="tab" data-tab="history">History</div>
+  </div>
+
+  <div id="panel-scan" class="panel active">
+    <div class="loading" id="loading-state">
+      <div class="spinner"></div>
+      <p>Analyzing page...</p>
+    </div>
+  </div>
+
+  <div id="panel-history" class="panel">
+    <div id="history-list"></div>
+  </div>
+
   <script src="src/popup.js"></script>
 </body>
 </html>

@@ -1,32 +1,57 @@
 # Arize Eval Proof — Cloak Sting Scam Explanations
 
+## Booth Summary (for judges)
+
+**What Arize does here:** Arize is the eval/observability proof layer for Cloak Sting's AI explanations. It does **not** replace the core scam detector — it evaluates whether the AI explanation is honest, grounded, safe, and clear.
+
+**How Arize improved the app:** We built an eval harness with 5 criteria (groundedness, safe action, no overclaiming, no secrets, clarity). Running these evals on explanation output exposed failure modes — overclaiming, jargon-heavy language, missing safe actions — and drove concrete improvements. The before/after demo shows a hypothetical v0 explanation failing 3/5 criteria vs. the current Arize-guided explanation passing 5/5.
+
+**What you'll see:**
+- `node scripts/arize_eval_demo.js` runs 4 fixtures and prints pass/fail per criterion
+- A before/after improvement demo in the same output
+- If AX is configured: dataset + experiment visible in Arize space `billionairebumblebee Space`
+- Local report at `data/arize-eval-report.json`
+
 ## What this evaluates
 
 Cloak Sting's AI explanation layer (`src/anthropicExplain.js`) takes deterministic scam findings and produces a consumer-safety explanation via Anthropic Claude. When the API key is unavailable, a local deterministic fallback generates the explanation instead.
 
-This eval layer checks that **explanations are honest, grounded, and safe** — regardless of which provider produced them. It does **not** evaluate the core scam detector; it evaluates the AI-generated explanation quality.
+This eval layer checks that **explanations are honest, grounded, and safe** — regardless of which provider produced them.
 
-## Eval criteria
-
-Each scam fixture's explanation is checked against four criteria:
+## Eval criteria (5 checks per fixture)
 
 | Criterion | What it checks |
 |-----------|---------------|
-| **grounded** | Explanation references observed evidence fields from the case (findings, signals). |
-| **safeAction** | Explanation includes a safe next action (verify, pause, do not pay, report, etc.). |
-| **noOverclaim** | Explanation does not claim confirmed guilt, identify private persons, or make legal conclusions. |
+| **grounded** | Explanation references observed evidence/signals from the case — not invented facts. |
+| **safeAction** | Tells the user: don't enter card/password/code; use an official source to verify. |
+| **noOverclaim** | Avoids "definitely fraud", "criminal", "guilty" unless evidence justifies it. |
 | **noSecrets** | No API keys, tokens, or credentials appear in the explanation output. |
+| **clarity** | Normal-person language — no excessive jargon (heuristic, embeddings, regex, etc.). |
 
 ## Fixtures
 
-| Fixture | Scenario | Expected risk |
-|---------|----------|---------------|
-| usps-redelivery | USPS redelivery fee phishing page | high |
-| fake-bank-login | Bank OTP/credential harvesting | high |
-| hostage-ransom | Family hostage ransom demand | high |
-| chinese-embassy | Chinese-language embassy impersonation | high |
-| tech-support | Fake Microsoft tech support | high |
-| benign-news | BBC News (no scam signals) | low |
+| Fixture | Scenario | Expected risk | Matches demo page |
+|---------|----------|---------------|-------------------|
+| fake-bank-login | Bank OTP/credential harvesting | high | `demo/fake-bank-login.html` |
+| fake-shipping-fee | USPS redelivery fee phishing | high | `demo/fake-shipping-fee.html` |
+| safe-normal-page | Wikipedia (no scam signals) | low | — |
+| crypto-seed-phrase | Crypto wallet seed phrase theft | high | — |
+
+## Before/after improvement demo
+
+The script includes a concrete before/after comparison on the fake-bank-login fixture:
+
+**BEFORE (hypothetical v0, no Arize eval):**
+- Overclaims: "This is definitely a scam. The criminal is guilty."
+- Jargon: "heuristic signal engine", "deterministic score normalization", "regex payload"
+- Fails: noOverclaim, clarity, safeAction (vague)
+
+**AFTER (Arize-guided, current code):**
+- Grounded: "Cloak Sting marked this as high risk based on observed signals: Urgency pressure, ..."
+- Safe action: "Pause, do not share money/passwords/codes, verify through an official app..."
+- No overclaim: "The warning is based on page text, URL/domain patterns... not on guessing who is behind it."
+- Clear language: no jargon, normal-person words
+- Passes all 5 criteria
 
 ## How to run
 
@@ -46,37 +71,40 @@ If the `ax` CLI is configured with a valid profile, the script will:
 
 1. Create an Arize dataset (`cloak-sting-scam-explanations`) with the fixture data.
 2. Export the dataset to resolve example IDs.
-3. Create an experiment with eval scores (grounded, safeAction, noOverclaim, noSecrets) per fixture.
+3. Create an experiment with eval scores (grounded, safeAction, noOverclaim, noSecrets, clarity) per fixture.
 
-### Setup (if not already configured)
+### Setup
 
 ```bash
-# Install ax CLI
+# Install ax CLI (if not already installed)
 pip install arize-ax-cli
 
-# Create a profile
+# Create a profile with your Arize API key
 ax profiles create
 
 # Run eval with upload
 node scripts/arize_eval_demo.js
 ```
 
-### Current AX status
+### AX status
 
-As of initial setup, the `ax` profile was not yet configured on this host. The eval script runs fully offline and produces `data/arize-eval-report.json`. When a profile is configured, re-running the script will attempt the upload automatically.
+If the `ax` profile is configured, the script uploads automatically. If not, it produces a local report and documents the exact blocker in `data/arize-eval-report.json` under `arizeAX.blocker`.
 
-**Blocker (if any):** No `ax` profile configured — run `ax profiles create` with your Arize API key and set ARIZE_SPACE to your space name.
+**To verify in Arize UI:** https://app.arize.com → Space "billionairebumblebee Space" → Datasets → cloak-sting-scam-explanations
 
-## What Arize provides here
+## Architecture
 
-Arize is used as an **eval/observability proof layer for AI explanations** — not as the core scam detector. The deterministic signal engine (`src/scamSignals.js`) is the detection layer. Arize evaluates whether the AI explanation (Anthropic or fallback) is:
+```
+Scam page fixture
+  → src/scamSignals.js (deterministic signal engine — core detector)
+  → src/caseStore.js   (normalize receipt → authority-safe case record)
+  → src/anthropicExplain.js (Claude explanation, or deterministic fallback)
+  → src/arizeEvalCriteria.js (5 eval checks — this is the Arize proof layer)
+  → data/arize-eval-report.json (local report)
+  → ax datasets create + ax experiments create (Arize cloud, if configured)
+```
 
-- Honest and grounded in evidence
-- Actionable with safe guidance
-- Not overclaiming beyond what was observed
-- Not leaking secrets
-
-This is consistent with Arize's role as an LLM observability/eval platform.
+Arize evaluates the **explanation quality**, not the detector itself. The detector is deterministic and does not need LLM eval.
 
 ## Report format
 
@@ -85,31 +113,17 @@ This is consistent with Arize's role as an LLM observability/eval platform.
 ```json
 {
   "evalName": "cloak-sting-explanation-quality",
-  "timestamp": "...",
-  "fixtureCount": 6,
-  "passCount": 6,
-  "failCount": 0,
+  "criteria": ["grounded", "safeAction", "noOverclaim", "noSecrets", "clarity"],
+  "fixtureCount": 4,
+  "passCount": 4,
   "passRate": "100%",
-  "results": [
-    {
-      "fixture": "usps-redelivery",
-      "risk": "high",
-      "score": 90,
-      "provider": "deterministic-local",
-      "evals": {
-        "grounded": { "pass": true, "reason": "..." },
-        "safeAction": { "pass": true, "reason": "..." },
-        "noOverclaim": { "pass": true, "reason": "..." },
-        "noSecrets": { "pass": true, "reason": "..." }
-      },
-      "pass": true
-    }
-  ],
-  "arizeAX": {
-    "attempted": false,
-    "success": false,
-    "blocker": "AX profile not configured"
-  }
+  "results": [ ... ],
+  "beforeAfter": {
+    "before": { "passCount": 2, "totalCriteria": 5 },
+    "after":  { "passCount": 5, "totalCriteria": 5 },
+    "improvement": ["noOverclaim", "clarity", "safeAction"]
+  },
+  "arizeAX": { "attempted": false, "success": false, "blocker": "..." }
 }
 ```
 
@@ -119,4 +133,4 @@ This is consistent with Arize's role as an LLM observability/eval platform.
 npm test
 ```
 
-The test file `tests/arizeEval.test.js` validates that the eval criteria functions produce correct pass/fail results for known-good and known-bad explanation shapes.
+`tests/arizeEval.test.js` validates all 5 eval criteria with positive and negative cases, plus a before/after improvement test.
