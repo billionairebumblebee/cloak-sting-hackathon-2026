@@ -1,3 +1,4 @@
+import { Link } from "react-router-dom";
 import StingLogo from "../assets/StingLogo";
 import { FadeIn } from "./Motion";
 
@@ -26,6 +27,9 @@ export default function Footer() {
                 Clean-room implementation. Every line written during the hacking
                 period. Zero tolerance for fraud.
               </p>
+              <Link to="/privacy" className="text-[11px] text-amber-400/60 hover:text-amber-400 transition-colors mt-1">
+                Privacy Policy
+              </Link>
             </div>
           </div>
         </FadeIn>
