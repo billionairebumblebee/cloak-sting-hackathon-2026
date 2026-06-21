@@ -1,5 +1,4 @@
 import { Link2, Search, ShieldCheck } from "lucide-react";
-import { motion } from "framer-motion";
 import { FadeIn, StaggerContainer, StaggerItem, SectionLabel } from "./Motion";
 
 const steps = [
@@ -71,31 +70,23 @@ export default function ProductFlow() {
         <StaggerContainer className="grid gap-6 lg:grid-cols-3" stagger={0.12}>
           {steps.map((step, i) => (
             <StaggerItem key={step.num}>
-              <motion.div
-                className="glass group relative rounded-2xl p-8 transition-all duration-500"
-                whileHover={{
-                  y: -4,
-                  transition: { duration: 0.3 },
-                }}
+              <div
+                className="glass group relative rounded-2xl p-8 transition-all duration-500 hover:-translate-y-1"
               >
-                {/* Step connector line (desktop only) */}
                 {i < steps.length - 1 && (
                   <div className="absolute -right-3 top-1/2 hidden h-px w-6 bg-gradient-to-r from-white/10 to-transparent lg:block" />
                 )}
 
-                {/* Number + icon */}
                 <div className="mb-8 flex items-center gap-4">
                   <span className="font-mono text-4xl font-bold text-white/[0.04]">
                     {step.num}
                   </span>
-                  <motion.div
-                    className="flex h-12 w-12 items-center justify-center rounded-xl"
+                  <div
+                    className="flex h-12 w-12 items-center justify-center rounded-xl transition-transform duration-300 hover:scale-110 hover:rotate-[5deg]"
                     style={{ backgroundColor: step.color + "10" }}
-                    whileHover={{ scale: 1.1, rotate: 5 }}
-                    transition={{ type: "spring", stiffness: 300 }}
                   >
                     <step.icon size={20} style={{ color: step.color }} strokeWidth={1.5} />
-                  </motion.div>
+                  </div>
                 </div>
 
                 <h3 className="mb-3 text-xl font-bold text-cream">
@@ -105,7 +96,6 @@ export default function ProductFlow() {
                   {step.desc}
                 </p>
 
-                {/* Detail chips */}
                 <div className="flex flex-wrap gap-2">
                   {step.details.map((d) => (
                     <span
@@ -116,7 +106,7 @@ export default function ProductFlow() {
                     </span>
                   ))}
                 </div>
-              </motion.div>
+              </div>
             </StaggerItem>
           ))}
         </StaggerContainer>

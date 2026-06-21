@@ -44,7 +44,6 @@ const threats = [
 export default function Problem() {
   return (
     <section id="problem" className="relative px-6 py-32 sm:py-40">
-      {/* Ambient glow */}
       <div className="pointer-events-none absolute top-0 left-1/4 h-[400px] w-[400px] rounded-full bg-danger/[0.02] blur-[120px]" />
 
       <div className="mx-auto max-w-6xl">

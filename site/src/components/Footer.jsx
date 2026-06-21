@@ -1,4 +1,3 @@
-import { motion } from "framer-motion";
 import StingLogo from "../assets/StingLogo";
 import { FadeIn } from "./Motion";
 
@@ -8,14 +7,13 @@ export default function Footer() {
       <div className="mx-auto max-w-6xl">
         <FadeIn>
           <div className="flex flex-col items-center gap-8 sm:flex-row sm:justify-between">
-            <motion.a
+            <a
               href="#"
-              className="flex items-center gap-2.5"
-              whileHover={{ scale: 1.03 }}
+              className="flex items-center gap-2.5 transition-transform duration-300 hover:scale-[1.03]"
             >
               <StingLogo size={24} />
               <span className="font-semibold text-cream">Sting</span>
-            </motion.a>
+            </a>
             <div className="flex flex-col items-center gap-1.5 text-center sm:items-end sm:text-right">
               <p className="text-[11px] text-text-muted">
                 Built at UC Berkeley AI Hackathon 2026

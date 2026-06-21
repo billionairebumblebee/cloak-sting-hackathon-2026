@@ -1,5 +1,3 @@
-import { architectureNodes } from "../data/demoData";
-import { motion } from "framer-motion";
 import {
   Globe,
   Brain,
@@ -31,7 +29,6 @@ const pipelineSteps = [
 export default function Architecture() {
   return (
     <section id="architecture" className="relative px-6 py-32 sm:py-40">
-      {/* Ambient glow */}
       <div className="pointer-events-none absolute bottom-0 left-1/3 h-[400px] w-[400px] rounded-full bg-purple-500/[0.02] blur-[150px]" />
 
       <div className="mx-auto max-w-6xl">
@@ -56,8 +53,8 @@ export default function Architecture() {
           <div className="mb-20 flex flex-wrap items-center justify-center gap-2">
             {pipelineSteps.map((step, i) => (
               <div key={i} className="flex items-center gap-2">
-                <motion.span
-                  className={`rounded-lg px-3 py-1.5 font-mono text-[11px] ${
+                <span
+                  className={`rounded-lg px-3 py-1.5 font-mono text-[11px] transition-transform duration-300 hover:scale-[1.08] hover:-translate-y-0.5 ${
                     step.color
                       ? ""
                       : "border border-white/[0.04] bg-white/[0.02] text-text-muted"
@@ -71,19 +68,13 @@ export default function Architecture() {
                         }
                       : {}
                   }
-                  whileHover={{ scale: 1.08, y: -2 }}
-                  transition={{ type: "spring", stiffness: 300 }}
                 >
                   {step.label}
-                </motion.span>
+                </span>
                 {i < pipelineSteps.length - 1 && (
-                  <motion.span
-                    className="text-white/10"
-                    animate={{ opacity: [0.1, 0.4, 0.1] }}
-                    transition={{ duration: 2, delay: i * 0.3, repeat: Infinity }}
-                  >
+                  <span className="text-white/10 animate-arrow-pulse" style={{ animationDelay: `${i * 0.3}s` }}>
                     &rarr;
-                  </motion.span>
+                  </span>
                 )}
               </div>
             ))}
@@ -96,23 +87,25 @@ export default function Architecture() {
             const Icon = iconMap[node.id] || Globe;
             return (
               <StaggerItem key={node.id}>
-                <motion.div
-                  className="glass group rounded-2xl p-6 transition-all duration-500"
-                  whileHover={{
-                    y: -4,
-                    boxShadow: `0 0 30px ${node.color}08`,
-                    transition: { duration: 0.3 },
+                <div
+                  className="glass group rounded-2xl p-6 transition-all duration-500 hover:-translate-y-1"
+                  style={{
+                    "--hover-glow": `${node.color}08`,
+                  }}
+                  onMouseEnter={(e) => {
+                    e.currentTarget.style.boxShadow = `0 0 30px ${node.color}08`;
+                  }}
+                  onMouseLeave={(e) => {
+                    e.currentTarget.style.boxShadow = "";
                   }}
                 >
                   <div className="mb-5 flex items-center gap-3">
-                    <motion.div
-                      className="flex h-10 w-10 items-center justify-center rounded-xl"
+                    <div
+                      className="flex h-10 w-10 items-center justify-center rounded-xl transition-transform duration-300 hover:scale-110 hover:rotate-[5deg]"
                       style={{ backgroundColor: node.color + "10" }}
-                      whileHover={{ scale: 1.1, rotate: 5 }}
-                      transition={{ type: "spring", stiffness: 300 }}
                     >
                       <Icon size={18} style={{ color: node.color }} strokeWidth={1.5} />
-                    </motion.div>
+                    </div>
                     <div>
                       <h3 className="text-[13px] font-bold text-cream">
                         {node.name}
@@ -128,7 +121,7 @@ export default function Architecture() {
                   <p className="text-[12px] leading-relaxed text-text-secondary">
                     {node.description}
                   </p>
-                </motion.div>
+                </div>
               </StaggerItem>
             );
           })}
@@ -137,3 +130,54 @@ export default function Architecture() {
     </section>
   );
 }
+
+const architectureNodes = [
+  {
+    id: "browserbase",
+    name: "Browserbase",
+    role: "Safe page inspection",
+    description:
+      "Opens suspicious URLs in an isolated cloud browser. Captures page structure, redirects, and form behavior without exposing the user's real browser or IP to the scam site.",
+    color: "#6366f1",
+  },
+  {
+    id: "anthropic",
+    name: "Anthropic Claude",
+    role: "Grounded explanations",
+    description:
+      "Takes deterministic signal output and generates a plain-English explanation a non-technical person can understand. Also produces safe next-step recommendations grounded in the actual evidence.",
+    color: "#d97706",
+  },
+  {
+    id: "redis",
+    name: "Redis",
+    role: "Case memory & receipts",
+    description:
+      "Stores evidence receipts, case records, and scam pattern signatures. Enables similar-scam retrieval so Sting can say 'we've seen 47 variants of this scam' with real data.",
+    color: "#dc2626",
+  },
+  {
+    id: "arize",
+    name: "Arize / Phoenix",
+    role: "Trace & eval observability",
+    description:
+      "Traces every AI verdict through the pipeline. Logs input signals, model reasoning, and output quality so we can prove the system is improving and catch regressions.",
+    color: "#8b5cf6",
+  },
+  {
+    id: "sentry",
+    name: "Sentry",
+    role: "Reliability monitoring",
+    description:
+      "Captures errors, performance issues, and edge cases in production. Ensures the scanning pipeline doesn't silently fail when encountering novel scam patterns.",
+    color: "#362d59",
+  },
+  {
+    id: "fetch",
+    name: "Fetch.ai",
+    role: "Agent coordination",
+    description:
+      "Enables autonomous agent-to-agent communication for distributed scam investigation — one agent inspects the page, another checks domain reputation, another generates the receipt.",
+    color: "#1e3a5f",
+  },
+];
