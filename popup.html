@@ -1,17 +1,43 @@
 <!doctype html>
-<html>
+<html lang="en">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>cloak sting</title>
+  <title>Cloak Sting — Scam Protection</title>
   <link rel="stylesheet" href="popup.css">
 </head>
 <body>
   <main>
-    <p class="eyebrow">cloak sting</p>
-    <h1>latest threat receipt</h1>
-    <section id="receipt" class="card muted">No receipt yet. Open a suspicious demo page.</section>
-    <button id="copy">Copy receipt</button>
+    <header class="brand">
+      <div class="logo-mark" aria-hidden="true"></div>
+      <div class="brand-text">
+        <p class="eyebrow">cloak sting</p>
+        <h1>Scam Protection</h1>
+      </div>
+    </header>
+
+    <button id="scan" class="scan-btn" aria-label="Scan the current page for scam signals">
+      <span class="scan-icon" aria-hidden="true"></span>
+      Scan This Page
+    </button>
+
+    <section id="receipt" class="card empty" aria-live="polite">
+      <div class="empty-state">
+        <p class="empty-title">No warnings yet</p>
+        <p class="empty-hint">Click "Scan This Page" or visit a suspicious site. We'll watch for scam patterns.</p>
+      </div>
+    </section>
+
+    <div class="actions">
+      <button id="copy" class="btn-primary" aria-label="Copy the scam receipt to clipboard">
+        <span class="btn-icon" aria-hidden="true">&#x1F4CB;</span>
+        Copy Receipt
+      </button>
+    </div>
+
+    <footer class="footer">
+      <p>Protecting you from scams, phishing, and fraud.</p>
+    </footer>
   </main>
   <script src="src/popup.js"></script>
 </body>
