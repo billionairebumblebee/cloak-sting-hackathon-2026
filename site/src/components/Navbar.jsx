@@ -49,16 +49,16 @@ export default function Navbar() {
             <a
               key={link.href}
               href={link.href}
-              className="nav-link text-[13px] font-medium text-text-muted transition-colors duration-300 hover:text-text-primary"
+              className="nav-link text-[14px] font-medium text-text-secondary transition-colors duration-300 hover:text-text-primary"
             >
               {link.label}
             </a>
           ))}
           <a
             href="#demo"
-            className="group relative overflow-hidden rounded-full border border-honey/20 bg-honey/[0.06] px-5 py-2 text-[13px] font-medium text-honey transition-all duration-300 hover:border-honey/30 hover:bg-honey/10"
+            className="group relative overflow-hidden rounded-full bg-honey px-6 py-2.5 text-[14px] font-semibold text-surface transition-all duration-300 hover:scale-[1.03] hover:shadow-lg hover:shadow-honey/20 active:scale-[0.97]"
           >
-            <span className="relative z-10">Try Demo</span>
+            <span className="relative z-10">Try a Demo Scan</span>
           </a>
         </div>
 
@@ -80,7 +80,7 @@ export default function Navbar() {
               <a
                 key={link.href}
                 href={link.href}
-                className="flex h-12 items-center text-[15px] font-medium text-text-muted transition-colors hover:text-text-primary"
+                className="flex h-12 items-center text-[16px] font-medium text-text-secondary transition-colors hover:text-text-primary"
                 style={{
                   animation: `slideInLeft 0.3s ease ${i * 0.04}s both`,
                 }}
@@ -91,7 +91,7 @@ export default function Navbar() {
             ))}
             <a
               href="#demo"
-              className="mt-2 mb-2 flex h-12 items-center justify-center rounded-xl border border-honey/20 bg-honey/[0.06] text-[15px] font-medium text-honey"
+              className="mt-2 mb-2 flex h-12 items-center justify-center rounded-xl bg-honey text-[16px] font-semibold text-surface"
               onClick={() => setOpen(false)}
             >
               Try Demo

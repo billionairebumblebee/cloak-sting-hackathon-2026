@@ -1,6 +1,6 @@
 const { describe, it } = require('node:test');
 const assert = require('node:assert/strict');
-const { parseDsn, sentryConfigured, sanitizeUrl, sanitizeContext, buildEnvelope, sendEnvelope } = require('../src/sentry.js');
+const { parseDsn, sentryConfigured, sanitizeUrl, sanitizeContext, buildEnvelope, sendEnvelope, captureScamEvent, captureError } = require('../src/sentry.js');
 
 describe('parseDsn', () => {
   it('extracts project ID, public key, and ingest URL', () => {
@@ -147,5 +147,75 @@ describe('sendEnvelope', () => {
     const result = await sendEnvelope({ message: 'test' }, { env, fetchImpl: mockFetch });
     assert.equal(result.sent, false);
     assert.equal(result.status, 429);
+  });
+});
+
+describe('captureScamEvent', () => {
+  it('returns no-op when DSN is absent', async () => {
+    const result = await captureScamEvent({
+      id: 'test-001', risk: 'high', score: 92, url: 'https://scam.example.com',
+      hostname: 'scam.example.com', findings: [{ type: 'payment', label: 'Gift card' }]
+    }, { env: {} });
+    assert.equal(result.sent, false);
+    assert.ok(result.reason);
+  });
+
+  it('sends scam event with auto-tagged risk/score/signals', async () => {
+    let capturedBody;
+    const mockFetch = async (_, opts) => { capturedBody = opts.body; return { ok: true, status: 200 }; };
+    const env = { SENTRY_DSN: 'https://key@o1.ingest.sentry.io/1' };
+
+    const result = await captureScamEvent({
+      id: 'case-42', risk: 'high', score: 88, url: 'https://phish.click/login',
+      hostname: 'phish.click', title: 'Verify Account',
+      findings: [{ type: 'payment', label: 'Gift card' }, { type: 'urgency', label: 'Act now' }, { type: 'credential', label: 'Password' }]
+    }, { env, fetchImpl: mockFetch });
+
+    assert.equal(result.sent, true);
+    const event = JSON.parse(capturedBody.split('\n')[2]);
+    assert.equal(event.tags.risk, 'high');
+    assert.equal(event.tags.component, 'scam-detector');
+    assert.equal(event.extra.score, 88);
+    assert.ok(event.extra.signalTypes.includes('payment'));
+    assert.ok(event.extra.signalTypes.includes('urgency'));
+    assert.ok(event.message.formatted.includes('high risk'));
+  });
+
+  it('tags with source type when provided', async () => {
+    let capturedBody;
+    const mockFetch = async (_, opts) => { capturedBody = opts.body; return { ok: true, status: 200 }; };
+    const env = { SENTRY_DSN: 'https://key@o1.ingest.sentry.io/1' };
+
+    await captureScamEvent({
+      id: 'voice-1', risk: 'high', score: 95, url: 'voice:demo.wav',
+      hostname: '', sourceType: 'voice',
+      findings: [{ type: 'ransom', label: 'Ransom' }]
+    }, { env, fetchImpl: mockFetch });
+
+    const event = JSON.parse(capturedBody.split('\n')[2]);
+    assert.equal(event.tags.source, 'voice');
+  });
+});
+
+describe('captureError', () => {
+  it('returns no-op when DSN is absent', async () => {
+    const result = await captureError(new Error('test'), { component: 'test' }, { env: {} });
+    assert.equal(result.sent, false);
+  });
+
+  it('sends error event with component tag and stack', async () => {
+    let capturedBody;
+    const mockFetch = async (_, opts) => { capturedBody = opts.body; return { ok: true, status: 200 }; };
+    const env = { SENTRY_DSN: 'https://key@o1.ingest.sentry.io/1' };
+
+    const err = new Error('Deepgram API timeout');
+    const result = await captureError(err, { component: 'deepgram-stt', audioFile: 'demo.wav' }, { env, fetchImpl: mockFetch });
+
+    assert.equal(result.sent, true);
+    const event = JSON.parse(capturedBody.split('\n')[2]);
+    assert.equal(event.level, 'error');
+    assert.equal(event.tags.component, 'deepgram-stt');
+    assert.ok(event.message.formatted.includes('Deepgram API timeout'));
+    assert.ok(event.extra.stack.length > 0);
   });
 });

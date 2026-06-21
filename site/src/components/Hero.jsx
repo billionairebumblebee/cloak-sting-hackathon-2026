@@ -3,6 +3,24 @@ import StingLogo from "../assets/StingLogo";
 import { FileText, Crosshair, Phone } from "lucide-react";
 import { FloatingOrb } from "./Motion";
 
+const sparkles = [
+  { left: "8%", top: "15%", size: 2, delay: 0, duration: 4 },
+  { left: "15%", top: "70%", size: 1.5, delay: 1.2, duration: 5 },
+  { left: "25%", top: "30%", size: 2.5, delay: 2.5, duration: 3.5 },
+  { left: "35%", top: "80%", size: 1, delay: 0.8, duration: 6 },
+  { left: "45%", top: "10%", size: 2, delay: 3, duration: 4.5 },
+  { left: "55%", top: "60%", size: 1.5, delay: 1.5, duration: 5.5 },
+  { left: "65%", top: "25%", size: 2, delay: 0.3, duration: 4 },
+  { left: "72%", top: "75%", size: 1, delay: 2, duration: 3 },
+  { left: "80%", top: "40%", size: 2.5, delay: 3.5, duration: 5 },
+  { left: "88%", top: "55%", size: 1.5, delay: 0.7, duration: 4.5 },
+  { left: "92%", top: "20%", size: 2, delay: 2.8, duration: 6 },
+  { left: "20%", top: "50%", size: 1, delay: 4, duration: 3.5 },
+  { left: "50%", top: "85%", size: 2, delay: 1, duration: 5 },
+  { left: "78%", top: "12%", size: 1.5, delay: 3.2, duration: 4.5 },
+  { left: "40%", top: "45%", size: 1, delay: 2.2, duration: 6 },
+];
+
 export default function Hero() {
   const [mounted, setMounted] = useState(false);
   useEffect(() => {
@@ -11,7 +29,10 @@ export default function Hero() {
 
   return (
     <section className="relative flex min-h-[100svh] items-center justify-center overflow-hidden px-6 pt-20">
-      {/* Background grid — threat matrix */}
+      {/* Aurora effect */}
+      <div className="aurora" />
+
+      {/* Background grid */}
       <div
         className="pointer-events-none absolute inset-0 opacity-[0.015]"
         style={{
@@ -21,7 +42,7 @@ export default function Hero() {
         }}
       />
 
-      {/* Ambient orbs — danger-tinted */}
+      {/* Ambient orbs */}
       <FloatingOrb color="rgba(245, 166, 35, 0.05)" size={500} x="10%" y="20%" delay={0} />
       <FloatingOrb color="rgba(255, 68, 68, 0.03)" size={400} x="70%" y="60%" delay={5} />
       <FloatingOrb color="rgba(245, 166, 35, 0.03)" size={300} x="50%" y="10%" delay={10} />
@@ -31,6 +52,24 @@ export default function Hero() {
 
       {/* Red danger undercurrent */}
       <div className="pointer-events-none absolute top-2/3 left-1/2 h-[400px] w-[800px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-red-600/[0.02] blur-[200px]" />
+
+      {/* Sparkle field */}
+      <div className="sparkle-field">
+        {sparkles.map((s, i) => (
+          <div
+            key={i}
+            className="sparkle-static"
+            style={{
+              left: s.left,
+              top: s.top,
+              width: s.size,
+              height: s.size,
+              animationDuration: `${s.duration}s`,
+              animationDelay: `${s.delay}s`,
+            }}
+          />
+        ))}
+      </div>
 
       {/* Bottom fade */}
       <div className="pointer-events-none absolute bottom-0 left-0 right-0 h-56 bg-gradient-to-t from-surface to-transparent" />
@@ -55,7 +94,7 @@ export default function Hero() {
           </div>
         </div>
 
-        {/* Headline — aggressive, dual-audience */}
+        {/* Headline with glow */}
         <h1
           className="mb-7 text-[clamp(2.5rem,6vw,4.5rem)] font-extrabold leading-[1.08] tracking-[-0.035em]"
           style={{
@@ -64,12 +103,12 @@ export default function Hero() {
             transition: "opacity 0.8s cubic-bezier(0.25,0.4,0.25,1) 0.3s, transform 0.8s cubic-bezier(0.25,0.4,0.25,1) 0.3s",
           }}
         >
-          <span className="gradient-text-subtle">Scammers picked</span>
+          <span className="gradient-text-subtle text-glow-subtle">Scammers picked</span>
           <br />
-          <span className="gradient-text">the wrong target.</span>
+          <span className="gradient-text text-glow-honey">the wrong target.</span>
         </h1>
 
-        {/* Subtitle — sharp, predatory */}
+        {/* Subtitle */}
         <p
           className="mx-auto mb-14 max-w-md text-[16px] leading-[1.7] text-text-secondary sm:text-[17px]"
           style={{
@@ -83,7 +122,7 @@ export default function Hero() {
           Voice calls. Links. Messages. Zero mercy for fraud.
         </p>
 
-        {/* CTAs — action-oriented */}
+        {/* CTAs with glow */}
         <div
           className="flex flex-col items-center justify-center gap-4 sm:flex-row sm:gap-5"
           style={{
@@ -94,14 +133,14 @@ export default function Hero() {
         >
           <a
             href="#voice-scanner"
-            className="group flex h-12 items-center gap-2.5 rounded-full bg-[#13ef93] px-8 text-[14px] font-semibold text-surface transition-all duration-300 hover:scale-[1.03] hover:shadow-xl hover:shadow-[#13ef93]/20 active:scale-[0.97]"
+            className="group cta-glow-green flex h-12 items-center gap-2.5 rounded-full bg-[#13ef93] px-8 text-[14px] font-semibold text-surface transition-all duration-300 hover:scale-[1.03] active:scale-[0.97]"
           >
             <Phone size={15} />
             Scan a suspicious call
           </a>
           <a
             href="#demo"
-            className="group flex h-12 items-center gap-2.5 rounded-full bg-honey px-8 text-[14px] font-semibold text-surface transition-all duration-300 hover:scale-[1.03] hover:shadow-xl hover:shadow-honey/20 active:scale-[0.97]"
+            className="group cta-glow flex h-12 items-center gap-2.5 rounded-full bg-honey px-8 text-[14px] font-semibold text-surface transition-all duration-300 hover:scale-[1.03] active:scale-[0.97]"
           >
             <Crosshair size={15} className="transition-transform duration-300 group-hover:rotate-90" />
             Scan links &amp; text

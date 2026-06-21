@@ -106,7 +106,7 @@ function Receipt({ caseData }) {
           </h4>
           <button
             onClick={handleDownload}
-            className="flex h-8 items-center gap-1.5 rounded-lg px-3 text-[11px] text-text-muted transition-colors hover:bg-white/[0.04] hover:text-text-secondary hover:scale-[1.03] active:scale-[0.97]"
+            className="flex h-11 items-center gap-1.5 rounded-lg px-4 text-[12px] font-medium text-text-secondary transition-all hover:bg-white/[0.04] hover:text-text-primary hover:scale-[1.03] active:scale-[0.97]"
           >
             <Download size={11} />
             Download JSON
@@ -187,14 +187,14 @@ export default function InteractiveDemo() {
         <div className="mb-16 text-center">
           <SectionLabel>Live Demo</SectionLabel>
           <FadeIn delay={0.1}>
-            <h2 className="mb-5 text-[clamp(2rem,4vw,3rem)] font-bold leading-[1.12] tracking-[-0.025em] text-text-primary">
+            <h2 className="mb-5 text-[clamp(2.25rem,4.5vw,3.5rem)] font-extrabold leading-[1.08] tracking-[-0.03em] text-text-primary">
               Watch Sting{" "}
               <span className="gradient-text">hunt.</span>
             </h2>
           </FadeIn>
           <FadeIn delay={0.2}>
-            <p className="mx-auto max-w-md text-[15px] leading-[1.7] text-text-secondary">
-              Pick a target. Watch it get dissected in real time.
+            <p className="mx-auto max-w-md text-[16px] leading-[1.7] text-text-secondary">
+              Pick a scam scenario below and watch Sting tear it apart in real time.
             </p>
           </FadeIn>
         </div>
@@ -209,29 +209,32 @@ export default function InteractiveDemo() {
                 <button
                   key={c.id}
                   onClick={() => handleSelect(c)}
-                  className={`group min-h-[72px] rounded-xl border p-5 text-left transition-all duration-300 hover:scale-[1.015] active:scale-[0.985] ${
+                  className={`group min-h-[80px] cursor-pointer rounded-2xl border-2 p-6 text-left transition-all duration-300 hover:scale-[1.02] active:scale-[0.98] ${
                     isActive
-                      ? "border-honey/15 bg-honey/[0.04]"
-                      : "glass glass-hover"
+                      ? "border-honey/40 bg-honey/[0.06] shadow-lg shadow-honey/10"
+                      : "border-white/[0.06] bg-white/[0.02] hover:border-honey/20 hover:bg-white/[0.04]"
                   }`}
                 >
                   <div className="mb-3 flex items-center gap-2">
                     <Icon
-                      size={14}
+                      size={16}
                       strokeWidth={1.5}
-                      className={isActive ? "text-honey" : "text-text-muted"}
+                      className={isActive ? "text-honey" : "text-text-secondary"}
                     />
                     <span
-                      className={`text-[10px] font-medium tracking-widest uppercase ${isActive ? "text-honey/80" : "text-text-muted"}`}
+                      className={`text-[11px] font-semibold tracking-widest uppercase ${isActive ? "text-honey" : "text-text-secondary"}`}
                     >
                       {c.type}
                     </span>
                   </div>
                   <h3
-                    className={`text-[13px] font-medium ${isActive ? "text-text-primary" : "text-text-secondary group-hover:text-text-primary"}`}
+                    className={`text-[15px] font-semibold ${isActive ? "text-text-primary" : "text-text-primary"}`}
                   >
                     {c.title}
                   </h3>
+                  <p className="mt-1.5 text-[13px] text-text-secondary">
+                    Click to scan &rarr;
+                  </p>
                 </button>
               );
             })}
@@ -244,10 +247,10 @@ export default function InteractiveDemo() {
             <div className="animate-spin-slow">
               <Crosshair size={36} className="mb-4 text-white/[0.06]" strokeWidth={1} />
             </div>
-            <p className="text-[14px] font-medium text-text-secondary">
-              Select a target to begin the hunt
+            <p className="text-[16px] font-medium text-text-primary">
+              Select a scam scenario above to begin
             </p>
-            <p className="mt-1.5 text-[12px] text-text-muted">
+            <p className="mt-1.5 text-[14px] text-text-secondary">
               Choose a scam scenario and watch Sting tear it apart
             </p>
           </div>
@@ -416,7 +419,7 @@ export default function InteractiveDemo() {
                 <div className="animate-fade-in" style={{ animationDelay: "0.8s" }}>
                   <button
                     onClick={() => setShowReceipt(!showReceipt)}
-                    className="flex h-10 items-center gap-2 rounded-full border border-white/[0.04] bg-white/[0.02] px-5 text-[12px] font-medium text-text-muted transition-all hover:border-white/[0.08] hover:text-text-secondary hover:scale-[1.02] active:scale-[0.98]"
+                    className="flex h-12 items-center gap-2 rounded-full border border-honey/20 bg-honey/[0.06] px-6 text-[13px] font-semibold text-honey transition-all hover:bg-honey/10 hover:border-honey/30 hover:scale-[1.02] active:scale-[0.98]"
                   >
                     <CheckCircle size={13} strokeWidth={1.5} />
                     {showReceipt ? "Hide" : "View"} Evidence Dossier

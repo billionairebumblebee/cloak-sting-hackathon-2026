@@ -19,7 +19,6 @@
       url: location.href,
       hostname: location.hostname,
       title: document.title,
-      analyzedAt: new Date().toISOString(),
       ...analysis
     };
   }
@@ -47,22 +46,10 @@
 
   function removeExistingOverlay() {
     document.getElementById('cloak-sting-overlay')?.remove();
-    document.getElementById('cloak-sting-strip')?.remove();
-  }
-
-  function riskColor(risk) {
-    if (risk === 'high') return { bg: 'rgba(239,68,68,0.12)', border: '#ef4444', text: '#ef4444', glow: 'rgba(239,68,68,0.3)' };
-    if (risk === 'medium') return { bg: 'rgba(245,158,11,0.12)', border: '#f59e0b', text: '#f59e0b', glow: 'rgba(245,158,11,0.3)' };
-    return { bg: 'rgba(34,197,94,0.12)', border: '#22c55e', text: '#22c55e', glow: 'rgba(34,197,94,0.3)' };
-  }
-
-  function verdictText(risk) {
-    if (risk === 'high') return 'Looks like a scam';
-    if (risk === 'medium') return 'Looks suspicious';
-    return 'Looks safe';
   }
 
   function blockPageInputs() {
+    if (document.getElementById('cloak-sting-input-shield')) return;
     const shield = document.createElement('div');
     shield.id = 'cloak-sting-input-shield';
     shield.innerHTML = `
@@ -94,10 +81,21 @@
     document.getElementById('cloak-sting-input-shield')?.remove();
   }
 
+  function verdictText(risk) {
+    if (risk === 'high') return 'Looks like a scam';
+    if (risk === 'medium') return 'Looks suspicious';
+    return 'Looks safe';
+  }
+
+  function riskColor(risk) {
+    if (risk === 'high') return { border: '#dc2626', text: '#fca5a5', glow: 'rgba(220,38,38,0.3)' };
+    if (risk === 'medium') return { border: '#f59e0b', text: '#fcd34d', glow: 'rgba(245,158,11,0.3)' };
+    return { border: '#22c55e', text: '#86efac', glow: 'rgba(34,197,94,0.3)' };
+  }
+
   function showPersistentStrip(receipt) {
     const existing = document.getElementById('cloak-sting-strip');
     if (existing) return;
-
     const colors = riskColor(receipt.risk);
     const strip = document.createElement('div');
     strip.id = 'cloak-sting-strip';
@@ -105,9 +103,7 @@
       <style>
         #cloak-sting-strip {
           position: fixed;
-          top: 0;
-          left: 0;
-          right: 0;
+          top: 0; left: 0; right: 0;
           z-index: 2147483645;
           display: flex;
           align-items: center;
@@ -126,9 +122,7 @@
           from { transform: translateY(-100%); }
           to { transform: translateY(0); }
         }
-        #cloak-sting-strip .strip-text {
-          font-weight: 700;
-        }
+        #cloak-sting-strip .strip-text { font-weight: 700; }
         #cloak-sting-strip button {
           background: ${colors.border};
           color: white;
@@ -142,17 +136,15 @@
         }
         #cloak-sting-strip button:hover { opacity: 0.85; }
       </style>
-      <span class="strip-text">&#x26A0; This page was flagged: ${escapeHtml(verdictText(receipt.risk))}</span>
+      <span class="strip-text">\u26A0 This page was flagged: ${escapeHtml(verdictText(receipt.risk))}</span>
       <button data-cloak-strip="show">Show warning</button>
     `;
-
     strip.addEventListener('click', (e) => {
       if (e.target?.dataset?.cloakStrip === 'show') {
         strip.remove();
         renderOverlay(receipt);
       }
     });
-
     document.documentElement.appendChild(strip);
   }
 
@@ -163,174 +155,44 @@
     const shouldBlock = receipt.score >= BLOCK_SCORE;
     if (shouldBlock) blockPageInputs();
 
-    const colors = riskColor(receipt.risk);
     const root = document.createElement('section');
     root.id = 'cloak-sting-overlay';
-    root.setAttribute('role', 'alertdialog');
+    root.setAttribute('role', 'dialog');
     root.setAttribute('aria-label', 'Scam warning from Cloak Sting');
     root.setAttribute('aria-describedby', 'cloak-sting-advice');
 
     const findingItems = receipt.findings
-      .slice(0, 3)
+      .slice(0, 4)
       .map((f) => `<li><strong>${escapeHtml(f.label)}</strong><span>${escapeHtml(f.evidence)}</span></li>`)
       .join('');
 
     root.innerHTML = `
       <style>
-        #cloak-sting-overlay {
-          position: fixed;
-          right: 20px;
-          top: 20px;
-          z-index: 2147483647;
-          width: min(420px, calc(100vw - 40px));
-          font: 16px/1.5 -apple-system, BlinkMacSystemFont, "Inter", "Segoe UI", sans-serif;
-          color: #f5f5f7;
-          background: rgba(13,13,15,0.97);
-          border: 2px solid ${colors.border};
-          box-shadow: 0 24px 80px rgba(0,0,0,0.5), 0 0 40px ${colors.glow};
-          border-radius: 20px;
-          overflow: hidden;
-          backdrop-filter: blur(20px);
-          -webkit-backdrop-filter: blur(20px);
-          animation: cloakSlideIn 0.3s ease-out;
-        }
-        @keyframes cloakSlideIn {
-          from { opacity: 0; transform: translateY(-12px); }
-          to { opacity: 1; transform: translateY(0); }
-        }
-        #cloak-sting-overlay .bar {
-          height: 5px;
-          background: linear-gradient(90deg, ${colors.border}, #8b5cf6, ${colors.border});
-        }
-        #cloak-sting-overlay .inner { padding: 20px; }
-        #cloak-sting-overlay .header {
-          display: flex;
-          align-items: center;
-          gap: 10px;
-          margin-bottom: 10px;
-        }
-        #cloak-sting-overlay .shield {
-          width: 36px; height: 36px;
-          border-radius: 10px;
-          background: linear-gradient(135deg, #8b5cf6, #ec4899);
-          display: flex; align-items: center; justify-content: center;
-          font-size: 18px; flex-shrink: 0;
-        }
-        #cloak-sting-overlay h2 {
-          margin: 0;
-          font-size: 22px;
-          font-weight: 800;
-          letter-spacing: -0.02em;
-          line-height: 1.2;
-        }
-        #cloak-sting-overlay .verdict {
-          display: inline-flex;
-          align-items: center;
-          gap: 6px;
-          margin: 0 0 12px;
-          padding: 8px 14px;
-          border-radius: 999px;
-          background: ${colors.bg};
-          color: ${colors.text};
-          border: 1.5px solid ${colors.border};
-          font-weight: 800;
-          font-size: 14px;
-          letter-spacing: 0.02em;
-        }
-        #cloak-sting-overlay .advice {
-          font-size: 16px;
-          line-height: 1.5;
-          margin: 0 0 12px;
-          padding: 12px 14px;
-          border-radius: 10px;
-          background: rgba(255,255,255,0.06);
-          border-left: 3px solid #8b5cf6;
-          color: #e5e5e7;
-        }
-        #cloak-sting-overlay ul {
-          margin: 0 0 14px;
-          padding: 0;
-          list-style: none;
-          display: grid;
-          gap: 6px;
-        }
-        #cloak-sting-overlay li {
-          display: grid;
-          gap: 2px;
-          padding: 8px 12px;
-          border-radius: 8px;
-          background: rgba(255,255,255,0.05);
-          border: 1px solid rgba(255,255,255,0.06);
-        }
-        #cloak-sting-overlay li strong {
-          font-size: 13px;
-          font-weight: 700;
-          color: #f5f5f7;
-        }
-        #cloak-sting-overlay li span {
-          color: #a1a1a6;
-          font-size: 12px;
-          word-break: break-word;
-          line-height: 1.4;
-        }
-        #cloak-sting-overlay .actions {
-          display: grid;
-          gap: 8px;
-        }
-        #cloak-sting-overlay button {
-          border: 0;
-          border-radius: 12px;
-          padding: 14px 16px;
-          font-weight: 700;
-          font-size: 16px;
-          cursor: pointer;
-          transition: all 0.15s ease;
-          min-height: 48px;
-          width: 100%;
-          text-align: center;
-        }
-        #cloak-sting-overlay button:focus-visible {
-          outline: 2px solid #8b5cf6;
-          outline-offset: 2px;
-        }
-        #cloak-sting-overlay .btn-leave {
-          background: #ef4444;
-          color: white;
-          font-size: 17px;
-        }
-        #cloak-sting-overlay .btn-leave:hover { background: #dc2626; }
-        #cloak-sting-overlay .btn-report {
-          background: #8b5cf6;
-          color: white;
-        }
-        #cloak-sting-overlay .btn-report:hover { background: #7c3aed; }
-        #cloak-sting-overlay .btn-hide {
-          background: rgba(255,255,255,0.06);
-          color: #a1a1a6;
-          border: 1px solid rgba(255,255,255,0.08);
-          font-size: 13px;
-          padding: 10px 12px;
-          min-height: 38px;
-        }
-        #cloak-sting-overlay .btn-hide:hover { background: rgba(255,255,255,0.1); color: #e5e5e7; }
-        #cloak-sting-overlay .row { display: flex; gap: 8px; }
-        #cloak-sting-overlay .row button { flex: 1; }
+        #cloak-sting-overlay{position:fixed;right:18px;top:18px;z-index:2147483647;width:min(420px,calc(100vw - 36px));font:16px/1.45 -apple-system,BlinkMacSystemFont,"Inter","Segoe UI",sans-serif;color:#111;background:rgba(255,255,255,.96);border:2px solid rgba(200,50,50,.3);box-shadow:0 24px 80px rgba(0,0,0,.28);border-radius:22px;overflow:hidden;backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px)}
+        #cloak-sting-overlay .bar{height:7px;background:linear-gradient(90deg,#111,#9f6bff,#ff5f7e)}
+        #cloak-sting-overlay .inner{padding:18px}
+        #cloak-sting-overlay h2{margin:0 0 10px;font-size:20px;letter-spacing:-.02em}
+        #cloak-sting-overlay .risk{display:inline-flex;align-items:center;gap:8px;margin:0 0 12px;padding:8px 14px;border-radius:999px;background:#c0392b;color:white;font-weight:700;text-transform:uppercase;font-size:14px;letter-spacing:.06em}
+        #cloak-sting-overlay p{margin:0 0 13px;color:#252525}
+        #cloak-sting-overlay ul{margin:0 0 14px;padding:0;list-style:none;display:grid;gap:8px}
+        #cloak-sting-overlay li{display:grid;gap:2px;padding:12px;border-radius:14px;background:#f4f0ea}
+        #cloak-sting-overlay li strong{font-size:15px}
+        #cloak-sting-overlay li span{color:#665f58;font-size:13px;word-break:break-word}
+        #cloak-sting-overlay .actions{display:flex;gap:10px;flex-wrap:wrap}
+        #cloak-sting-overlay button{border:0;border-radius:999px;padding:13px 18px;font-size:15px;font-weight:700;cursor:pointer}
+        #cloak-sting-overlay .primary{background:#111;color:white}
+        #cloak-sting-overlay .ghost{background:#ece7df;color:#111}
       </style>
       <div class="bar"></div>
       <div class="inner">
-        <div class="header">
-          <div class="shield" aria-hidden="true">&#x1F6E1;</div>
-          <h2>${verdictText(receipt.risk)}</h2>
-        </div>
-        <div class="verdict">&#x26A0; ${escapeHtml(receipt.risk)} risk</div>
-        <p class="advice" id="cloak-sting-advice">${escapeHtml(receipt.advice)}</p>
+        <h2>\u{1F6E1} ${verdictText(receipt.risk)}</h2>
+        <div class="risk">\u26A0 ${escapeHtml(receipt.risk)} risk</div>
+        <p style="font-size:15px;line-height:1.5" id="cloak-sting-advice">${escapeHtml(receipt.advice)}</p>
         <ul>${findingItems}</ul>
         <div class="actions">
-          <button class="btn-leave" data-cloak-action="leave">&#x2190; Leave this page</button>
-          <div class="row">
-            <button class="btn-report" data-cloak-action="copy">Copy receipt to report</button>
-          </div>
-          <button class="btn-hide" data-cloak-action="dismiss">Hide warning (I understand the risk)</button>
+          <button class="primary" style="background:#dc2626" data-cloak-action="leave">\u2190 Leave this page</button>
+          <button class="primary" data-cloak-action="copy">Copy receipt to report</button>
+          <button class="ghost" data-cloak-action="dismiss">Hide warning (I understand the risk)</button>
         </div>
       </div>
     `;
@@ -348,8 +210,7 @@
       }
       if (action === 'copy') {
         await navigator.clipboard?.writeText(formatReceipt(receipt));
-        event.target.textContent = 'Copied! Share with your bank or authorities.';
-        setTimeout(() => { event.target.textContent = 'Copy receipt to report'; }, 3000);
+        event.target.textContent = 'Copied';
       }
     });
 
@@ -367,20 +228,23 @@
       `Verdict: ${verdictText(receipt.risk)} (${receipt.score}/100)`,
       `Page: ${receipt.title || receipt.hostname}`,
       `URL: ${receipt.url}`,
-      `Advice: ${receipt.advice}`,
       '',
-      'Warning signals:',
+      `ADVICE: ${receipt.advice}`,
+      '',
+      'WARNING SIGNALS:'
     ];
     for (const finding of receipt.findings) lines.push(`  - ${finding.label}: ${finding.evidence}`);
-    lines.push('');
-    lines.push('WHAT TO DO:');
-    lines.push('  - Do NOT send money, gift cards, or crypto');
-    lines.push('  - Report to your bank if you shared financial info');
-    lines.push('  - File a report: reportfraud.ftc.gov or ic3.gov');
-    lines.push('  - Tell a family member or friend');
-    lines.push('');
-    lines.push(`Captured: ${receipt.analyzedAt || new Date().toISOString()}`);
+    lines.push('', 'WHAT TO DO:', '  - Do NOT send money, gift cards, or crypto', '  - Report to your bank if you shared financial info', '  - File a report: reportfraud.ftc.gov or ic3.gov', '  - Tell a family member or friend', '', `Captured: ${receipt.analyzedAt || new Date().toISOString()}`);
     return lines.join('\n');
+  }
+
+  function trySentryCaptureScam(receipt) {
+    try {
+      if (typeof require === 'function') {
+        const { captureScamEvent } = require('./sentry.js');
+        captureScamEvent(receipt).catch(() => {});
+      }
+    } catch (_) {}
   }
 
   function requestScreenshot(receipt) {
@@ -411,6 +275,9 @@
     const receipt = buildReceipt(analysis);
     saveReceipt(receipt);
     renderOverlay(receipt);
+    if (receipt.risk === 'high' || receipt.risk === 'medium') {
+      trySentryCaptureScam(receipt);
+    }
     requestScreenshot(receipt);
     chrome.runtime?.sendMessage({ type: 'SCAN_RESULT', receipt });
   }

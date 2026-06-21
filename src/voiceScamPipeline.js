@@ -2,6 +2,7 @@ const { analyzeScamSurface, scoreText } = require('./scamSignals.js');
 const { normalizeReceiptToCase, createCaseStore } = require('./caseStore.js');
 const { renderMarkdownDossier, renderJsonDossier } = require('./dossier.js');
 const { transcribeUrl, transcribeFile, deepgramConfigured } = require('./deepgramSTT.js');
+const { captureScamEvent, captureError } = require('./sentry.js');
 
 /**
  * Voice scam pipeline — end-to-end flow from audio to dossier.
@@ -60,6 +61,10 @@ async function analyzeVoice(audioInput, options = {}) {
     audioDuration: sttResult.metadata.duration || null,
     summary: sttResult.metadata.summary || null
   };
+
+  if (analysis.risk === 'high' || analysis.risk === 'medium') {
+    captureScamEvent({ ...receipt, sourceType: 'voice' }).catch(() => {});
+  }
 
   return {
     sttResult,
