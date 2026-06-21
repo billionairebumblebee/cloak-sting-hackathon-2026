@@ -2,13 +2,39 @@
   const STORAGE_KEY = 'stingLatestReceipt';
   const HISTORY_KEY = 'stingScanHistory';
   const HISTORY_LIMIT = 25;
-  const MIN_VISIBLE_SCORE = 35;
-  const BLOCK_SCORE = 50;
+  const MIN_VISIBLE_SCORE = 55;
+  const BLOCK_SCORE = 70;
 
   const ALLOWLISTED_DOMAINS = [
     'cloak-sting-hackathon-2026.vercel.app',
     'localhost',
     '127.0.0.1',
+    'github.com',
+    'docs.google.com',
+    'slides.google.com',
+    'drive.google.com',
+    'mail.google.com',
+    'google.com',
+    'youtube.com',
+    'stackoverflow.com',
+    'notion.so',
+    'figma.com',
+    'vercel.app',
+    'netlify.app',
+    'linkedin.com',
+    'twitter.com',
+    'x.com',
+    'discord.com',
+    'slack.com',
+    'reddit.com',
+    'wikipedia.org',
+    'amazon.com',
+    'microsoft.com',
+    'apple.com',
+    'devpost.com',
+    'npmjs.com',
+    'gitlab.com',
+    'bitbucket.org',
   ];
 
   if (ALLOWLISTED_DOMAINS.some((d) => location.hostname === d || location.hostname.endsWith('.' + d))) {
