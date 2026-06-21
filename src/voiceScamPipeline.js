@@ -1,4 +1,4 @@
-const { analyzeScamSurface, scoreText } = require('./scamSignals.js');
+const { analyzeScamSurface, scoreText, analyzeVoiceTranscript } = require('./scamSignals.js');
 const { normalizeReceiptToCase, createCaseStore } = require('./caseStore.js');
 const { renderMarkdownDossier, renderJsonDossier } = require('./dossier.js');
 const { transcribeUrl, transcribeFile, deepgramConfigured } = require('./deepgramSTT.js');
@@ -53,13 +53,24 @@ async function analyzeVoice(audioInput, options = {}) {
     transcript: sttResult.transcript
   });
 
+  /* Voice pattern matching — categorize into known attack families */
+  const patternMatches = analyzeVoiceTranscript(sttResult.transcript);
+
   caseRecord.voiceMetadata = {
     detectedLanguage: sttResult.detectedLanguage,
     confidence: sttResult.confidence,
     wordCount: sttResult.words.length,
     deepgramRequestId: sttResult.metadata.requestId || null,
     audioDuration: sttResult.metadata.duration || null,
-    summary: sttResult.metadata.summary || null
+    summary: sttResult.metadata.summary || null,
+    scamPatterns: patternMatches.map((m) => ({
+      pattern: m.pattern,
+      name: m.name,
+      category: m.category,
+      riskLevel: m.riskLevel,
+      score: m.score,
+      counterAdvice: m.counterAdvice
+    }))
   };
 
   if (analysis.risk === 'high' || analysis.risk === 'medium') {

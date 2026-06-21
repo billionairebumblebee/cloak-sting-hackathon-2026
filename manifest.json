@@ -4,9 +4,6 @@
   "version": "0.2.0",
   "description": "Protects you from online scams, phishing, and fraud with real-time warnings.",
   "permissions": ["storage", "activeTab", "scripting"],
-  "background": {
-    "service_worker": "src/background.js"
-  },
   "host_permissions": ["<all_urls>"],
   "background": {
     "service_worker": "src/background.js"
