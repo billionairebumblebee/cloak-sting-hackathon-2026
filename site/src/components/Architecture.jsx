@@ -1,5 +1,4 @@
-import { architectureNodes } from "../data/demoData";
-import { motion } from "framer-motion";
+import { useState } from "react";
 import {
   Globe,
   Brain,
@@ -19,6 +18,57 @@ const iconMap = {
   fetch: Network,
 };
 
+const architectureNodes = [
+  {
+    id: "browserbase",
+    name: "Browserbase",
+    role: "Safe page inspection",
+    color: "#6366f1",
+    description:
+      "Opens suspicious URLs in an isolated cloud browser. Captures page structure, redirects, and form behavior without exposing the user\u2019s real browser or IP to the scam site.",
+  },
+  {
+    id: "anthropic",
+    name: "Anthropic Claude",
+    role: "Grounded explanations",
+    color: "#d97706",
+    description:
+      "Takes deterministic signal output and generates a plain-English explanation a non-technical person can understand. Also produces safe next-step recommendations grounded in the actual evidence.",
+  },
+  {
+    id: "redis",
+    name: "Redis",
+    role: "Case memory & receipts",
+    color: "#dc2626",
+    description:
+      "Stores evidence receipts, case records, and scam pattern signatures. Enables similar-scam retrieval so Sting can say \u2018we\u2019ve seen 47 variants of this scam\u2019 with real data.",
+  },
+  {
+    id: "arize",
+    name: "Arize / Phoenix",
+    role: "Trace & eval observability",
+    color: "#f97316",
+    description:
+      "Traces every AI verdict through the pipeline. Logs input signals, model reasoning, and output quality so we can prove the system is improving and catch regressions.",
+  },
+  {
+    id: "sentry",
+    name: "Sentry",
+    role: "Reliability monitoring",
+    color: "#8b5cf6",
+    description:
+      "Captures errors, performance issues, and edge cases in production. Ensures the scanning pipeline doesn\u2019t silently fail when encountering novel scam patterns.",
+  },
+  {
+    id: "fetch",
+    name: "Fetch.ai",
+    role: "Agent coordination",
+    color: "#3b82f6",
+    description:
+      "Enables autonomous agent-to-agent communication for distributed scam investigation \u2014 one agent inspects the page, another checks domain reputation, another generates the receipt.",
+  },
+];
+
 const pipelineSteps = [
   { label: "Suspicious input", color: null },
   { label: "Browserbase", color: "#6366f1" },
@@ -30,34 +80,34 @@ const pipelineSteps = [
 
 export default function Architecture() {
   return (
-    <section id="architecture" className="relative px-6 py-32 sm:py-40">
+    <section id="architecture" className="relative px-6 py-28 sm:py-36">
       {/* Ambient glow */}
-      <div className="pointer-events-none absolute bottom-0 left-1/3 h-[400px] w-[400px] rounded-full bg-purple-500/[0.02] blur-[150px]" />
+      <div className="pointer-events-none absolute bottom-0 left-1/3 h-[400px] w-[400px] rounded-full bg-purple-500/[0.015] blur-[180px]" />
 
       <div className="mx-auto max-w-6xl">
-        <div className="mb-20 text-center">
+        <div className="mb-16 text-center">
           <SectionLabel>Architecture</SectionLabel>
           <FadeIn delay={0.1}>
-            <h2 className="mb-5 text-4xl font-bold tracking-tight text-cream sm:text-5xl">
-              How the stack{" "}
-              <span className="text-text-secondary">fits together.</span>
+            <h2 className="mb-5 text-[clamp(2rem,4vw,3rem)] font-bold leading-[1.12] tracking-[-0.025em] text-text-primary">
+              The arsenal{" "}
+              <span className="text-text-muted">behind the hunt.</span>
             </h2>
           </FadeIn>
           <FadeIn delay={0.2}>
-            <p className="mx-auto max-w-md text-base text-text-secondary">
-              Each sponsor technology solves a specific problem in the pipeline
-              — not logo soup.
+            <p className="mx-auto max-w-md text-[15px] leading-[1.7] text-text-secondary">
+              Each technology is a weapon in the pipeline — purpose-built to
+              detect, analyze, and convict.
             </p>
           </FadeIn>
         </div>
 
         {/* Pipeline flow */}
         <FadeIn delay={0.3}>
-          <div className="mb-20 flex flex-wrap items-center justify-center gap-2">
+          <div className="mb-16 flex flex-wrap items-center justify-center gap-2">
             {pipelineSteps.map((step, i) => (
               <div key={i} className="flex items-center gap-2">
-                <motion.span
-                  className={`rounded-lg px-3 py-1.5 font-mono text-[11px] ${
+                <span
+                  className={`rounded-lg px-3 py-1.5 font-mono text-[11px] transition-transform duration-200 hover:scale-[1.06] hover:-translate-y-px ${
                     step.color
                       ? ""
                       : "border border-white/[0.04] bg-white/[0.02] text-text-muted"
@@ -65,25 +115,22 @@ export default function Architecture() {
                   style={
                     step.color
                       ? {
-                          backgroundColor: step.color + "10",
+                          backgroundColor: step.color + "0d",
                           color: step.color,
-                          border: `1px solid ${step.color}20`,
+                          border: `1px solid ${step.color}15`,
                         }
                       : {}
                   }
-                  whileHover={{ scale: 1.08, y: -2 }}
-                  transition={{ type: "spring", stiffness: 300 }}
                 >
                   {step.label}
-                </motion.span>
+                </span>
                 {i < pipelineSteps.length - 1 && (
-                  <motion.span
-                    className="text-white/10"
-                    animate={{ opacity: [0.1, 0.4, 0.1] }}
-                    transition={{ duration: 2, delay: i * 0.3, repeat: Infinity }}
+                  <span
+                    className="text-[12px] text-white/[0.08] animate-arrow-pulse"
+                    style={{ animationDelay: `${i * 0.3}s` }}
                   >
                     &rarr;
-                  </motion.span>
+                  </span>
                 )}
               </div>
             ))}
@@ -91,49 +138,55 @@ export default function Architecture() {
         </FadeIn>
 
         {/* Detail cards */}
-        <StaggerContainer className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3" stagger={0.08}>
+        <StaggerContainer className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3" stagger={0.06}>
           {architectureNodes.map((node) => {
             const Icon = iconMap[node.id] || Globe;
             return (
               <StaggerItem key={node.id}>
-                <motion.div
-                  className="glass group rounded-2xl p-6 transition-all duration-500"
-                  whileHover={{
-                    y: -4,
-                    boxShadow: `0 0 30px ${node.color}08`,
-                    transition: { duration: 0.3 },
-                  }}
-                >
-                  <div className="mb-5 flex items-center gap-3">
-                    <motion.div
-                      className="flex h-10 w-10 items-center justify-center rounded-xl"
-                      style={{ backgroundColor: node.color + "10" }}
-                      whileHover={{ scale: 1.1, rotate: 5 }}
-                      transition={{ type: "spring", stiffness: 300 }}
-                    >
-                      <Icon size={18} style={{ color: node.color }} strokeWidth={1.5} />
-                    </motion.div>
-                    <div>
-                      <h3 className="text-[13px] font-bold text-cream">
-                        {node.name}
-                      </h3>
-                      <p
-                        className="text-[11px] font-medium"
-                        style={{ color: node.color + "99" }}
-                      >
-                        {node.role}
-                      </p>
-                    </div>
-                  </div>
-                  <p className="text-[12px] leading-relaxed text-text-secondary">
-                    {node.description}
-                  </p>
-                </motion.div>
+                <ArchCard node={node} Icon={Icon} />
               </StaggerItem>
             );
           })}
         </StaggerContainer>
       </div>
     </section>
+  );
+}
+
+function ArchCard({ node, Icon }) {
+  const [hovered, setHovered] = useState(false);
+  return (
+    <div
+      className="glass glass-hover group rounded-2xl p-6 transition-transform duration-300"
+      style={{
+        transform: hovered ? "translateY(-2px)" : "translateY(0)",
+        boxShadow: hovered ? `0 8px 40px ${node.color}06` : "none",
+      }}
+      onMouseEnter={() => setHovered(true)}
+      onMouseLeave={() => setHovered(false)}
+    >
+      <div className="mb-5 flex items-center gap-3">
+        <div
+          className="flex h-10 w-10 items-center justify-center rounded-xl transition-transform duration-200 hover:scale-110 hover:rotate-[3deg]"
+          style={{ backgroundColor: node.color + "0d" }}
+        >
+          <Icon size={17} style={{ color: node.color }} strokeWidth={1.5} />
+        </div>
+        <div>
+          <h3 className="text-[13px] font-semibold tracking-[-0.01em] text-text-primary">
+            {node.name}
+          </h3>
+          <p
+            className="text-[11px] font-medium"
+            style={{ color: node.color + "80" }}
+          >
+            {node.role}
+          </p>
+        </div>
+      </div>
+      <p className="text-[12px] leading-[1.65] text-text-secondary">
+        {node.description}
+      </p>
+    </div>
   );
 }
