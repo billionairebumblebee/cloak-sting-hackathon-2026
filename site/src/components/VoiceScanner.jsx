@@ -155,11 +155,35 @@ export default function VoiceScanner() {
   const [selectedCase, setSelectedCase] = useState(null);
   const [phase, setPhase] = useState("idle");
   const [transcriptIndex, setTranscriptIndex] = useState(0);
+  const synthRef = useRef(null);
+  const utteranceQueueRef = useRef([]);
+
+  function speakLine(text, lang = "en-US") {
+    if (!window.speechSynthesis) return;
+    const utter = new SpeechSynthesisUtterance(text);
+    utter.lang = lang;
+    utter.rate = 1.1;
+    utter.pitch = 0.9;
+    utter.volume = 0.8;
+    utteranceQueueRef.current.push(utter);
+    window.speechSynthesis.speak(utter);
+  }
+
+  function stopSpeech() {
+    if (window.speechSynthesis) {
+      window.speechSynthesis.cancel();
+    }
+    utteranceQueueRef.current = [];
+  }
 
   const handleSelect = (caseItem) => {
+    stopSpeech();
     setSelectedCase(caseItem);
     setPhase("transcribing");
     setTranscriptIndex(0);
+    // Speak the first line
+    const lang = caseItem.language?.includes("Chinese") || caseItem.language?.includes("Mandarin") ? "zh-CN" : "en-US";
+    setTimeout(() => speakLine(caseItem.transcription[0].text, lang), 300);
   };
 
   useEffect(() => {
@@ -175,7 +199,10 @@ export default function VoiceScanner() {
       (segments[transcriptIndex + 1].time - segments[transcriptIndex].time) * 300 + 200;
 
     const timer = setTimeout(() => {
-      setTranscriptIndex((i) => i + 1);
+      const nextIdx = transcriptIndex + 1;
+      setTranscriptIndex(nextIdx);
+      const lang = selectedCase.language?.includes("Chinese") || selectedCase.language?.includes("Mandarin") ? "zh-CN" : "en-US";
+      speakLine(segments[nextIdx].text, lang);
     }, nextDelay);
 
     return () => clearTimeout(timer);
@@ -183,9 +210,14 @@ export default function VoiceScanner() {
 
   useEffect(() => {
     if (phase !== "analyzing") return;
+    stopSpeech();
     const timer = setTimeout(() => setPhase("result"), 1500);
     return () => clearTimeout(timer);
   }, [phase]);
+
+  useEffect(() => {
+    return () => stopSpeech();
+  }, []);
 
   return (
     <section id="voice-scanner" className="relative px-6 py-28 sm:py-36">
@@ -376,6 +408,7 @@ export default function VoiceScanner() {
             >
               <button
                 onClick={() => {
+                  stopSpeech();
                   setSelectedCase(null);
                   setPhase("idle");
                   setTranscriptIndex(0);
