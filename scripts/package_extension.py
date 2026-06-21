@@ -2,7 +2,7 @@ from pathlib import Path
 from zipfile import ZipFile, ZIP_DEFLATED
 
 ROOT = Path(__file__).resolve().parents[1]
-OUT = ROOT / "dist" / "cloak-sting-extension.zip"
+OUT = ROOT / "dist" / "sting-extension.zip"
 INCLUDE = [
     "manifest.json",
     "popup.html",
@@ -11,7 +11,7 @@ INCLUDE = [
     "BRAND_AND_PITCH_BRIEF.md",
     "package.json",
 ]
-INCLUDE_DIRS = ["src", "demo"]
+INCLUDE_DIRS = ["src", "demo", "icons"]
 
 OUT.parent.mkdir(exist_ok=True)
 with ZipFile(OUT, "w", ZIP_DEFLATED) as zf:
