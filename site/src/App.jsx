@@ -1,29 +1,36 @@
+import { lazy, Suspense } from "react";
 import Navbar from "./components/Navbar";
 import Hero from "./components/Hero";
-import Problem from "./components/Problem";
-import ProductFlow from "./components/ProductFlow";
-import InteractiveDemo from "./components/InteractiveDemo";
-import Architecture from "./components/Architecture";
-import Footer from "./components/Footer";
+
+const Problem = lazy(() => import("./components/Problem"));
+const ProductFlow = lazy(() => import("./components/ProductFlow"));
+const InteractiveDemo = lazy(() => import("./components/InteractiveDemo"));
+const Architecture = lazy(() => import("./components/Architecture"));
+const Footer = lazy(() => import("./components/Footer"));
+
+function LazyFallback() {
+  return <div className="flex items-center justify-center py-32" />;
+}
 
 export default function App() {
   return (
     <div className="relative min-h-screen">
-      {/* Film grain / noise overlay */}
       <div className="noise-overlay" />
 
       <Navbar />
       <main>
         <Hero />
-        <div className="relative">
-          <div className="pointer-events-none absolute inset-0 bg-gradient-to-b from-transparent via-honey/[0.01] to-transparent" />
-          <Problem />
-          <ProductFlow />
-          <InteractiveDemo />
-          <Architecture />
-        </div>
+        <Suspense fallback={<LazyFallback />}>
+          <div className="relative">
+            <div className="pointer-events-none absolute inset-0 bg-gradient-to-b from-transparent via-honey/[0.01] to-transparent" />
+            <Problem />
+            <ProductFlow />
+            <InteractiveDemo />
+            <Architecture />
+          </div>
+          <Footer />
+        </Suspense>
       </main>
-      <Footer />
     </div>
   );
 }

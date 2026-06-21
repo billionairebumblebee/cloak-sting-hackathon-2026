@@ -19,7 +19,6 @@ export default function Hero() {
       {/* Ambient orbs */}
       <FloatingOrb color="rgba(245, 166, 35, 0.06)" size={500} x="10%" y="20%" delay={0} />
       <FloatingOrb color="rgba(230, 194, 0, 0.04)" size={400} x="70%" y="60%" delay={5} />
-      <FloatingOrb color="rgba(245, 166, 35, 0.03)" size={300} x="50%" y="10%" delay={10} />
 
       {/* Central glow */}
       <div className="pointer-events-none absolute top-1/3 left-1/2 h-[600px] w-[600px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-honey/[0.04] blur-[150px]" />
