@@ -33,6 +33,15 @@
   --font-mono: "JetBrains Mono", "Fira Code", monospace;
 }
 
+/* ---------- Logo styling ---------- */
+.sting-logo {
+  filter: drop-shadow(0 0 6px rgba(255, 255, 255, 0.4)) drop-shadow(0 0 2px rgba(255, 255, 255, 0.6));
+}
+
+html.light .sting-logo {
+  filter: none;
+}
+
 /* ---------- Light mode overrides ---------- */
 
 html.light {
