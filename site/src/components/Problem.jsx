@@ -12,32 +12,32 @@ const threats = [
   {
     icon: Mic,
     title: "AI voice clones",
-    desc: "Deepfake calls that sound like your bank, your boss, or your family.",
+    desc: "Deepfake calls impersonating your bank, your boss, your family. Indistinguishable from real.",
   },
   {
     icon: ShoppingBag,
-    title: "Fake stores",
-    desc: "AI-generated product pages with stolen photos and impossible prices.",
+    title: "Fake storefronts",
+    desc: "AI-generated product pages with stolen photos and prices too good to be real. Your money vanishes.",
   },
   {
     icon: KeyRound,
     title: "Cloned login pages",
-    desc: "Pixel-perfect copies of your bank, email, or social media login.",
+    desc: "Pixel-perfect replicas of your bank or email login. One keystroke and your credentials are gone.",
   },
   {
     icon: Headset,
     title: "Fake support agents",
-    desc: 'AI chatbots posing as customer service to extract your credentials.',
+    desc: "AI chatbots posing as customer service, engineered to extract your credentials and drain accounts.",
   },
   {
     icon: Clock,
-    title: "Urgency tactics",
-    desc: '"Act now or lose access" — engineered panic to bypass your judgment.',
+    title: "Weaponized urgency",
+    desc: '"Act now or lose everything" — engineered panic designed to short-circuit your judgment.',
   },
   {
     icon: Bot,
     title: "AI-powered deception",
-    desc: "Scammers use the same AI tools you trust to make fakes undetectable.",
+    desc: "Scammers weaponize the same AI you trust. Their fakes are getting undetectable. Sting sees through them.",
   },
 ];
 
@@ -45,22 +45,23 @@ export default function Problem() {
   return (
     <section id="problem" className="relative px-6 py-28 sm:py-36">
       {/* Ambient glow */}
-      <div className="pointer-events-none absolute top-0 left-1/4 h-[400px] w-[400px] rounded-full bg-danger/[0.015] blur-[150px]" />
+      <div className="pointer-events-none absolute top-0 left-1/4 h-[400px] w-[400px] rounded-full bg-danger/[0.02] blur-[150px]" />
 
       <div className="mx-auto max-w-6xl">
         <div className="mb-16 max-w-2xl">
-          <SectionLabel>The Problem</SectionLabel>
+          <SectionLabel>The Threat</SectionLabel>
           <FadeIn delay={0.1}>
             <h2 className="mb-5 text-[clamp(2rem,4vw,3rem)] font-bold leading-[1.12] tracking-[-0.025em] text-text-primary sm:text-4xl">
               Scams don&apos;t look
               <br />
-              <span className="text-text-muted">fake anymore.</span>
+              <span className="text-red-400/80">fake anymore.</span>
             </h2>
           </FadeIn>
           <FadeIn delay={0.2}>
             <p className="max-w-lg text-[15px] leading-[1.7] text-text-secondary">
-              Normal people need a fast, understandable warning — not a 40-page
-              security report. Sting gives you a plain-English verdict in seconds.
+              They look flawless. They sound real. They fool smart people every
+              day. You need a weapon, not a warning — Sting gives you a
+              plain-English verdict in seconds.
             </p>
           </FadeIn>
         </div>
@@ -68,8 +69,8 @@ export default function Problem() {
         <StaggerContainer className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3" stagger={0.06}>
           {threats.map((threat) => (
             <StaggerItem key={threat.title}>
-              <GlowCard className="p-6" glowColor="rgba(220, 38, 38, 0.04)">
-                <div className="mb-4 flex h-10 w-10 items-center justify-center rounded-xl bg-white/[0.03] text-text-muted transition-colors duration-300 group-hover:text-honey">
+              <GlowCard className="p-6" glowColor="rgba(220, 38, 38, 0.06)">
+                <div className="mb-4 flex h-10 w-10 items-center justify-center rounded-xl bg-red-500/[0.06] text-red-400/80 transition-colors duration-300 group-hover:text-red-400">
                   <threat.icon size={18} strokeWidth={1.5} />
                 </div>
                 <h3 className="mb-2 text-[14px] font-semibold tracking-[-0.01em] text-text-primary">

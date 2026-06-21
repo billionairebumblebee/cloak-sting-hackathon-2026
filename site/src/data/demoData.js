@@ -11,44 +11,44 @@ export const demoCases = [
     result: {
       riskScore: 92,
       riskLevel: "HIGH",
-      verdict: "This is a phishing scam impersonating USPS.",
+      verdict: "Confirmed phishing attack impersonating USPS. This link is a trap.",
       signals: [
         {
           type: "domain",
-          label: "Fake domain",
+          label: "Fraudulent domain",
           detail:
-            "usps-redelivery-update.com is not an official USPS domain. Real USPS links use usps.com.",
+            "usps-redelivery-update.com is not USPS. Real USPS links use usps.com only. This domain exists to steal your data.",
           severity: "critical",
         },
         {
           type: "pressure",
-          label: "Urgency tactic",
+          label: "Weaponized urgency",
           detail:
-            '"Update within 24hrs or it will be returned" creates false urgency to bypass your judgment.',
+            '"Update within 24hrs or it will be returned" \u2014 a manufactured deadline designed to bypass your judgment.',
           severity: "high",
         },
         {
           type: "impersonation",
           label: "Brand impersonation",
           detail:
-            "Uses USPS name and fake tracking number format to appear legitimate.",
+            "Hijacks USPS branding and uses a fake tracking number format to manufacture legitimacy.",
           severity: "high",
         },
         {
           type: "pattern",
-          label: "Common scam template",
+          label: "Known attack template",
           detail:
-            "Matches known package delivery phishing pattern seen in 340K+ reports this year.",
+            "Matches a documented package delivery phishing pattern flagged in 340K+ reports this year.",
           severity: "medium",
         },
       ],
       explanation:
-        "This SMS pretends to be from USPS but links to a fake domain designed to steal your personal information. Real USPS delivery notifications come from informed delivery or official USPS.com pages, never random domains. The 24-hour deadline is a pressure tactic to make you act without thinking.",
+        "This SMS is a phishing attack. It impersonates USPS but routes to a fraudulent domain built to harvest your personal information. Real USPS notifications come through Informed Delivery or official USPS.com pages \u2014 never random domains. The 24-hour deadline is a pressure weapon to force you into acting before thinking.",
       nextSteps: [
-        "Do not click the link",
-        "Delete the message",
-        "If expecting a package, check status directly at usps.com",
-        "Report to USPS: forward to 7726 (SPAM)",
+        "Do NOT click the link \u2014 it leads to a credential trap",
+        "Delete the message immediately",
+        "Check your real package status directly at usps.com",
+        "Fight back: forward this to 7726 (SPAM) to report the attacker",
       ],
     },
   },
@@ -59,57 +59,57 @@ export const demoCases = [
     input: {
       source: "URL: mega-ai-deals-store.shop/macbook-pro",
       content:
-        'Website advertising "MacBook Pro M4 — 80% OFF! Only 3 left! AI-verified authentic seller. Pay with crypto for extra 10% discount."',
+        'Website advertising "MacBook Pro M4 \u2014 80% OFF! Only 3 left! AI-verified authentic seller. Pay with crypto for extra 10% discount."',
     },
     result: {
       riskScore: 88,
       riskLevel: "HIGH",
       verdict:
-        "This is a fraudulent shopping site using AI-generated content to appear legitimate.",
+        "Fraudulent storefront using AI-generated content as bait. Zero chance this is legitimate.",
       signals: [
         {
           type: "domain",
-          label: "Suspicious domain",
+          label: "Disposable domain",
           detail:
-            "mega-ai-deals-store.shop registered 4 days ago. Legitimate retailers don't use freshly registered .shop domains.",
+            "mega-ai-deals-store.shop was registered 4 days ago. Legitimate retailers don't operate on throwaway domains.",
           severity: "critical",
         },
         {
           type: "pricing",
           label: "Impossible pricing",
           detail:
-            "80% off a MacBook Pro ($2,499 MSRP) is not a real deal from any authorized reseller.",
+            "80% off a MacBook Pro ($2,499 MSRP) doesn\u2019t exist from any authorized reseller. This is bait.",
           severity: "high",
         },
         {
           type: "pressure",
-          label: "Scarcity tactic",
+          label: "Fake scarcity",
           detail:
-            '"Only 3 left!" is a fake countdown designed to pressure immediate purchase.',
+            '"Only 3 left!" is a fabricated countdown engineered to pressure immediate payment.',
           severity: "high",
         },
         {
           type: "payment",
-          label: "Crypto-only payment",
+          label: "Irrecoverable payment method",
           detail:
-            "Pushing cryptocurrency payment removes buyer protection and makes refunds impossible.",
+            "Pushing cryptocurrency payment eliminates all buyer protection. Your money is gone the moment you send it.",
           severity: "critical",
         },
         {
           type: "ai_generated",
-          label: "AI-generated trust signals",
+          label: "Fabricated trust signals",
           detail:
-            '"AI-verified authentic seller" is meaningless marketing language with no verification behind it.',
+            '"AI-verified authentic seller" is meaningless \u2014 a made-up badge with zero verification behind it.',
           severity: "medium",
         },
       ],
       explanation:
-        "This site uses several classic e-commerce scam techniques amplified with AI-generated content. The domain was created days ago, the pricing is impossibly low, and pushing crypto payments ensures you have no way to recover your money. The 'AI-verified' badge is fabricated to exploit trust in AI technology.",
+        "This is a scam storefront weaponizing AI-generated content to look trustworthy. The domain is days old, the pricing is impossible, and crypto-only payment ensures you have zero recourse. The 'AI-verified' badge is completely fabricated to exploit trust in AI technology. You would receive nothing.",
       nextSteps: [
-        "Do not enter payment information",
-        "Close the page",
+        "Do NOT enter any payment information",
+        "Close the page \u2014 do not interact further",
         "Only buy Apple products from apple.com or authorized retailers",
-        "Report the site: reportfraud.ftc.gov",
+        "Report this fraud: submit at reportfraud.ftc.gov to help take it down",
       ],
     },
   },
@@ -126,52 +126,52 @@ export const demoCases = [
       riskScore: 96,
       riskLevel: "CRITICAL",
       verdict:
-        "This is a credential-harvesting phishing page impersonating Chase Bank.",
+        "Credential-harvesting attack. This page exists solely to steal your bank login.",
       signals: [
         {
           type: "domain",
           label: "Phishing domain",
           detail:
-            "chase-secure-verify.net is not Chase Bank. Real Chase login is at chase.com only.",
+            "chase-secure-verify.net is NOT Chase Bank. The real Chase login lives at chase.com \u2014 nowhere else.",
           severity: "critical",
         },
         {
           type: "impersonation",
           label: "Bank impersonation",
           detail:
-            "Page copies Chase visual design, logo, and login form layout to steal credentials.",
+            "Stolen Chase visual design, logo, and login form layout \u2014 all built to hijack your credentials.",
           severity: "critical",
         },
         {
           type: "pressure",
-          label: "Session expiry threat",
+          label: "Panic trigger",
           detail:
-            '"Session expires in 10 minutes" creates panic to make you enter credentials quickly.',
+            '"Session expires in 10 minutes" is a fabricated timer designed to create panic and override caution.',
           severity: "high",
         },
         {
           type: "form",
-          label: "Credential harvesting form",
+          label: "Credential harvesting",
           detail:
-            "Login form submits to a non-Chase server. Any credentials entered will be stolen.",
+            "This login form submits to an attacker-controlled server. Any credentials entered are immediately stolen.",
           severity: "critical",
         },
         {
           type: "ssl",
-          label: "Misleading security indicators",
+          label: "Misleading security theater",
           detail:
-            "Site has an SSL certificate but this only means the connection is encrypted — not that the site is legitimate.",
+            "The SSL padlock means the connection is encrypted \u2014 it does NOT mean the site is legitimate. Scammers get certificates too.",
           severity: "medium",
         },
       ],
       explanation:
-        "This page is designed to steal your Chase bank login credentials. It copies Chase's visual appearance but is hosted on a completely different domain. The 'account limited' message and countdown timer are fabricated to create panic. If you entered any information, change your Chase password immediately from the real chase.com.",
+        "This is a credential-harvesting operation. The page replicates Chase\u2019s appearance but is hosted on an attacker-controlled domain. The 'account limited' message and countdown timer are fabricated weapons to create panic. If you entered any information, your credentials are already compromised \u2014 act immediately.",
       nextSteps: [
-        "Do not enter any credentials",
-        "Close the page immediately",
-        "Go directly to chase.com to check your account",
-        "If credentials were entered: call Chase at 1-800-935-9935 immediately",
-        "Report: forward the URL to phishing@chase.com",
+        "Do NOT enter any credentials \u2014 close the page now",
+        "If you already entered info: call Chase at 1-800-935-9935 IMMEDIATELY",
+        "Go directly to chase.com to verify your account status",
+        "Change your Chase password from the real site right now",
+        "Strike back: forward the URL to phishing@chase.com to help shut it down",
       ],
     },
   },
@@ -288,27 +288,27 @@ export const architectureNodes = [
   {
     id: "browserbase",
     name: "Browserbase",
-    role: "Safe page inspection",
+    role: "Isolated threat inspection",
     description:
-      "Opens suspicious URLs in an isolated cloud browser. Captures page structure, redirects, and form behavior without exposing the user's real browser or IP to the scam site.",
+      "Detonates suspicious URLs in a sandboxed cloud browser. Captures page structure, redirects, and form behavior without exposing your real browser or IP to the attacker.",
     color: "#6366f1",
     position: "left",
   },
   {
     id: "anthropic",
     name: "Anthropic Claude",
-    role: "Grounded explanations",
+    role: "Verdict engine",
     description:
-      "Takes deterministic signal output and generates a plain-English explanation a non-technical person can understand. Also produces safe next-step recommendations grounded in the actual evidence.",
+      "Takes deterministic signal output and generates a plain-English conviction anyone can understand. Produces actionable counter-strike recommendations grounded in the evidence.",
     color: "#d97706",
     position: "center",
   },
   {
     id: "redis",
     name: "Redis",
-    role: "Case memory & receipts",
+    role: "Threat memory & dossiers",
     description:
-      "Stores evidence receipts, case records, and scam pattern signatures. Enables similar-scam retrieval so Sting can say 'we've seen 47 variants of this scam' with real data.",
+      "Stores evidence dossiers, case records, and attack pattern signatures. Enables pattern matching so Sting can say 'we\u2019ve convicted 47 variants of this attack' with real data.",
     color: "#dc2626",
     position: "right",
   },
@@ -326,7 +326,7 @@ export const architectureNodes = [
     name: "Sentry",
     role: "Reliability monitoring",
     description:
-      "Captures errors, performance issues, and edge cases in production. Ensures the scanning pipeline doesn't silently fail when encountering novel scam patterns.",
+      "Captures errors, performance issues, and edge cases in production. Ensures the detection pipeline never silently fails when encountering novel attack patterns.",
     color: "#362d59",
     position: "center",
   },
@@ -335,7 +335,7 @@ export const architectureNodes = [
     name: "Fetch.ai",
     role: "Agent coordination",
     description:
-      "Enables autonomous agent-to-agent communication for distributed scam investigation — one agent inspects the page, another checks domain reputation, another generates the receipt.",
+      "Enables autonomous agent-to-agent communication for distributed threat investigation \u2014 one agent inspects the page, another checks domain reputation, another compiles the dossier.",
     color: "#1e3a5f",
     position: "right",
   },

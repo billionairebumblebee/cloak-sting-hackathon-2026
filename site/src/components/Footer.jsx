@@ -12,17 +12,17 @@ export default function Footer() {
               className="flex items-center gap-2.5 transition-transform duration-300 hover:scale-[1.03]"
             >
               <StingLogo size={22} />
-              <span className="text-[14px] font-semibold tracking-[-0.01em] text-text-primary">
+              <span className="text-[14px] font-bold tracking-[-0.01em] text-text-primary">
                 Sting
               </span>
             </a>
             <div className="flex flex-col items-center gap-1.5 text-center sm:items-end sm:text-right">
-              <p className="text-[11px] text-text-muted">
+              <p className="text-[11px] font-medium text-text-muted">
                 Built at UC Berkeley AI Hackathon 2026
               </p>
               <p className="text-[10px] text-text-muted/50">
-                Clean-room implementation. All code and assets created during the
-                hacking period.
+                Clean-room implementation. Every line written during the hacking
+                period. Zero tolerance for fraud.
               </p>
             </div>
           </div>
