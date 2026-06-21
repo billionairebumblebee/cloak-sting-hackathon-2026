@@ -99,6 +99,14 @@
     /* Detail overlay for history items */
     .detail-back{display:flex;align-items:center;gap:6px;margin-bottom:14px;padding:6px 0;cursor:pointer;font-size:12px;color:#f5a623;font-weight:600}
     .detail-back:hover{opacity:.8}
+
+    /* Screenshot modal */
+    .screenshot-modal{position:fixed;inset:0;background:rgba(0,0,0,.85);z-index:100;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:16px}
+    .screenshot-modal img{max-width:100%;max-height:70%;border-radius:8px;border:1px solid #333}
+    .screenshot-modal .modal-actions{display:flex;gap:8px;margin-top:12px}
+    .screenshot-modal button{padding:8px 16px;border:0;border-radius:8px;font-size:12px;font-weight:600;cursor:pointer}
+    .screenshot-modal .btn-export{background:#f5a623;color:#050505}
+    .screenshot-modal .btn-close{background:#333;color:#e0e0e0}
   </style>
 </head>
 <body>

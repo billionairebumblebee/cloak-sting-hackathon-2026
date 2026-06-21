@@ -383,6 +383,23 @@
     return lines.join('\n');
   }
 
+  function requestScreenshot(receipt) {
+    if (receipt.score < MIN_VISIBLE_SCORE) return;
+    if (!globalThis.chrome?.runtime?.sendMessage) return;
+    chrome.runtime.sendMessage({
+      type: 'CAPTURE_SCREENSHOT',
+      caseId: receipt.id
+    }).then((response) => {
+      if (response?.success) {
+        receipt.evidence = {
+          screenshotCaptured: true,
+          screenshotKey: response.storageKey
+        };
+        saveReceipt(receipt);
+      }
+    }).catch(() => {});
+  }
+
   function run() {
     if (!globalThis.CloakScamSignals) return;
     const analysis = globalThis.CloakScamSignals.analyzeScamSurface({
@@ -394,6 +411,7 @@
     const receipt = buildReceipt(analysis);
     saveReceipt(receipt);
     renderOverlay(receipt);
+    requestScreenshot(receipt);
     chrome.runtime?.sendMessage({ type: 'SCAN_RESULT', receipt });
   }
 

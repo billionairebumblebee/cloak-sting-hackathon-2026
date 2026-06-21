@@ -72,6 +72,8 @@ function normalizeReceiptToCase(receipt, extra = {}) {
     evidence: {
       observedOnly: true,
       screenshotPath: extra.screenshotPath || '',
+      screenshotCaptured: Boolean(extra.screenshotCaptured),
+      screenshotKey: extra.screenshotKey || '',
       transcript: extra.transcript || '',
       rawReceipt: receipt
     },
