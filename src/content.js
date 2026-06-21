@@ -266,6 +266,7 @@
         <div class="actions">
           <button class="danger" data-sting-action="leave">\u2190 Take me somewhere safe</button>
           <button class="primary" data-sting-action="copy">Save proof for my bank or family</button>
+          <button class="primary" data-sting-action="report" style="background:linear-gradient(135deg,#9333ea,#7c22ce);color:#fff">Report this scam</button>
           <button class="ghost" data-sting-action="dismiss">Hide warning (I understand the risk)</button>
         </div>
       </div>
@@ -287,6 +288,9 @@
         await navigator.clipboard?.writeText(formatReceipt(receipt));
         event.target.textContent = '\u2705 Saved! Paste in a message to show someone you trust.';
         setTimeout(() => { event.target.textContent = 'Save proof for my bank or family'; }, 4000);
+      }
+      if (action === 'report') {
+        showReportingPanel(receipt);
       }
     });
 
@@ -322,6 +326,146 @@
     for (const finding of receipt.findings) lines.push(`  - ${finding.label}: ${finding.evidence}`);
     lines.push('', 'WHAT TO DO:', '  - Do NOT send money, gift cards, or crypto', '  - Report to your bank if you shared financial info', '  - File a report: reportfraud.ftc.gov or ic3.gov', '  - Tell a family member or friend', '', `Captured: ${receipt.analyzedAt || new Date().toISOString()}`);
     return lines.join('\n');
+  }
+
+  /* ── Reporting panel (inline authority routing for browser context) ── */
+
+  const INLINE_AUTHORITIES = {
+    FTC: { name: 'FTC (Federal Trade Commission)', url: 'https://reportfraud.ftc.gov', howToFile: 'Visit reportfraud.ftc.gov, click "Report Now", and follow the guided questionnaire.' },
+    IC3: { name: 'FBI IC3 (Internet Crime Complaint Center)', url: 'https://www.ic3.gov', howToFile: 'Go to ic3.gov, click "File a Complaint", and complete the online form.' },
+    CFPB: { name: 'CFPB (Consumer Financial Protection Bureau)', url: 'https://www.consumerfinance.gov/complaint/', howToFile: 'Submit a complaint at consumerfinance.gov/complaint.' },
+    FCC: { name: 'FCC (Federal Communications Commission)', url: 'https://consumercomplaints.fcc.gov', howToFile: 'File a complaint at consumercomplaints.fcc.gov under "Phone".' },
+    SEC: { name: 'SEC (Securities and Exchange Commission)', url: 'https://www.sec.gov/tcr', howToFile: 'Submit a tip at sec.gov/tcr with details of the investment fraud.' },
+    CFTC: { name: 'CFTC (Commodity Futures Trading Commission)', url: 'https://www.cftc.gov/complaint', howToFile: 'File at cftc.gov/complaint for crypto or commodity fraud.' },
+    IDENTITY_THEFT: { name: 'IdentityTheft.gov', url: 'https://www.identitytheft.gov', howToFile: 'Visit identitytheft.gov to report and get a recovery plan.' },
+    CARRIER_7726: { name: 'Forward to 7726 (SPAM)', url: '', howToFile: 'Forward the suspicious text to 7726. Your carrier will investigate.' },
+  };
+
+  const INLINE_BRAND_URLS = {
+    google: { name: 'Google Abuse Report', url: 'https://safebrowsing.google.com/safebrowsing/report_phish/' },
+    apple: { name: 'Apple Phishing Report', url: 'https://support.apple.com/en-us/102568' },
+    amazon: { name: 'Amazon Fraud Report', url: 'https://www.amazon.com/gp/help/customer/display.html?nodeId=G508510' },
+    microsoft: { name: 'Microsoft Phishing Report', url: 'https://www.microsoft.com/en-us/concern/scam' },
+    paypal: { name: 'PayPal Fraud Report', url: 'https://www.paypal.com/us/security/report-suspicious-messages' },
+    usps: { name: 'USPS Fraud Report', url: 'https://www.uspis.gov/report' },
+    fedex: { name: 'FedEx Fraud Report', url: 'https://www.fedex.com/en-us/trust-center/report-fraud.html' },
+    dhl: { name: 'DHL Fraud Report', url: 'https://www.dhl.com/us-en/home/footer/fraud-awareness.html' },
+  };
+
+  function getChannelsForReceipt(receipt) {
+    const findings = receipt.findings || [];
+    const types = new Set();
+    for (const f of findings) {
+      if (f.type) types.add(f.type);
+      const ev = (f.evidence || '').toLowerCase();
+      if (/crypto|bitcoin|wallet|seed phrase|private key/.test(ev)) types.add('crypto');
+      if (/bank|financial/.test((f.label || '').toLowerCase())) types.add('financial');
+      if (/phone|call/.test(ev)) types.add('phone');
+      if (/romance|dating/.test(ev)) types.add('romance');
+      if (/identity|credential|ssn/.test(ev)) types.add('identity');
+    }
+
+    const channels = [INLINE_AUTHORITIES.FTC, INLINE_AUTHORITIES.IC3];
+    if (types.has('financial') || types.has('impersonation') || types.has('payment')) channels.push(INLINE_AUTHORITIES.CFPB);
+    if (types.has('phone') || types.has('ransom') || types.has('social-engineering') || types.has('deepfake')) {
+      channels.push(INLINE_AUTHORITIES.FCC);
+      channels.push(INLINE_AUTHORITIES.CARRIER_7726);
+    }
+    if (types.has('crypto') || types.has('crypto-harvest')) {
+      channels.push(INLINE_AUTHORITIES.SEC);
+      channels.push(INLINE_AUTHORITIES.CFTC);
+    }
+    if (types.has('romance')) channels.push({ name: 'FBI IC3 Romance Fraud Unit', url: 'https://www.ic3.gov', howToFile: 'File at ic3.gov and select "Romance Scam" as the crime type.' });
+    if (types.has('identity') || types.has('credential')) channels.push(INLINE_AUTHORITIES.IDENTITY_THEFT);
+
+    const hostname = (receipt.hostname || '').toLowerCase();
+    for (const [brand, info] of Object.entries(INLINE_BRAND_URLS)) {
+      if (hostname.includes(brand)) channels.push(info);
+    }
+
+    return channels;
+  }
+
+  function buildPlainTextReport(receipt, channels) {
+    const lines = [
+      '========================================',
+      '  STING — Scam Report for Authorities',
+      '========================================',
+      '',
+      `Generated: ${new Date().toISOString()}`,
+      `URL:       ${receipt.url}`,
+      `Hostname:  ${receipt.hostname}`,
+      `Risk:      ${receipt.risk} (${receipt.score}/100)`,
+      '',
+      '--- WARNING SIGNALS ---',
+    ];
+    for (const f of (receipt.findings || [])) {
+      lines.push(`  - [${f.type}] ${f.label}: ${f.evidence}`);
+    }
+    lines.push('', '--- RECOMMENDED REPORTING CHANNELS ---');
+    for (const ch of channels) {
+      lines.push(`  ${ch.name}${ch.url ? ' — ' + ch.url : ''}`);
+    }
+    lines.push('', 'DISCLAIMER: This report was generated by STING scam detection software. Evidence has not been verified by law enforcement.');
+    lines.push('========================================');
+    return lines.join('\n');
+  }
+
+  function showReportingPanel(receipt) {
+    document.getElementById('sting-report-panel')?.remove();
+    const channels = getChannelsForReceipt(receipt);
+    const panel = document.createElement('div');
+    panel.id = 'sting-report-panel';
+
+    const channelListHtml = channels.map((ch) => {
+      const linkHtml = ch.url
+        ? `<a href="${escapeHtml(ch.url)}" target="_blank" rel="noopener noreferrer" style="color:#60a5fa;text-decoration:underline;word-break:break-all">${escapeHtml(ch.url)}</a>`
+        : '<span style="color:#888">No URL — see instructions</span>';
+      return `<div style="padding:12px;border-radius:12px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);margin-bottom:8px">
+        <div style="font-weight:700;font-size:14px;color:#e8e8e8;margin-bottom:4px">${escapeHtml(ch.name)}</div>
+        <div style="font-size:12px;margin-bottom:4px">${linkHtml}</div>
+        <div style="font-size:12px;color:#999">${escapeHtml(ch.howToFile)}</div>
+      </div>`;
+    }).join('');
+
+    panel.innerHTML = `
+      <style>
+        #sting-report-panel{position:fixed;right:18px;top:18px;z-index:2147483647;width:min(440px,calc(100vw - 36px));max-height:calc(100vh - 36px);overflow-y:auto;font:14px/1.45 -apple-system,BlinkMacSystemFont,"Inter","Segoe UI",sans-serif;color:#e8e8e8;background:rgba(8,8,12,.97);border:1px solid rgba(147,51,234,.35);box-shadow:0 24px 80px rgba(0,0,0,.6),0 0 40px rgba(147,51,234,.1);border-radius:22px;backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px)}
+        #sting-report-panel .rp-bar{height:5px;background:linear-gradient(90deg,#9333ea,#6366f1,#9333ea)}
+        #sting-report-panel .rp-inner{padding:18px}
+        #sting-report-panel h3{margin:0 0 6px;font-size:18px;color:#c084fc}
+        #sting-report-panel .rp-disclaimer{font-size:11px;color:#888;margin:12px 0 0;padding:10px;border-radius:8px;background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.06)}
+        #sting-report-panel button{border:0;border-radius:999px;padding:12px 18px;font-size:13px;font-weight:700;cursor:pointer;min-height:44px;transition:all .2s}
+        #sting-report-panel .rp-copy{background:linear-gradient(135deg,#9333ea,#7c22ce);color:#fff;margin-right:8px}
+        #sting-report-panel .rp-copy:hover{box-shadow:0 0 16px rgba(147,51,234,.4)}
+        #sting-report-panel .rp-close{background:rgba(255,255,255,.06);color:#999;border:1px solid rgba(255,255,255,.1)}
+        #sting-report-panel .rp-close:hover{color:#e8e8e8;background:rgba(255,255,255,.1)}
+      </style>
+      <div class="rp-bar"></div>
+      <div class="rp-inner">
+        <h3>\u{1F4E2} Report This Scam</h3>
+        <p style="color:#aaa;font-size:13px;margin:0 0 14px">Based on the scam signals detected, here are the recommended authorities to report to:</p>
+        ${channelListHtml}
+        <div style="display:flex;flex-wrap:wrap;gap:8px;margin-top:14px">
+          <button class="rp-copy" data-sting-report="copy">Copy report to clipboard</button>
+          <button class="rp-close" data-sting-report="close">Close</button>
+        </div>
+        <div class="rp-disclaimer">STING does not submit reports on your behalf. These are official channels where you can file your own report.</div>
+      </div>
+    `;
+
+    const plainReport = buildPlainTextReport(receipt, channels);
+    panel.addEventListener('click', async (e) => {
+      const action = e.target?.dataset?.stingReport;
+      if (action === 'close') panel.remove();
+      if (action === 'copy') {
+        await navigator.clipboard?.writeText(plainReport);
+        e.target.textContent = '\u2705 Copied!';
+        setTimeout(() => { e.target.textContent = 'Copy report to clipboard'; }, 3000);
+      }
+    });
+
+    document.documentElement.appendChild(panel);
   }
 
   function trySentryCaptureScam(receipt) {
