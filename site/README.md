@@ -1,4 +1,4 @@
-# cloak STING
+# STING
 
 **Catch the scam before it catches you.**
 
@@ -99,10 +99,10 @@ site/
 
 ## Hackathon Clean-Room Boundary
 
-All implementation, code, assets, logos, visual design, and content in this repository were created during the UC Berkeley AI Hackathon 2026 hacking period. Prior projects (including Cloak) were used only as high-level conceptual inspiration. No code, assets, logos, CSS, screenshots, README text, or repository structure was copied from any previous project.
+All implementation, code, assets, logos, visual design, and content in this repository were created during the UC Berkeley AI Hackathon 2026 hacking period. Prior projects were used only as high-level conceptual inspiration. No code, assets, logos, CSS, screenshots, README text, or repository structure was copied from any previous project.
 
 - The sting logo is an original stingray mark created from scratch.
-- No Cloak branding, visual identity, or code is present.
+- No prior branding, visual identity, or code is present.
 - This is a standalone hackathon submission.
 
 ---

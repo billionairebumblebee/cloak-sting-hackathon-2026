@@ -1,4 +1,4 @@
-# cloak STING — UC Berkeley AI Hackathon 2026
+# STING — UC Berkeley AI Hackathon 2026
 
 **STING = Scam Tracking & Intelligence Network Guard**
 
@@ -14,7 +14,7 @@ STING is a Chrome extension + voice analysis pipeline that spots scams in real t
 git clone https://github.com/billionairebumblebee/cloak-sting-hackathon-2026.git
 cd cloak-sting-hackathon-2026
 npm install
-npm test          # 177 tests pass — zero keys required
+npm test          # 197 tests pass — zero keys required
 npm run build     # packages extension ZIP
 ```
 
@@ -60,7 +60,10 @@ Every sponsor technology is integrated with real code, real tests, and graceful 
 | **Sentry** | Error + event monitoring | Local event log | Cloud envelope delivery | `scripts/sentry_smoke_demo.js` |
 | **Fetch.ai / ASI:One** | Agent coordination (4 endpoints) | Local wrapper, no registration | Agentverse-registered agent | `scripts/asi_agent_demo.js` |
 | **Arize / Phoenix** | 5-criteria eval pipeline | Local eval report generation | Cloud observability traces | `scripts/arize_eval_demo.js` |
-| **Simular** | Autonomous QA testing | Used for testing only — not in runtime | N/A | QA_REPORT.md |
+| **Token Company** | Risk-preserving evidence compression | Local deterministic (66% reduction) | N/A | `scripts/token_compress_demo.js` |
+| **Simular** | Autonomous cloud QA testing | Used for testing only — not in runtime | N/A | QA_REPORT.md |
+| **OpenAI Codex** | AI pair programming | Development tool | N/A | — |
+| **Devin (Cognition)** | Full-stack engineering agent | Development tool | N/A | — |
 | **Pika / Midjourney** | Visual design support | Logo + site design assistance | N/A | Site assets |
 
 ### Key distinction
@@ -84,7 +87,7 @@ Every sponsor technology is integrated with real code, real tests, and graceful 
 | 8 | History tab shows past scans | Switch to History in popup | LIVE |
 | 9 | Voice pipeline processes fixture | `npm run demo` (voice section) | LIVE |
 | 10 | Threat export generates STIX/CSV | `npm run demo` (export section) | LIVE |
-| 11 | All 177 tests pass | `npm test` | LIVE |
+| 11 | All 197 tests pass | `npm test` | LIVE |
 | 12 | Eval criteria script runs | `node scripts/arize_eval_demo.js` | LIVE |
 | 13 | Sentry smoke test passes | `node scripts/sentry_smoke_demo.js` | LIVE |
 | 14 | Link pre-scan tooltip appears | Hover a link on any page | LIVE |
@@ -113,7 +116,7 @@ Open in browser after loading the extension:
 
 ## Test coverage
 
-177 tests across 17 test files covering:
+197 tests across 19 test files covering:
 - Scam signal detection (page + voice)
 - Typosquat / homoglyph analysis
 - Form credential harvesting
@@ -171,7 +174,7 @@ scamSignals.js ──→ typosquatDetector.js     ← 100% local, no API
 
 ## Compliance boundary
 
-This repository is intentionally separate from prior Cloak extension repos. Built from scratch for the hackathon submission window.
+This repository is intentionally separate from prior extension repos. Built from scratch for the hackathon submission window.
 
 Safety boundary: STING stores observed evidence and public technical indicators. It does not claim to identify private individuals or encourage vigilante action.
 

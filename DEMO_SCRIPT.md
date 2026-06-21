@@ -75,7 +75,7 @@ node scripts/inspect_link_demo.js
 - Evidence extracted without exposing user's browser/device
 
 **Say:**
-> "If a link looks suspicious, Cloak opens it in a sandboxed Browserbase session. The user's device never touches the scam page. Evidence comes back as a receipt."
+> "If a link looks suspicious, STING opens it in a sandboxed Browserbase session. The user's device never touches the scam page. Evidence comes back as a receipt."
 
 **Mention Redis:**
 > "Cases persist in Redis Cloud — case memory means if the same scam domain hits another family member, we already have the dossier."
