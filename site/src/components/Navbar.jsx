@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import StingLogo from "../assets/StingLogo";
 import { Menu, X } from "lucide-react";
+import { playClick } from "../utils/sounds";
 
 const navLinks = [
   { label: "Problem", href: "#problem" },
@@ -64,7 +65,7 @@ export default function Navbar() {
 
         <button
           className="flex h-11 w-11 items-center justify-center rounded-lg text-text-muted transition-colors hover:text-text-primary md:hidden"
-          onClick={() => setOpen(!open)}
+          onClick={() => { playClick(); setOpen(!open); }}
           aria-label="Toggle menu"
         >
           {open ? <X size={20} /> : <Menu size={20} />}

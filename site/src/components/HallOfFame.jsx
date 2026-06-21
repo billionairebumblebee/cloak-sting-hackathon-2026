@@ -2,6 +2,7 @@ import { useState, useEffect, useMemo } from "react";
 import { Globe, Mail, Phone, Flame, AlertTriangle, Database } from "lucide-react";
 import { scammerBlacklist } from "../data/demoData";
 import { FadeIn, StaggerContainer, StaggerItem, SectionLabel, GlowCard } from "./Motion";
+import { playClick } from "../utils/sounds";
 
 const typeIcons = {
   domain: Globe,
@@ -149,7 +150,7 @@ export default function HallOfFame() {
             {filterTabs.map((tab) => (
               <button
                 key={tab.key}
-                onClick={() => setActiveFilter(tab.key)}
+                onClick={() => { playClick(); setActiveFilter(tab.key); }}
                 className={`min-h-[44px] rounded-xl px-5 py-2.5 text-[13px] font-semibold transition-all duration-300 hover:scale-[1.03] active:scale-[0.97] ${
                   activeFilter === tab.key
                     ? "border-2 border-danger/40 bg-danger/10 text-danger shadow-md shadow-red-500/10"

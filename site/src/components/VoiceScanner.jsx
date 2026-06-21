@@ -9,6 +9,7 @@ import {
   Volume2,
 } from "lucide-react";
 import { FadeIn, SectionLabel } from "./Motion";
+import { playPhoneRing, playTranscribeTick, playThreatDetected, playVerdictSlam } from "../utils/sounds";
 
 function TranscriptionLine({ text, isNew, isHighlighted }) {
   return (
@@ -181,9 +182,10 @@ export default function VoiceScanner() {
     setSelectedCase(caseItem);
     setPhase("transcribing");
     setTranscriptIndex(0);
-    // Speak the first line
+    // Phone ring then start speaking
+    playPhoneRing();
     const lang = caseItem.language?.includes("Chinese") || caseItem.language?.includes("Mandarin") ? "zh-CN" : "en-US";
-    setTimeout(() => speakLine(caseItem.transcription[0].text, lang), 300);
+    setTimeout(() => speakLine(caseItem.transcription[0].text, lang), 500);
   };
 
   useEffect(() => {
@@ -201,6 +203,7 @@ export default function VoiceScanner() {
     const timer = setTimeout(() => {
       const nextIdx = transcriptIndex + 1;
       setTranscriptIndex(nextIdx);
+      playTranscribeTick();
       const lang = selectedCase.language?.includes("Chinese") || selectedCase.language?.includes("Mandarin") ? "zh-CN" : "en-US";
       speakLine(segments[nextIdx].text, lang);
     }, nextDelay);
@@ -211,7 +214,11 @@ export default function VoiceScanner() {
   useEffect(() => {
     if (phase !== "analyzing") return;
     stopSpeech();
-    const timer = setTimeout(() => setPhase("result"), 1500);
+    playThreatDetected();
+    const timer = setTimeout(() => {
+      playVerdictSlam();
+      setPhase("result");
+    }, 1500);
     return () => clearTimeout(timer);
   }, [phase]);
 

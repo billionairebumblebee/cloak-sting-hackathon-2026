@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import StingLogo from "../assets/StingLogo";
 import { FileText, Crosshair, Phone } from "lucide-react";
 import { FloatingOrb } from "./Motion";
+import { playClick } from "../utils/sounds";
 
 // Layer 3: fast foreground sparkles (2-6s cycles)
 const sparkles = [
@@ -146,6 +147,7 @@ export default function Hero() {
         >
           <a
             href="#voice-scanner"
+            onClick={playClick}
             className="group cta-glow-green flex h-12 items-center gap-2.5 rounded-full bg-[#13ef93] px-8 text-[14px] font-semibold text-surface transition-all duration-300 hover:scale-[1.03] active:scale-[0.97]"
           >
             <Phone size={15} />
@@ -153,6 +155,7 @@ export default function Hero() {
           </a>
           <a
             href="#demo"
+            onClick={playClick}
             className="group cta-glow flex h-12 items-center gap-2.5 rounded-full bg-honey px-8 text-[14px] font-semibold text-surface transition-all duration-300 hover:scale-[1.03] active:scale-[0.97]"
           >
             <Crosshair size={15} className="transition-transform duration-300 group-hover:rotate-90" />
