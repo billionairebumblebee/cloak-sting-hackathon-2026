@@ -1,6 +1,7 @@
 (() => {
   const STORAGE_KEY = 'cloakStingLatestReceipt';
   const MIN_VISIBLE_SCORE = 35;
+  const BLOCK_SCORE = 50;
 
   function getPageText() {
     const bodyText = document.body ? document.body.innerText : '';
@@ -33,6 +34,7 @@
 
   function removeExistingOverlay() {
     document.getElementById('cloak-sting-overlay')?.remove();
+    document.getElementById('cloak-sting-strip')?.remove();
   }
 
   function riskColor(risk) {
@@ -47,9 +49,106 @@
     return 'Looks safe';
   }
 
+  function blockPageInputs() {
+    const shield = document.createElement('div');
+    shield.id = 'cloak-sting-input-shield';
+    shield.innerHTML = `
+      <style>
+        #cloak-sting-input-shield {
+          position: fixed;
+          inset: 0;
+          z-index: 2147483646;
+          background: rgba(0, 0, 0, 0.35);
+          backdrop-filter: blur(2px);
+          -webkit-backdrop-filter: blur(2px);
+          cursor: not-allowed;
+          animation: cloakShieldIn 0.3s ease-out;
+        }
+        @keyframes cloakShieldIn {
+          from { opacity: 0; }
+          to { opacity: 1; }
+        }
+      </style>
+    `;
+    shield.addEventListener('click', (e) => {
+      e.preventDefault();
+      e.stopPropagation();
+    }, true);
+    document.documentElement.appendChild(shield);
+  }
+
+  function unblockPageInputs() {
+    document.getElementById('cloak-sting-input-shield')?.remove();
+  }
+
+  function showPersistentStrip(receipt) {
+    const existing = document.getElementById('cloak-sting-strip');
+    if (existing) return;
+
+    const colors = riskColor(receipt.risk);
+    const strip = document.createElement('div');
+    strip.id = 'cloak-sting-strip';
+    strip.innerHTML = `
+      <style>
+        #cloak-sting-strip {
+          position: fixed;
+          top: 0;
+          left: 0;
+          right: 0;
+          z-index: 2147483645;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          gap: 10px;
+          padding: 8px 16px;
+          background: rgba(13, 13, 15, 0.95);
+          border-bottom: 2px solid ${colors.border};
+          font: 14px/1.3 -apple-system, BlinkMacSystemFont, "Inter", "Segoe UI", sans-serif;
+          color: ${colors.text};
+          backdrop-filter: blur(10px);
+          -webkit-backdrop-filter: blur(10px);
+          animation: cloakStripIn 0.2s ease-out;
+        }
+        @keyframes cloakStripIn {
+          from { transform: translateY(-100%); }
+          to { transform: translateY(0); }
+        }
+        #cloak-sting-strip .strip-text {
+          font-weight: 700;
+        }
+        #cloak-sting-strip button {
+          background: ${colors.border};
+          color: white;
+          border: none;
+          border-radius: 6px;
+          padding: 4px 12px;
+          font-size: 12px;
+          font-weight: 700;
+          cursor: pointer;
+          transition: opacity 0.15s;
+        }
+        #cloak-sting-strip button:hover { opacity: 0.85; }
+      </style>
+      <span class="strip-text">&#x26A0; This page was flagged: ${escapeHtml(verdictText(receipt.risk))}</span>
+      <button data-cloak-strip="show">Show warning</button>
+    `;
+
+    strip.addEventListener('click', (e) => {
+      if (e.target?.dataset?.cloakStrip === 'show') {
+        strip.remove();
+        renderOverlay(receipt);
+      }
+    });
+
+    document.documentElement.appendChild(strip);
+  }
+
   function renderOverlay(receipt) {
     removeExistingOverlay();
     if (receipt.score < MIN_VISIBLE_SCORE) return;
+
+    const shouldBlock = receipt.score >= BLOCK_SCORE;
+    if (shouldBlock) blockPageInputs();
 
     const colors = riskColor(receipt.risk);
     const root = document.createElement('section');
@@ -225,7 +324,11 @@
 
     root.addEventListener('click', async (event) => {
       const action = event.target?.dataset?.cloakAction;
-      if (action === 'dismiss') root.remove();
+      if (action === 'dismiss') {
+        root.remove();
+        unblockPageInputs();
+        showPersistentStrip(receipt);
+      }
       if (action === 'leave') {
         if (history.length > 1) history.back();
         else location.href = 'about:blank';
