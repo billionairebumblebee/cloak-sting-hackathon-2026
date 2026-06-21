@@ -8,7 +8,7 @@ globalThis.chrome = {
     setBadgeText(opts) { badgeCalls.text.push(opts); },
     setBadgeBackgroundColor(opts) { badgeCalls.color.push(opts); }
   },
-  runtime: { onMessage: { addListener() {} } },
+  runtime: { onMessage: { addListener() {} }, onInstalled: { addListener() {} } },
   tabs: { onUpdated: { addListener() {} } }
 };
 

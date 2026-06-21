@@ -9,7 +9,7 @@ export default function Footer() {
           <div className="flex flex-col items-center gap-6 sm:flex-row sm:justify-between">
             <a
               href="#"
-              className="flex items-center gap-2.5 transition-transform duration-300 hover:scale-[1.03]"
+              className="flex items-center gap-2.5"
             >
               <StingLogo size={22} />
               <span className="text-[14px] font-bold tracking-[-0.01em] text-text-primary">
@@ -17,10 +17,10 @@ export default function Footer() {
               </span>
             </a>
             <div className="flex flex-col items-center gap-1.5 text-center sm:items-end sm:text-right">
-              <p className="text-[11px] font-medium text-text-muted">
+              <p className="text-[12px] font-medium text-text-secondary">
                 Built at UC Berkeley AI Hackathon 2026
               </p>
-              <p className="text-[10px] text-text-muted/50">
+              <p className="text-[11px] text-text-muted">
                 Clean-room implementation. Every line written during the hacking
                 period. Zero tolerance for fraud.
               </p>

@@ -111,13 +111,13 @@ export default function HallOfFame() {
         <div className="mb-16 text-center">
           <SectionLabel>Wall of Shame</SectionLabel>
           <FadeIn delay={0.1}>
-            <h2 className="mb-5 text-[clamp(2rem,4vw,3rem)] font-bold leading-[1.12] tracking-[-0.025em] text-text-primary">
+            <h2 className="mb-5 text-[clamp(2.25rem,4.5vw,3.5rem)] font-extrabold leading-[1.08] tracking-[-0.03em] text-text-primary">
               Scammer Hall of{" "}
               <span className="text-danger">Fame</span>
             </h2>
           </FadeIn>
           <FadeIn delay={0.2}>
-            <p className="mx-auto max-w-lg text-[15px] leading-[1.7] text-text-secondary">
+            <p className="mx-auto max-w-lg text-[16px] leading-[1.7] text-text-secondary">
               Every scam Sting catches becomes shared memory. These are real
               patterns from our detection pipeline.
             </p>
@@ -135,7 +135,7 @@ export default function HallOfFame() {
                 <span className="font-mono text-2xl font-bold text-text-primary">
                   <AnimatedCounter target={totalReports} />
                 </span>
-                <span className="text-[13px] text-text-muted">
+                <span className="text-[14px] text-text-secondary">
                   total reports filed
                 </span>
               </div>
@@ -150,10 +150,10 @@ export default function HallOfFame() {
               <button
                 key={tab.key}
                 onClick={() => setActiveFilter(tab.key)}
-                className={`rounded-lg px-4 py-2 text-[12px] font-medium transition-all duration-300 ${
+                className={`min-h-[44px] rounded-xl px-5 py-2.5 text-[13px] font-semibold transition-all duration-300 hover:scale-[1.03] active:scale-[0.97] ${
                   activeFilter === tab.key
-                    ? "border border-danger/30 bg-danger/10 text-danger"
-                    : "border border-white/[0.04] bg-white/[0.02] text-text-muted hover:border-white/[0.08] hover:text-text-secondary"
+                    ? "border-2 border-danger/40 bg-danger/10 text-danger shadow-md shadow-red-500/10"
+                    : "border border-white/[0.06] bg-white/[0.03] text-text-secondary hover:border-white/[0.12] hover:bg-white/[0.05] hover:text-text-primary"
                 }`}
               >
                 {tab.label}

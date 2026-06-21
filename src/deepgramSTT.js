@@ -46,7 +46,12 @@ async function transcribeUrl(audioUrl, options = {}) {
 
   if (!response.ok) {
     const body = await response.text().catch(() => '');
-    throw new Error(`Deepgram API error: ${response.status} ${body}`.trim());
+    const err = new Error(`Deepgram API error: ${response.status} ${body}`.trim());
+    try {
+      const { captureError } = require('./sentry.js');
+      captureError(err, { component: 'deepgram-stt', source: audioUrl }).catch(() => {});
+    } catch (_) {}
+    throw err;
   }
 
   return normalizeResponse(await response.json(), audioUrl);
@@ -80,7 +85,12 @@ async function transcribeFile(filePath, options = {}) {
 
   if (!response.ok) {
     const body = await response.text().catch(() => '');
-    throw new Error(`Deepgram API error: ${response.status} ${body}`.trim());
+    const err = new Error(`Deepgram API error: ${response.status} ${body}`.trim());
+    try {
+      const { captureError } = require('./sentry.js');
+      captureError(err, { component: 'deepgram-stt', source: resolved }).catch(() => {});
+    } catch (_) {}
+    throw err;
   }
 
   return normalizeResponse(await response.json(), resolved);

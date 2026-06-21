@@ -1,4 +1,3 @@
-import { useState } from "react";
 import {
   Globe,
   Brain,
@@ -91,13 +90,13 @@ export default function Architecture() {
         <div className="mb-16 text-center">
           <SectionLabel>Architecture</SectionLabel>
           <FadeIn delay={0.1}>
-            <h2 className="mb-5 text-[clamp(2rem,4vw,3rem)] font-bold leading-[1.12] tracking-[-0.025em] text-text-primary">
+            <h2 className="mb-5 text-[clamp(2.25rem,4.5vw,3.5rem)] font-extrabold leading-[1.08] tracking-[-0.03em] text-text-primary">
               The arsenal{" "}
               <span className="text-text-muted">behind the hunt.</span>
             </h2>
           </FadeIn>
           <FadeIn delay={0.2}>
-            <p className="mx-auto max-w-md text-[15px] leading-[1.7] text-text-secondary">
+            <p className="mx-auto max-w-md text-[16px] leading-[1.7] text-text-secondary">
               Each technology is a weapon in the pipeline — purpose-built to
               detect, analyze, and convict.
             </p>
@@ -110,7 +109,7 @@ export default function Architecture() {
             {pipelineSteps.map((step, i) => (
               <div key={i} className="flex items-center gap-2">
                 <span
-                  className={`rounded-lg px-3 py-1.5 font-mono text-[11px] transition-transform duration-200 hover:scale-[1.06] hover:-translate-y-px ${
+                  className={`rounded-lg px-3 py-1.5 font-mono text-[12px] ${
                     step.color
                       ? ""
                       : "border border-white/[0.04] bg-white/[0.02] text-text-muted"
@@ -157,20 +156,11 @@ export default function Architecture() {
 }
 
 function ArchCard({ node, Icon }) {
-  const [hovered, setHovered] = useState(false);
   return (
-    <div
-      className="glass glass-hover group rounded-2xl p-6 transition-transform duration-300"
-      style={{
-        transform: hovered ? "translateY(-2px)" : "translateY(0)",
-        boxShadow: hovered ? `0 8px 40px ${node.color}06` : "none",
-      }}
-      onMouseEnter={() => setHovered(true)}
-      onMouseLeave={() => setHovered(false)}
-    >
+    <div className="glass rounded-2xl p-6">
       <div className="mb-5 flex items-center gap-3">
         <div
-          className="flex h-10 w-10 items-center justify-center rounded-xl transition-transform duration-200 hover:scale-110 hover:rotate-[3deg]"
+          className="flex h-10 w-10 items-center justify-center rounded-xl"
           style={{ backgroundColor: node.color + "0d" }}
         >
           <Icon size={17} style={{ color: node.color }} strokeWidth={1.5} />

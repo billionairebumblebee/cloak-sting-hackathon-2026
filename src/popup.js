@@ -27,16 +27,33 @@ function escapeHtml(value) {
   }[char]));
 }
 
+function verdictText(risk) {
+  if (risk === 'high') return 'Looks like a scam';
+  if (risk === 'medium') return 'Looks suspicious';
+  return 'Looks safe';
+}
+
 function formatReceipt(receipt) {
-  if (!receipt) return 'No Sting receipt yet.';
+  if (!receipt) return 'No scam receipt yet.';
   return [
-    'Sting Threat Receipt',
-    `Risk: ${receipt.risk} (${receipt.score}/100)`,
+    'CLOAK STING - SCAM WARNING RECEIPT',
+    '------------------------------------',
+    `Verdict: ${verdictText(receipt.risk)} (${receipt.score}/100)`,
     `Page: ${receipt.title || receipt.hostname}`,
     `URL: ${receipt.url}`,
-    `Advice: ${receipt.advice}`,
-    'Signals:',
-    ...receipt.findings.map((f) => `- ${f.label}: ${f.evidence}`)
+    '',
+    `ADVICE: ${receipt.advice}`,
+    '',
+    'WARNING SIGNALS:',
+    ...receipt.findings.map((f) => `  - ${f.label}: ${f.evidence}`),
+    '',
+    'WHAT TO DO:',
+    '  - Do NOT send money, gift cards, or crypto',
+    '  - Report to your bank if you shared financial info',
+    '  - File a report: reportfraud.ftc.gov or ic3.gov',
+    '  - Tell a family member or friend',
+    '',
+    `Captured: ${receipt.analyzedAt || new Date().toISOString()}`
   ].join('\n');
 }
 
@@ -45,6 +62,13 @@ function getMeterColor(score) {
   if (score >= 55) return '#ff8c42';
   if (score >= 35) return '#ffc42e';
   return '#4ade80';
+}
+
+function getMeterGlowClass(score) {
+  if (score >= 75) return 'glow-red';
+  if (score >= 55) return 'glow-orange';
+  if (score >= 35) return 'glow-yellow';
+  return 'glow-green';
 }
 
 function getRiskClass(risk) {
@@ -127,7 +151,7 @@ function renderScanPanel(receipt) {
     </div>
     <div class="score-meter">
       <div class="label"><span>Threat Score</span><span>${receipt.score}/100</span></div>
-      <div class="meter-bar"><div class="meter-fill" style="width:${receipt.score}%;background:${meterColor}"></div></div>
+      <div class="meter-bar"><div class="meter-fill ${getMeterGlowClass(receipt.score)}" style="width:${receipt.score}%;background:${meterColor}"></div></div>
     </div>
     <div class="page-info">
       <div class="hostname">${escapeHtml(receipt.title || receipt.hostname || 'Unknown page')}</div>
@@ -272,7 +296,7 @@ function renderHistoryDetail(item) {
     </div>
     <div class="score-meter">
       <div class="label"><span>Threat Score</span><span>${item.score}/100</span></div>
-      <div class="meter-bar"><div class="meter-fill" style="width:${item.score}%;background:${meterColor}"></div></div>
+      <div class="meter-bar"><div class="meter-fill ${getMeterGlowClass(item.score)}" style="width:${item.score}%;background:${meterColor}"></div></div>
     </div>
     <div class="page-info">
       <div class="hostname">${escapeHtml(item.title || item.hostname || 'Unknown page')}</div>

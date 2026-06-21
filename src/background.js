@@ -28,6 +28,12 @@ if (typeof importScripts === 'function') {
     chrome.action.setBadgeText({ text: '', tabId });
   }
 
+  chrome.runtime.onInstalled.addListener((details) => {
+    if (details.reason === 'install') {
+      chrome.tabs.create({ url: 'onboard.html' });
+    }
+  });
+
   chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
     if (message?.type === 'SCAN_RESULT') {
       const tabId = sender?.tab?.id;

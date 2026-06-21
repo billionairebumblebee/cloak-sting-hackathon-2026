@@ -30,7 +30,12 @@ async function transcribeWithDeepgram(audioPath, { env = process.env, fetchImpl 
 
   if (!response.ok) {
     const text = await response.text().catch(() => '');
-    throw new Error(`Deepgram transcription failed: ${response.status} ${text}`.trim());
+    const err = new Error(`Deepgram transcription failed: ${response.status} ${text}`.trim());
+    try {
+      const { captureError } = require('./sentry.js');
+      captureError(err, { component: 'deepgram-transcribe' }).catch(() => {});
+    } catch (_) {}
+    throw err;
   }
 
   const data = await response.json();

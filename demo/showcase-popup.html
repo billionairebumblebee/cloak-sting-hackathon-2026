@@ -1,0 +1,51 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Cloak Sting - Popup Showcase</title>
+  <link rel="stylesheet" href="../popup.css">
+  <style>
+    html { display: flex; align-items: center; justify-content: center; min-height: 100vh; background: #1a1a2e; }
+  </style>
+</head>
+<body>
+  <main>
+    <header class="brand">
+      <div class="logo-mark" aria-hidden="true"></div>
+      <div class="brand-text">
+        <p class="eyebrow">cloak sting</p>
+        <h1>Scam Protection</h1>
+      </div>
+    </header>
+
+    <button id="scan" class="scan-btn" aria-label="Scan this page">
+      <span class="scan-icon" aria-hidden="true"></span>
+      Scan This Page
+    </button>
+
+    <section id="receipt" class="card" aria-live="polite">
+      <div class="risk-badge risk-high">&#x26A0; Looks like a scam</div>
+      <div class="receipt-title">Secure Bank Verification Center</div>
+      <div class="receipt-url">http://secure-bankverfiy-center.com/login</div>
+      <div class="receipt-advice">Do not enter information, send money, or call numbers on this page. Your real bank will never ask for your password by email. Call the number on your card.</div>
+      <div class="findings">
+        <div class="finding"><strong>Credential Harvesting</strong><span>Requesting password + OTP together is a red flag</span></div>
+        <div class="finding"><strong>Urgency Pressure</strong><span>"24 hours to avoid permanent lock" is a common scare tactic</span></div>
+        <div class="finding"><strong>Suspicious Domain</strong><span>Domain does not match any real banking institution</span></div>
+      </div>
+    </section>
+
+    <div class="actions">
+      <button id="copy" class="btn-primary" aria-label="Copy receipt to report">
+        <span class="btn-icon" aria-hidden="true">&#x1F4CB;</span>
+        Copy receipt to report
+      </button>
+    </div>
+
+    <footer class="footer">
+      <p>Report scams: <a href="https://reportfraud.ftc.gov">reportfraud.ftc.gov</a></p>
+    </footer>
+  </main>
+</body>
+</html>
