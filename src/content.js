@@ -1,5 +1,7 @@
 (() => {
   const STORAGE_KEY = 'cloakStingLatestReceipt';
+  const HISTORY_KEY = 'cloakStingScanHistory';
+  const HISTORY_LIMIT = 25;
   const MIN_VISIBLE_SCORE = 35;
 
   function getPageText() {
@@ -24,8 +26,19 @@
     try {
       if (globalThis.chrome?.storage?.local) {
         chrome.storage.local.set({ [STORAGE_KEY]: receipt });
+        chrome.storage.local.get(HISTORY_KEY, (result) => {
+          const history = result[HISTORY_KEY] || [];
+          history.unshift(receipt);
+          if (history.length > HISTORY_LIMIT) history.length = HISTORY_LIMIT;
+          chrome.storage.local.set({ [HISTORY_KEY]: history });
+        });
       } else {
         localStorage.setItem(STORAGE_KEY, JSON.stringify(receipt));
+        let history = [];
+        try { history = JSON.parse(localStorage.getItem(HISTORY_KEY) || '[]'); } catch (_) {}
+        history.unshift(receipt);
+        if (history.length > HISTORY_LIMIT) history.length = HISTORY_LIMIT;
+        localStorage.setItem(HISTORY_KEY, JSON.stringify(history));
       }
     } catch (_) {}
   }
