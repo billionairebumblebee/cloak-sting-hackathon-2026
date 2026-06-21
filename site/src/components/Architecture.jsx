@@ -1,5 +1,4 @@
-import { architectureNodes } from "../data/demoData";
-import { motion } from "framer-motion";
+import { useState } from "react";
 import {
   Globe,
   Brain,
@@ -18,6 +17,57 @@ const iconMap = {
   sentry: Bug,
   fetch: Network,
 };
+
+const architectureNodes = [
+  {
+    id: "browserbase",
+    name: "Browserbase",
+    role: "Safe page inspection",
+    color: "#6366f1",
+    description:
+      "Opens suspicious URLs in an isolated cloud browser. Captures page structure, redirects, and form behavior without exposing the user\u2019s real browser or IP to the scam site.",
+  },
+  {
+    id: "anthropic",
+    name: "Anthropic Claude",
+    role: "Grounded explanations",
+    color: "#d97706",
+    description:
+      "Takes deterministic signal output and generates a plain-English explanation a non-technical person can understand. Also produces safe next-step recommendations grounded in the actual evidence.",
+  },
+  {
+    id: "redis",
+    name: "Redis",
+    role: "Case memory & receipts",
+    color: "#dc2626",
+    description:
+      "Stores evidence receipts, case records, and scam pattern signatures. Enables similar-scam retrieval so Sting can say \u2018we\u2019ve seen 47 variants of this scam\u2019 with real data.",
+  },
+  {
+    id: "arize",
+    name: "Arize / Phoenix",
+    role: "Trace & eval observability",
+    color: "#f97316",
+    description:
+      "Traces every AI verdict through the pipeline. Logs input signals, model reasoning, and output quality so we can prove the system is improving and catch regressions.",
+  },
+  {
+    id: "sentry",
+    name: "Sentry",
+    role: "Reliability monitoring",
+    color: "#8b5cf6",
+    description:
+      "Captures errors, performance issues, and edge cases in production. Ensures the scanning pipeline doesn\u2019t silently fail when encountering novel scam patterns.",
+  },
+  {
+    id: "fetch",
+    name: "Fetch.ai",
+    role: "Agent coordination",
+    color: "#3b82f6",
+    description:
+      "Enables autonomous agent-to-agent communication for distributed scam investigation \u2014 one agent inspects the page, another checks domain reputation, another generates the receipt.",
+  },
+];
 
 const pipelineSteps = [
   { label: "Suspicious input", color: null },
@@ -56,8 +106,8 @@ export default function Architecture() {
           <div className="mb-16 flex flex-wrap items-center justify-center gap-2">
             {pipelineSteps.map((step, i) => (
               <div key={i} className="flex items-center gap-2">
-                <motion.span
-                  className={`rounded-lg px-3 py-1.5 font-mono text-[11px] ${
+                <span
+                  className={`rounded-lg px-3 py-1.5 font-mono text-[11px] transition-transform duration-200 hover:scale-[1.06] hover:-translate-y-px ${
                     step.color
                       ? ""
                       : "border border-white/[0.04] bg-white/[0.02] text-text-muted"
@@ -71,19 +121,16 @@ export default function Architecture() {
                         }
                       : {}
                   }
-                  whileHover={{ scale: 1.06, y: -1 }}
-                  transition={{ type: "spring", stiffness: 300 }}
                 >
                   {step.label}
-                </motion.span>
+                </span>
                 {i < pipelineSteps.length - 1 && (
-                  <motion.span
-                    className="text-[12px] text-white/[0.08]"
-                    animate={{ opacity: [0.08, 0.3, 0.08] }}
-                    transition={{ duration: 2.5, delay: i * 0.3, repeat: Infinity }}
+                  <span
+                    className="text-[12px] text-white/[0.08] animate-arrow-pulse"
+                    style={{ animationDelay: `${i * 0.3}s` }}
                   >
                     &rarr;
-                  </motion.span>
+                  </span>
                 )}
               </div>
             ))}
@@ -96,44 +143,50 @@ export default function Architecture() {
             const Icon = iconMap[node.id] || Globe;
             return (
               <StaggerItem key={node.id}>
-                <motion.div
-                  className="glass glass-hover group rounded-2xl p-6"
-                  whileHover={{
-                    y: -2,
-                    boxShadow: `0 8px 40px ${node.color}06`,
-                    transition: { duration: 0.35, ease: [0.25, 0.4, 0.25, 1] },
-                  }}
-                >
-                  <div className="mb-5 flex items-center gap-3">
-                    <motion.div
-                      className="flex h-10 w-10 items-center justify-center rounded-xl"
-                      style={{ backgroundColor: node.color + "0d" }}
-                      whileHover={{ scale: 1.08, rotate: 3 }}
-                      transition={{ type: "spring", stiffness: 300 }}
-                    >
-                      <Icon size={17} style={{ color: node.color }} strokeWidth={1.5} />
-                    </motion.div>
-                    <div>
-                      <h3 className="text-[13px] font-semibold tracking-[-0.01em] text-text-primary">
-                        {node.name}
-                      </h3>
-                      <p
-                        className="text-[11px] font-medium"
-                        style={{ color: node.color + "80" }}
-                      >
-                        {node.role}
-                      </p>
-                    </div>
-                  </div>
-                  <p className="text-[12px] leading-[1.65] text-text-secondary">
-                    {node.description}
-                  </p>
-                </motion.div>
+                <ArchCard node={node} Icon={Icon} />
               </StaggerItem>
             );
           })}
         </StaggerContainer>
       </div>
     </section>
+  );
+}
+
+function ArchCard({ node, Icon }) {
+  const [hovered, setHovered] = useState(false);
+  return (
+    <div
+      className="glass glass-hover group rounded-2xl p-6 transition-transform duration-300"
+      style={{
+        transform: hovered ? "translateY(-2px)" : "translateY(0)",
+        boxShadow: hovered ? `0 8px 40px ${node.color}06` : "none",
+      }}
+      onMouseEnter={() => setHovered(true)}
+      onMouseLeave={() => setHovered(false)}
+    >
+      <div className="mb-5 flex items-center gap-3">
+        <div
+          className="flex h-10 w-10 items-center justify-center rounded-xl transition-transform duration-200 hover:scale-110 hover:rotate-[3deg]"
+          style={{ backgroundColor: node.color + "0d" }}
+        >
+          <Icon size={17} style={{ color: node.color }} strokeWidth={1.5} />
+        </div>
+        <div>
+          <h3 className="text-[13px] font-semibold tracking-[-0.01em] text-text-primary">
+            {node.name}
+          </h3>
+          <p
+            className="text-[11px] font-medium"
+            style={{ color: node.color + "80" }}
+          >
+            {node.role}
+          </p>
+        </div>
+      </div>
+      <p className="text-[12px] leading-[1.65] text-text-secondary">
+        {node.description}
+      </p>
+    </div>
   );
 }

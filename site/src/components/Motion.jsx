@@ -1,5 +1,26 @@
-import { motion, useInView } from "framer-motion";
-import { useRef } from "react";
+import { useRef, useEffect, useState, Children, cloneElement } from "react";
+
+function useInView(ref, { once = true, margin = "-60px" } = {}) {
+  const [inView, setInView] = useState(false);
+  useEffect(() => {
+    const el = ref.current;
+    if (!el) return;
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          setInView(true);
+          if (once) observer.disconnect();
+        } else if (!once) {
+          setInView(false);
+        }
+      },
+      { rootMargin: margin }
+    );
+    observer.observe(el);
+    return () => observer.disconnect();
+  }, [ref, once, margin]);
+  return inView;
+}
 
 export function FadeIn({
   children,
@@ -13,27 +34,26 @@ export function FadeIn({
   const inView = useInView(ref, { once, margin: "-60px" });
 
   const dirMap = {
-    up: { y: 24 },
-    down: { y: -24 },
-    left: { x: 24 },
-    right: { x: -24 },
-    none: {},
+    up: "translate3d(0, 24px, 0)",
+    down: "translate3d(0, -24px, 0)",
+    left: "translate3d(24px, 0, 0)",
+    right: "translate3d(-24px, 0, 0)",
+    none: "translate3d(0, 0, 0)",
   };
 
   return (
-    <motion.div
+    <div
       ref={ref}
-      initial={{ opacity: 0, ...dirMap[direction] }}
-      animate={inView ? { opacity: 1, x: 0, y: 0 } : { opacity: 0, ...dirMap[direction] }}
-      transition={{
-        duration,
-        delay,
-        ease: [0.25, 0.4, 0.25, 1],
-      }}
       className={className}
+      style={{
+        opacity: inView ? 1 : 0,
+        transform: inView ? "translate3d(0, 0, 0)" : dirMap[direction],
+        transition: `opacity ${duration}s cubic-bezier(0.25,0.4,0.25,1) ${delay}s, transform ${duration}s cubic-bezier(0.25,0.4,0.25,1) ${delay}s`,
+        willChange: "opacity, transform",
+      }}
     >
       {children}
-    </motion.div>
+    </div>
   );
 }
 
@@ -42,79 +62,75 @@ export function StaggerContainer({ children, className = "", stagger = 0.08 }) {
   const inView = useInView(ref, { once: true, margin: "-40px" });
 
   return (
-    <motion.div
-      ref={ref}
-      initial="hidden"
-      animate={inView ? "visible" : "hidden"}
-      variants={{
-        visible: {
-          transition: {
-            staggerChildren: stagger,
-          },
-        },
-      }}
-      className={className}
-    >
-      {children}
-    </motion.div>
+    <div ref={ref} className={className}>
+      {Children.map(children, (child, i) =>
+        child
+          ? cloneElement(child, {
+              _staggerDelay: i * stagger,
+              _staggerVisible: inView,
+            })
+          : null
+      )}
+    </div>
   );
 }
 
-export function StaggerItem({ children, className = "" }) {
+export function StaggerItem({
+  children,
+  className = "",
+  _staggerDelay = 0,
+  _staggerVisible = false,
+}) {
   return (
-    <motion.div
-      variants={{
-        hidden: { opacity: 0, y: 20, filter: "blur(3px)" },
-        visible: {
-          opacity: 1,
-          y: 0,
-          filter: "blur(0px)",
-          transition: { duration: 0.5, ease: [0.25, 0.4, 0.25, 1] },
-        },
-      }}
+    <div
       className={className}
+      style={{
+        opacity: _staggerVisible ? 1 : 0,
+        transform: _staggerVisible
+          ? "translateY(0) blur(0)"
+          : "translateY(20px)",
+        filter: _staggerVisible ? "blur(0px)" : "blur(3px)",
+        transition: `opacity 0.5s cubic-bezier(0.25,0.4,0.25,1) ${_staggerDelay}s, transform 0.5s cubic-bezier(0.25,0.4,0.25,1) ${_staggerDelay}s, filter 0.5s cubic-bezier(0.25,0.4,0.25,1) ${_staggerDelay}s`,
+        willChange: "opacity, transform, filter",
+      }}
     >
       {children}
-    </motion.div>
+    </div>
   );
 }
 
-export function GlowCard({ children, className = "", glowColor = "rgba(245, 166, 35, 0.06)" }) {
+export function GlowCard({
+  children,
+  className = "",
+  glowColor = "rgba(245, 166, 35, 0.06)",
+}) {
+  const [hovered, setHovered] = useState(false);
   return (
-    <motion.div
-      className={`group glass glass-hover rounded-2xl ${className}`}
-      whileHover={{
-        y: -2,
-        boxShadow: `0 8px 40px ${glowColor}`,
-        transition: { duration: 0.35, ease: [0.25, 0.4, 0.25, 1] },
+    <div
+      className={`group glass glass-hover rounded-2xl transition-transform duration-300 ${className}`}
+      style={{
+        transform: hovered ? "translateY(-2px)" : "translateY(0)",
+        boxShadow: hovered ? `0 8px 40px ${glowColor}` : "none",
       }}
+      onMouseEnter={() => setHovered(true)}
+      onMouseLeave={() => setHovered(false)}
     >
       {children}
-    </motion.div>
+    </div>
   );
 }
 
 export function FloatingOrb({ color, size, x, y, delay = 0 }) {
   return (
-    <motion.div
-      className="orb"
+    <div
+      className="orb animate-orb-drift"
       style={{
         width: size,
         height: size,
         background: color,
         left: x,
         top: y,
-      }}
-      animate={{
-        x: [0, 30, -20, 10, 0],
-        y: [0, -20, 15, -10, 0],
-        scale: [1, 1.1, 0.95, 1.05, 1],
-      }}
-      transition={{
-        duration: 25,
-        delay,
-        repeat: Infinity,
-        ease: "linear",
+        animationDelay: `${delay}s`,
       }}
     />
   );
@@ -130,6 +146,3 @@ export function SectionLabel({ children }) {
     </FadeIn>
   );
 }
-
-// Re-exported via separate file to avoid react-refresh warning
-// Use framer-motion imports directly in components that need motion/AnimatePresence
