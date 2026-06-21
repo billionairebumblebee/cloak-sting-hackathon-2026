@@ -7,7 +7,7 @@ export default function StingLogo({ className = "", size = 48, animate = false }
       fill="none"
       xmlns="http://www.w3.org/2000/svg"
       className={`${className}${animate ? " logo-glow" : ""}`}
-      aria-label="Sting logo"
+      aria-label="sting logo"
     >
       {/* Stingray body */}
       <path

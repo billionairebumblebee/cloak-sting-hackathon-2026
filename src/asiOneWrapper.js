@@ -1,5 +1,5 @@
 /**
- * ASI:One / Agentverse wrapper for Cloak Sting scam receipt analysis.
+ * ASI:One / Agentverse wrapper for cloak sting scam receipt analysis.
  *
  * Wraps the existing deterministic scam signal engine as an agent-callable
  * endpoint shape compatible with Fetch.ai ASI:One / Agentverse protocol.

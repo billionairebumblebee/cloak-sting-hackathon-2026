@@ -57,7 +57,7 @@ describe('handleAnalyzeRequest', () => {
     assert.ok(result.receipt.findings.length > 0);
     assert.ok(result.caseRecord.id);
     assert.ok(result.caseRecord.safetyBoundary);
-    assert.ok(result.dossierPreview.includes('Cloak Sting'));
+    assert.ok(result.dossierPreview.includes('cloak sting'));
   });
 
   it('analyzes benign page as low risk', () => {

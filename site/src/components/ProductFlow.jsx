@@ -6,7 +6,7 @@ const steps = [
     num: "01",
     icon: Crosshair,
     title: "Acquire target",
-    desc: "Drop a suspicious link, forward a sketchy message, or let Sting lock onto the page you're on.",
+    desc: "Drop a suspicious link, forward a sketchy message, or let sting lock onto the page you're on.",
     details: [
       "SMS messages",
       "Email links",
@@ -19,7 +19,7 @@ const steps = [
   {
     num: "02",
     icon: Scan,
-    title: "Sting hunts",
+    title: "sting hunts",
     desc: "Deterministic + AI analysis tears apart every signal a scammer tries to hide. Nothing escapes.",
     details: [
       "Domain forensics",

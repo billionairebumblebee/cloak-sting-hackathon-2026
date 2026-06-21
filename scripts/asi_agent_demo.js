@@ -12,7 +12,7 @@
 const { agentInfo, createAgentServer } = require('../src/asiOneWrapper.js');
 
 async function main() {
-  console.log('=== Cloak Sting — ASI:One Agent Demo ===\n');
+  console.log('=== cloak sting — ASI:One Agent Demo ===\n');
 
   const info = agentInfo();
   console.log('Agent info:');

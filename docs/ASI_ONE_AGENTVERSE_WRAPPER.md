@@ -2,7 +2,7 @@
 
 ## Overview
 
-`agents/cloak-sting-agent.mjs` wraps the existing Cloak Sting scam-detection pipeline as an Agentverse-compatible agent. It exposes four HTTP routes that other agents or orchestrators can call to analyze threats.
+`agents/cloak-sting-agent.mjs` wraps the existing cloak sting scam-detection pipeline as an Agentverse-compatible agent. It exposes four HTTP routes that other agents or orchestrators can call to analyze threats.
 
 **No public registration has been completed.** This is a local wrapper demonstrating the integration shape. Register on Agentverse only after verifying the agent meets ASI:One publication requirements.
 

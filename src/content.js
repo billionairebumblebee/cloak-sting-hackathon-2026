@@ -190,7 +190,7 @@
     root.id = 'cloak-sting-overlay';
     root.setAttribute('role', 'alertdialog');
     root.setAttribute('aria-modal', 'true');
-    root.setAttribute('aria-label', 'Scam warning from Cloak Sting');
+    root.setAttribute('aria-label', 'Scam warning from cloak sting');
     root.setAttribute('aria-describedby', 'cloak-sting-advice');
     root.setAttribute('tabindex', '-1');
 
@@ -357,7 +357,7 @@
         #${TOOLTIP_ID}{position:fixed;z-index:2147483647;max-width:320px;padding:8px 12px;font:12px/1.4 -apple-system,BlinkMacSystemFont,"Inter","Segoe UI",sans-serif;color:#fff;background:#1a1a1a;border:1.5px solid #e85d3a;border-radius:10px;pointer-events:none;box-shadow:0 6px 20px rgba(0,0,0,.35)}
         #${TOOLTIP_ID} .warn-icon{margin-right:5px}
       </style>
-      <span class="warn-icon">\u26A0\uFE0F</span>Sting: Suspicious link \u2014 ${safeReason}
+      <span class="warn-icon">\u26A0\uFE0F</span>sting: Suspicious link \u2014 ${safeReason}
     `;
 
     const rect = anchor.getBoundingClientRect();

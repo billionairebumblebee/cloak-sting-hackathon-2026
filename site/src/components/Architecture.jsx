@@ -42,7 +42,7 @@ const architectureNodes = [
     role: "Case memory & receipts",
     color: "#dc2626",
     description:
-      "Stores evidence receipts, case records, and scam pattern signatures. Enables similar-scam retrieval so Sting can say \u2018we\u2019ve seen 47 variants of this scam\u2019 with real data.",
+      "Stores evidence receipts, case records, and scam pattern signatures. Enables similar-scam retrieval so sting can say \u2018we\u2019ve seen 47 variants of this scam\u2019 with real data.",
   },
   {
     id: "arize",

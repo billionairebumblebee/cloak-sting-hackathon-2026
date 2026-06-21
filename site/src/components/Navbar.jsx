@@ -40,7 +40,7 @@ export default function Navbar() {
         <a href="#" className="flex items-center gap-2.5">
           <StingLogo size={28} />
           <span className="text-[15px] font-semibold tracking-[-0.01em] text-text-primary">
-            Sting
+            sting
           </span>
         </a>
 
