@@ -64,6 +64,13 @@ function getMeterColor(score) {
   return '#4ade80';
 }
 
+function getMeterGlowClass(score) {
+  if (score >= 75) return 'glow-red';
+  if (score >= 55) return 'glow-orange';
+  if (score >= 35) return 'glow-yellow';
+  return 'glow-green';
+}
+
 function getRiskClass(risk) {
   const r = (risk || '').toLowerCase();
   if (r === 'critical') return 'critical';
@@ -144,7 +151,7 @@ function renderScanPanel(receipt) {
     </div>
     <div class="score-meter">
       <div class="label"><span>Threat Score</span><span>${receipt.score}/100</span></div>
-      <div class="meter-bar"><div class="meter-fill" style="width:${receipt.score}%;background:${meterColor}"></div></div>
+      <div class="meter-bar"><div class="meter-fill ${getMeterGlowClass(receipt.score)}" style="width:${receipt.score}%;background:${meterColor}"></div></div>
     </div>
     <div class="page-info">
       <div class="hostname">${escapeHtml(receipt.title || receipt.hostname || 'Unknown page')}</div>
@@ -289,7 +296,7 @@ function renderHistoryDetail(item) {
     </div>
     <div class="score-meter">
       <div class="label"><span>Threat Score</span><span>${item.score}/100</span></div>
-      <div class="meter-bar"><div class="meter-fill" style="width:${item.score}%;background:${meterColor}"></div></div>
+      <div class="meter-bar"><div class="meter-fill ${getMeterGlowClass(item.score)}" style="width:${item.score}%;background:${meterColor}"></div></div>
     </div>
     <div class="page-info">
       <div class="hostname">${escapeHtml(item.title || item.hostname || 'Unknown page')}</div>
