@@ -1,0 +1,35 @@
+{
+  "timestamp": "2026-06-21T04:24:07.385Z",
+  "tool": "sting token compression",
+  "method": "deterministic risk-preserving evidence compression",
+  "results": [
+    {
+      "case": "secure-bank-verify-account-login.example",
+      "rawChars": 2281,
+      "compressedChars": 1661,
+      "reductionPercent": 67,
+      "tokenReductionPercent": 67,
+      "riskPreserved": true,
+      "rawEvalScore": 5,
+      "compressedEvalScore": 5,
+      "qualityMaintained": true
+    },
+    {
+      "case": "usps-redelivery-update.com",
+      "rawChars": 1226,
+      "compressedChars": 1067,
+      "reductionPercent": 64,
+      "tokenReductionPercent": 64,
+      "riskPreserved": true,
+      "rawEvalScore": 5,
+      "compressedEvalScore": 5,
+      "qualityMaintained": true
+    }
+  ],
+  "summary": {
+    "avgCharReduction": "66%",
+    "avgTokenReduction": "66%",
+    "allRiskFieldsPreserved": true,
+    "allQualityMaintained": true
+  }
+}

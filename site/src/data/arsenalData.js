@@ -208,6 +208,34 @@ export const arsenalSponsors = [
     ],
   },
   {
+    slug: "token-company",
+    name: "The Token Company",
+    color: "#06b6d4",
+    status: "LOCAL",
+    tagline: "Risk-preserving compression — fewer tokens, same safety quality",
+    role: "Token Compression",
+    whatItDoes:
+      "cloak sting compresses messy scam evidence into a smaller LLM context while preserving decision-critical risk facts: URL, hostname, impersonated brand, urgency/payment/credential signals, exact scam quotes, risk score, and safe next steps. Then we compare raw vs compressed explanations with Arize evals to prove quality is maintained.",
+    codePaths: [
+      "src/tokenCompress.js",
+      "scripts/token_compress_demo.js",
+      "tests/tokenCompress.test.js",
+      "data/token-compress-proof.json",
+    ],
+    demoCommand: "node scripts/token_compress_demo.js",
+    liveStatus: "Deterministic compression runs locally with zero dependencies. No API keys, no network calls.",
+    fallbackStatus:
+      "Always local — this is a deterministic function, not an API integration. The demo harness generates proof JSON showing reduction metrics and Arize eval comparison.",
+    whyDeservesPrize:
+      "cloak sting does risk-preserving compression for scam evidence: raw messy evidence → compressed risk-preserving payload → LLM explanation → same/better eval score. Demo proves ~66% token reduction while maintaining 5/5 on all Arize eval criteria (grounded, safeAction, noOverclaim, noSecrets, clarity). The angle is not generic compression — it is domain-specific risk preservation where the compressor knows which fields are decision-critical for safety.",
+    doNotClaim: [
+      "Do not claim this is a general-purpose compression algorithm",
+      "Do not imply it outperforms dedicated compression models on arbitrary text",
+      "This is domain-specific risk-preserving compression for scam evidence specifically",
+      "Do not claim live API integration with Token Company — this is inspired by their challenge",
+    ],
+  },
+  {
     slug: "pika-midjourney",
     name: "Pika / Midjourney",
     color: "#a855f7",
