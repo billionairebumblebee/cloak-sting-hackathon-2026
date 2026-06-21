@@ -1,12 +1,15 @@
 {
   "manifest_version": 3,
-  "name": "Cloak Sting — Scam Protection",
+  "name": "Cloak Sting - Scam Protection",
   "version": "0.2.0",
   "description": "Protects you from online scams, phishing, and fraud with real-time warnings.",
   "permissions": ["storage", "activeTab", "scripting"],
   "host_permissions": ["<all_urls>"],
+  "background": {
+    "service_worker": "src/background.js"
+  },
   "action": {
-    "default_title": "Cloak Sting — Click to scan this page for scams",
+    "default_title": "Cloak Sting - Click to scan this page for scams",
     "default_popup": "popup.html"
   },
   "content_scripts": [

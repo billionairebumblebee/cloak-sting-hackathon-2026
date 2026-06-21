@@ -13,23 +13,33 @@ function getStoredReceipt() {
 }
 
 function formatReceipt(receipt) {
-  if (!receipt) return 'No cloak sting receipt yet.';
+  if (!receipt) return 'No scam receipt yet.';
   return [
-    'CLOAK STING — SCAM WARNING RECEIPT',
-    '━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━',
-    `Risk Level: ${receipt.risk.toUpperCase()} (${receipt.score}/100)`,
+    'CLOAK STING - SCAM WARNING RECEIPT',
+    '------------------------------------',
+    `Verdict: ${verdictText(receipt.risk)} (${receipt.score}/100)`,
     `Page: ${receipt.title || receipt.hostname}`,
     `URL: ${receipt.url}`,
     '',
     `ADVICE: ${receipt.advice}`,
     '',
     'WARNING SIGNALS:',
-    ...receipt.findings.map((f) => `  • ${f.label}: ${f.evidence}`),
+    ...receipt.findings.map((f) => `  - ${f.label}: ${f.evidence}`),
     '',
-    '━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━',
-    'Share this with your bank, family, or local authorities if needed.',
-    `Generated: ${receipt.analyzedAt || new Date().toISOString()}`
+    'WHAT TO DO:',
+    '  - Do NOT send money, gift cards, or crypto',
+    '  - Report to your bank if you shared financial info',
+    '  - File a report: reportfraud.ftc.gov or ic3.gov',
+    '  - Tell a family member or friend',
+    '',
+    `Captured: ${receipt.analyzedAt || new Date().toISOString()}`
   ].join('\n');
+}
+
+function verdictText(risk) {
+  if (risk === 'high') return 'Looks like a scam';
+  if (risk === 'medium') return 'Looks suspicious';
+  return 'Looks safe';
 }
 
 function riskClass(risk) {
@@ -46,8 +56,8 @@ function render(receipt) {
     container.className = 'card empty';
     container.innerHTML = `
       <div class="empty-state">
-        <p class="empty-title">No warnings yet</p>
-        <p class="empty-hint">Click "Scan This Page" or visit a suspicious site. We'll watch for scam patterns.</p>
+        <p class="empty-title">You are protected</p>
+        <p class="empty-hint">Click "Scan This Page" to check the current site, or browse normally. We will warn you if something looks wrong.</p>
       </div>
     `;
     return;
@@ -64,9 +74,9 @@ function render(receipt) {
   container.innerHTML = `
     <div class="risk-badge ${riskClass(receipt.risk)}">
       ${receipt.risk === 'high' ? '&#x26A0;' : receipt.risk === 'medium' ? '&#x26A0;' : '&#x2714;'}
-      ${escapeHtml(receipt.risk)} risk &middot; ${receipt.score}/100
+      ${escapeHtml(verdictText(receipt.risk))}
     </div>
-    <div class="receipt-title">${escapeHtml(receipt.title || receipt.hostname || 'Suspicious page')}</div>
+    <div class="receipt-title">${escapeHtml(receipt.title || receipt.hostname || 'Unknown page')}</div>
     <div class="receipt-url">${escapeHtml(receipt.url || '')}</div>
     <div class="receipt-advice">${escapeHtml(receipt.advice || '')}</div>
     <div class="findings">${findings}</div>
@@ -116,9 +126,9 @@ document.addEventListener('DOMContentLoaded', async () => {
 
   document.getElementById('copy').addEventListener('click', async (event) => {
     await navigator.clipboard?.writeText(formatReceipt(latestReceipt));
-    event.target.innerHTML = '<span class="btn-icon" aria-hidden="true">&#x2705;</span> Copied!';
+    event.target.innerHTML = '&#x2705; Copied! Share with your bank or authorities.';
     setTimeout(() => {
-      event.target.innerHTML = '<span class="btn-icon" aria-hidden="true">&#x1F4CB;</span> Copy Receipt';
-    }, 2000);
+      event.target.innerHTML = '<span class="btn-icon" aria-hidden="true">&#x1F4CB;</span> Copy receipt to report';
+    }, 3000);
   });
 });

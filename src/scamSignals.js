@@ -93,6 +93,41 @@
     return findings;
   }
 
+  const BRAND_SAFE_ACTIONS = {
+    usps: 'USPS never charges redelivery by text. Track packages at usps.com only.',
+    fedex: 'FedEx does not request payment via text or email. Use fedex.com/manage.',
+    dhl: 'DHL does not collect customs fees by link. Contact DHL directly.',
+    bank: 'Your real bank will never ask for your password by email. Call the number on your card.',
+    paypal: 'PayPal never asks for passwords outside paypal.com. Log in directly at paypal.com.',
+    apple: 'Apple will never call you about a security issue. Check at appleid.apple.com.',
+    microsoft: 'Microsoft does not cold-call about viruses. Ignore phone numbers on screen.',
+    irs: 'The IRS contacts you by mail first, never by phone demanding gift cards.',
+    'gift card': 'No real company or government agency accepts gift cards as payment. This is always a scam.',
+    crypto: 'Legitimate companies do not demand crypto payments. This is irreversible and almost certainly fraud.',
+  };
+
+  function detectBrand(text, hostname) {
+    const combined = normalize(`${text} ${hostname}`);
+    for (const [brand, action] of Object.entries(BRAND_SAFE_ACTIONS)) {
+      if (combined.includes(brand)) return action;
+    }
+    return null;
+  }
+
+  function buildAdvice(risk, text, hostname) {
+    const brandAction = detectBrand(text, hostname);
+    if (risk === 'high') {
+      const base = 'Do not enter information, send money, or call numbers on this page.';
+      return brandAction ? `${base} ${brandAction}` : `${base} Verify through the official app or type the real website address yourself.`;
+    }
+    if (risk === 'medium') {
+      return brandAction
+        ? `Slow down before continuing. ${brandAction}`
+        : 'Slow down and verify through an official channel before continuing.';
+    }
+    return 'No strong scam signals detected. Stay alert before sharing money or codes.';
+  }
+
   function analyzeScamSurface(input) {
     const title = input?.title || '';
     const url = input?.url || '';
@@ -115,11 +150,7 @@
       score,
       findingCount: findings.length,
       findings,
-      advice: risk === 'high'
-        ? 'Pause. Do not pay, enter passwords, or call numbers on this page. Verify through the official app or typed official website.'
-        : risk === 'medium'
-          ? 'Slow down and verify through an official channel before continuing.'
-          : 'No strong scam pattern detected, but stay alert before sharing money or codes.',
+      advice: buildAdvice(risk, `${title} ${pageText}`, hostname),
       analyzedAt: new Date().toISOString()
     };
   }
