@@ -5,6 +5,16 @@
   const MIN_VISIBLE_SCORE = 35;
   const BLOCK_SCORE = 50;
 
+  const ALLOWLISTED_DOMAINS = [
+    'cloak-sting-hackathon-2026.vercel.app',
+    'localhost',
+    '127.0.0.1',
+  ];
+
+  if (ALLOWLISTED_DOMAINS.some((d) => location.hostname === d || location.hostname.endsWith('.' + d))) {
+    return;
+  }
+
   function getPageText() {
     const bodyText = document.body ? document.body.innerText : '';
     const inputs = Array.from(document.querySelectorAll('input, textarea, button, a'))
