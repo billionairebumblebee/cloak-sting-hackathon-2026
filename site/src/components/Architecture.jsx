@@ -6,10 +6,12 @@ import {
   BarChart3,
   Bug,
   Network,
+  Mic,
 } from "lucide-react";
 import { FadeIn, StaggerContainer, StaggerItem, SectionLabel } from "./Motion";
 
 const iconMap = {
+  deepgram: Mic,
   browserbase: Globe,
   anthropic: Brain,
   redis: Database,
@@ -71,6 +73,7 @@ const architectureNodes = [
 
 const pipelineSteps = [
   { label: "Suspicious input", color: null },
+  { label: "Deepgram STT", color: "#13ef93" },
   { label: "Browserbase", color: "#6366f1" },
   { label: "Signal analysis", color: null },
   { label: "Claude", color: "#d97706" },
