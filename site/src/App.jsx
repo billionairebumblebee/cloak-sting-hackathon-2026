@@ -12,6 +12,7 @@ const InteractiveDemo = lazy(() => import("./components/InteractiveDemo"));
 const FamilyRescue = lazy(() => import("./components/FamilyRescue"));
 const ScamIntelligence = lazy(() => import("./components/ScamIntelligence"));
 const HallOfFame = lazy(() => import("./components/HallOfFame"));
+const Roadmap = lazy(() => import("./components/Roadmap"));
 const SponsorShowcase = lazy(() => import("./components/SponsorShowcase"));
 const ScamIntelligence = lazy(() => import("./components/ScamIntelligence"));
 
@@ -47,6 +48,8 @@ function LandingPage() {
             <ScamIntelligence />
             <div className="section-divider mx-6" />
             <HallOfFame />
+            <div className="section-divider mx-6" />
+            <Roadmap />
             <div className="section-divider mx-6" />
             <SponsorShowcase />
           </div>
