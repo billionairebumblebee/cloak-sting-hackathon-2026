@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Urgent: Prize Claim — Final Notice</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: Arial, Helvetica, sans-serif;
+    background: linear-gradient(135deg, #fff200 0%, #ff6600 100%);
+    min-height: 100vh;
+    padding: 0;
+  }
+  .banner {
+    background: #cc0000;
+    color: #fff;
+    text-align: center;
+    padding: 12px;
+    font-size: 1.1rem;
+    font-weight: bold;
+    animation: pulse 1.5s infinite;
+  }
+  @keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.7; }
+  }
+  .container {
+    max-width: 720px;
+    margin: 0 auto;
+    padding: 32px 24px;
+  }
+  .logo-area {
+    text-align: center;
+    margin-bottom: 24px;
+  }
+  .logo-area .fake-logo {
+    display: inline-block;
+    background: #003399;
+    color: #ffd700;
+    font-size: 1.4rem;
+    font-weight: bold;
+    padding: 10px 28px;
+    border-radius: 8px;
+    letter-spacing: 2px;
+  }
+  h1 {
+    text-align: center;
+    color: #003399;
+    font-size: 2.2rem;
+    margin-bottom: 12px;
+    text-shadow: 1px 1px 2px rgba(0,0,0,0.2);
+  }
+  .prize-amount {
+    text-align: center;
+    font-size: 3rem;
+    font-weight: bold;
+    color: #cc0000;
+    margin: 16px 0;
+    text-shadow: 2px 2px 4px rgba(0,0,0,0.15);
+  }
+  .deadline-box {
+    background: #fff;
+    border: 3px solid #cc0000;
+    border-radius: 8px;
+    padding: 16px;
+    text-align: center;
+    margin: 20px 0;
+  }
+  .deadline-box .timer {
+    font-size: 1.6rem;
+    color: #cc0000;
+    font-weight: bold;
+  }
+  .content-section {
+    background: rgba(255,255,255,0.92);
+    border-radius: 8px;
+    padding: 24px;
+    margin: 20px 0;
+  }
+  .content-section p {
+    margin-bottom: 12px;
+    line-height: 1.6;
+    color: #333;
+  }
+  .warning-text {
+    color: #cc0000;
+    font-weight: bold;
+  }
+  .secret-notice {
+    background: #fffbe6;
+    border-left: 4px solid #ff9900;
+    padding: 12px 16px;
+    margin: 16px 0;
+    font-style: italic;
+  }
+  form {
+    background: #fff;
+    border: 2px solid #003399;
+    border-radius: 8px;
+    padding: 24px;
+    margin: 24px 0;
+  }
+  form h2 {
+    color: #003399;
+    margin-bottom: 16px;
+    font-size: 1.3rem;
+  }
+  .form-group {
+    margin-bottom: 16px;
+  }
+  .form-group label {
+    display: block;
+    font-weight: bold;
+    margin-bottom: 4px;
+    color: #333;
+  }
+  .form-group input {
+    width: 100%;
+    padding: 10px 12px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 1rem;
+    background: #f9f9f9;
+  }
+  .form-group .required {
+    color: #cc0000;
+    font-size: 0.85rem;
+  }
+  .gift-card-section {
+    background: #fff3e0;
+    border: 2px dashed #ff6600;
+    border-radius: 8px;
+    padding: 16px;
+    margin: 16px 0;
+  }
+  .gift-card-section h3 {
+    color: #ff6600;
+    margin-bottom: 8px;
+  }
+  .submit-btn {
+    display: block;
+    width: 100%;
+    background: #cc0000;
+    color: #fff;
+    font-size: 1.3rem;
+    font-weight: bold;
+    padding: 14px;
+    border: none;
+    border-radius: 6px;
+    cursor: not-allowed;
+    opacity: 0.9;
+    margin-top: 20px;
+  }
+</style>
+</head>
+<body>
+
+<div class="banner">
+  ⚠️ FINAL NOTICE — ACT NOW — YOUR PRIZE EXPIRES IN 1 HOUR ⚠️
+</div>
+
+<div class="container">
+  <div class="logo-area">
+    <span class="fake-logo">NATIONAL PRIZE AUTHORITY</span>
+  </div>
+
+  <h1>CONGRATULATIONS! YOU HAVE WON!</h1>
+  <div class="prize-amount">$250,000.00</div>
+
+  <div class="deadline-box">
+    <p>You must claim within <span class="timer">1 HOUR</span> or your prize is forfeited.</p>
+    <p class="warning-text">This is your final notice. Verify now before your prize is reassigned.</p>
+  </div>
+
+  <div class="content-section">
+    <p>Dear Winner,</p>
+    <p>Your email address was randomly selected from 2.7 million entries in our annual Internet Sweepstakes drawing. You have won the grand prize of <strong>$250,000</strong>!</p>
+    <p>To release your funds, we require identity verification and a small processing fee. Act now — this offer is for a limited time only.</p>
+    <p class="warning-text">URGENT: If you do not complete verification immediately, your winnings will be forfeited and reassigned to the next eligible participant.</p>
+  </div>
+
+  <div class="secret-notice">
+    <strong>IMPORTANT:</strong> Do not tell family members or friends about this prize until after funds are deposited. Keep this confidential to prevent third-party interference with your claim. Only through this page can your winnings be processed.
+  </div>
+
+  <form onsubmit="return false;">
+    <h2>Prize Claim Verification Form</h2>
+    <p style="margin-bottom:16px; color:#666;">All fields required for tax compliance and fund release.</p>
+
+    <div class="form-group">
+      <label>Full Legal Name <span class="required">*Required</span></label>
+      <input type="text" placeholder="Enter your full name" disabled tabindex="-1">
+    </div>
+
+    <div class="form-group">
+      <label>Social Security Number <span class="required">*Required for tax purposes</span></label>
+      <input type="text" placeholder="XXX-XX-XXXX" disabled tabindex="-1">
+    </div>
+
+    <div class="form-group">
+      <label>Bank Account Number <span class="required">*Required for direct deposit</span></label>
+      <input type="text" placeholder="Enter account number" disabled tabindex="-1">
+    </div>
+
+    <div class="form-group">
+      <label>Bank Routing Number <span class="required">*Required for direct deposit</span></label>
+      <input type="text" placeholder="Enter routing number" disabled tabindex="-1">
+    </div>
+
+    <div class="gift-card-section">
+      <h3>Processing Fee Payment</h3>
+      <p>A one-time processing fee of <strong>$499.99</strong> is required to release your winnings.</p>
+      <p>Accepted methods: <strong>Gift card</strong> (Google Play, iTunes, or Amazon) or <strong>wire transfer</strong>.</p>
+      <div class="form-group" style="margin-top:12px;">
+        <label>Gift Card Code <span class="required">*Required</span></label>
+        <input type="text" placeholder="Enter gift card redemption code" disabled tabindex="-1">
+      </div>
+      <div class="form-group">
+        <label>Gift Card Amount</label>
+        <input type="text" placeholder="$499.99" disabled tabindex="-1">
+      </div>
+    </div>
+
+    <button type="button" class="submit-btn" disabled tabindex="-1">CLAIM MY $250,000 PRIZE NOW</button>
+  </form>
+
+  <p style="text-align:center; color:#666; font-size:0.8rem; margin-top:24px;">
+    Ref #NPW-2026-847291 | National Prize Authority | This is a final notice.
+  </p>
+</div>
+
+</body>
+</html>

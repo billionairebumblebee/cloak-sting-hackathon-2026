@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>STING Demo Fixtures</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+    background: #0d1117;
+    color: #e6edf3;
+    min-height: 100vh;
+    padding: 32px 24px;
+  }
+  .container { max-width: 800px; margin: 0 auto; }
+  h1 {
+    font-size: 1.8rem;
+    margin-bottom: 8px;
+    color: #58a6ff;
+  }
+  .subtitle {
+    color: #8b949e;
+    margin-bottom: 32px;
+    font-size: 0.95rem;
+  }
+  h2 {
+    font-size: 1.1rem;
+    color: #58a6ff;
+    margin: 24px 0 12px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    border-bottom: 1px solid #30363d;
+    padding-bottom: 8px;
+  }
+  ul { list-style: none; padding: 0; }
+  li {
+    padding: 10px 16px;
+    border: 1px solid #30363d;
+    border-radius: 6px;
+    margin-bottom: 8px;
+    background: #161b22;
+  }
+  li a {
+    color: #58a6ff;
+    text-decoration: none;
+    font-weight: 500;
+  }
+  li a:hover { text-decoration: underline; }
+  li .desc {
+    color: #8b949e;
+    font-size: 0.85rem;
+    margin-top: 4px;
+  }
+</style>
+</head>
+<body>
+<div class="container">
+  <h1>STING Demo Fixtures</h1>
+  <p class="subtitle">Open these pages with the STING extension active to trigger scam detection overlays.</p>
+
+  <h2>Family Rescue Mode</h2>
+  <ul>
+    <li>
+      <a href="family-rescue-scenario.html">Urgent: Prize Claim — Final Notice</a>
+      <div class="desc">Fake sweepstakes targeting elderly victims. Triggers: urgency, payment, credential harvesting, isolation/secrecy.</div>
+    </li>
+    <li>
+      <a href="family-rescue-network.html">STING Intelligence — Suspected Scam Cluster Profile</a>
+      <div class="desc">Intelligence display showing a suspected scam network profile (not a scam page).</div>
+    </li>
+  </ul>
+
+  <h2>Financial Scams</h2>
+  <ul>
+    <li>
+      <a href="fake-bank-login.html">Secure Bank Verification Center</a>
+      <div class="desc">Urgency + credential harvesting via fake bank login.</div>
+    </li>
+    <li>
+      <a href="bank-otp-scam.html">Bank OTP Scam</a>
+      <div class="desc">OTP interception via fake banking page.</div>
+    </li>
+    <li>
+      <a href="marketplace-payment-scam.html">Marketplace Payment Scam</a>
+      <div class="desc">Fake marketplace payment redirect.</div>
+    </li>
+  </ul>
+
+  <h2>Crypto Scams</h2>
+  <ul>
+    <li>
+      <a href="crypto-seed-drain.html">MetaMask Wallet Sync</a>
+      <div class="desc">Crypto wallet seed phrase theft.</div>
+    </li>
+    <li>
+      <a href="crypto-seed-phrase-scam.html">Crypto Seed Phrase Scam</a>
+      <div class="desc">Seed phrase harvesting variant.</div>
+    </li>
+    <li>
+      <a href="crypto-investment-scam.html">Crypto Investment Scam</a>
+      <div class="desc">Fake crypto investment platform.</div>
+    </li>
+  </ul>
+
+  <h2>Impersonation &amp; Social Engineering</h2>
+  <ul>
+    <li>
+      <a href="grandparent-scam.html">Grandparent Scam — Bail Payment</a>
+      <div class="desc">Family emergency + wire transfer request.</div>
+    </li>
+    <li>
+      <a href="romance-scam.html">Romance Scam</a>
+      <div class="desc">Romance + gift card payment.</div>
+    </li>
+    <li>
+      <a href="fake-hostage-ransom.html">Fake Hostage Ransom</a>
+      <div class="desc">Hostage/ransom threat scenario.</div>
+    </li>
+    <li>
+      <a href="chinese-family-scam.html">Chinese-Language Family Scam</a>
+      <div class="desc">Chinese-language authority impersonation.</div>
+    </li>
+    <li>
+      <a href="fake-tech-support.html">Fake Tech Support</a>
+      <div class="desc">Tech support impersonation.</div>
+    </li>
+  </ul>
+
+  <h2>Fee &amp; Delivery Scams</h2>
+  <ul>
+    <li>
+      <a href="lottery-prize-scam.html">Lottery Prize Scam</a>
+      <div class="desc">Fake lottery winnings with processing fee.</div>
+    </li>
+    <li>
+      <a href="irs-government-fee-scam.html">IRS Government Fee Scam</a>
+      <div class="desc">Government impersonation for fee payment.</div>
+    </li>
+    <li>
+      <a href="customs-fee-scam.html">Customs Fee Scam</a>
+      <div class="desc">Fake customs/import fee.</div>
+    </li>
+    <li>
+      <a href="fake-shipping-fee.html">Fake Shipping Fee</a>
+      <div class="desc">Fake shipping redelivery fee.</div>
+    </li>
+  </ul>
+
+  <h2>Extension Showcases</h2>
+  <ul>
+    <li>
+      <a href="showcase-overlay.html">Showcase — Warning Overlay</a>
+      <div class="desc">Demonstrates the STING warning overlay UI.</div>
+    </li>
+    <li>
+      <a href="showcase-popup.html">Showcase — Popup</a>
+      <div class="desc">Demonstrates the STING popup UI.</div>
+    </li>
+    <li>
+      <a href="safe-normal-page.html">Safe Normal Page</a>
+      <div class="desc">Control page — should NOT trigger any warnings.</div>
+    </li>
+  </ul>
+</div>
+</body>
+</html>
