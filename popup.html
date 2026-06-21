@@ -3,10 +3,10 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Sting</title>
+  <title>Cloak Sting — Scam Protection</title>
   <style>
     *{box-sizing:border-box;margin:0;padding:0}
-    body{width:380px;max-height:500px;overflow-y:auto;font-family:'Inter',system-ui,-apple-system,sans-serif;background:#030303;color:#e8e8e8;font-size:13px;line-height:1.4;position:relative}
+    body{width:380px;max-height:500px;overflow-y:auto;font-family:'Inter',system-ui,-apple-system,sans-serif;background:#030303;color:#e8e8e8;font-size:0.875rem;line-height:1.4;position:relative}
     body::-webkit-scrollbar{width:5px}
     body::-webkit-scrollbar-track{background:transparent}
     body::-webkit-scrollbar-thumb{background:#222;border-radius:3px}
@@ -104,7 +104,7 @@
 
     /* Actions */
     .actions{display:flex;gap:8px;margin-top:16px;padding-bottom:4px}
-    .actions button{flex:1;padding:10px 8px;border:0;border-radius:10px;font-size:11px;font-weight:700;cursor:pointer;transition:all .25s ease}
+    .actions button{flex:1;padding:12px 8px;border:0;border-radius:10px;font-size:0.75rem;font-weight:700;cursor:pointer;transition:all .25s ease;min-height:44px}
     .btn-primary{background:linear-gradient(135deg,#f5a623,#e09000);color:#050505;box-shadow:0 2px 8px rgba(245,166,35,.2)}
     .btn-primary:hover{box-shadow:0 0 16px rgba(245,166,35,.45),0 2px 8px rgba(245,166,35,.3);transform:translateY(-1px)}
     .btn-secondary{background:rgba(255,255,255,.04);color:#ccc;border:1px solid rgba(255,255,255,.08) !important;backdrop-filter:blur(4px);-webkit-backdrop-filter:blur(4px)}
@@ -153,22 +153,22 @@
       <circle cx="18.5" cy="12" r="1.5" fill="#f5a623"/>
       <path d="M12 17c0 0 2 2.5 4 2.5s4-2.5 4-2.5" stroke="#f5a623" stroke-width="1.2" stroke-linecap="round" fill="none"/>
     </svg>
-    <h1>Sting</h1>
+    <h1>Cloak Sting</h1>
   </div>
 
-  <div class="tabs">
-    <div class="tab active" data-tab="scan">Current Scan</div>
-    <div class="tab" data-tab="history">History</div>
+  <div class="tabs" role="tablist" aria-label="Scan navigation">
+    <div class="tab active" data-tab="scan" role="tab" aria-selected="true" aria-controls="panel-scan" tabindex="0">Current Scan</div>
+    <div class="tab" data-tab="history" role="tab" aria-selected="false" aria-controls="panel-history" tabindex="-1">History</div>
   </div>
 
-  <div id="panel-scan" class="panel active">
+  <div id="panel-scan" class="panel active" role="tabpanel" aria-labelledby="tab-scan">
     <div class="loading" id="loading-state">
       <div class="spinner"></div>
       <p>Analyzing page...</p>
     </div>
   </div>
 
-  <div id="panel-history" class="panel">
+  <div id="panel-history" class="panel" role="tabpanel" aria-labelledby="tab-history">
     <div id="history-list"></div>
   </div>
 
