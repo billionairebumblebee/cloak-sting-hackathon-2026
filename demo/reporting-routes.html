@@ -1,0 +1,367 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>STING — Authority Reporting Routes</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font: 16px/1.6 -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background: #0c0e14;
+      color: #e2e8f0;
+      min-height: 100vh;
+    }
+    .header {
+      background: linear-gradient(135deg, #1a1c2e 0%, #0c0e14 100%);
+      border-bottom: 1px solid rgba(245, 158, 11, 0.15);
+      padding: 20px 24px;
+      text-align: center;
+    }
+    .header h1 {
+      font-size: 24px;
+      font-weight: 800;
+      letter-spacing: -0.02em;
+    }
+    .header h1 span { color: #f59e0b; }
+    .header p {
+      color: #94a3b8;
+      font-size: 14px;
+      margin-top: 4px;
+    }
+    .container { max-width: 900px; margin: 0 auto; padding: 32px 20px; }
+    .scenario-tabs {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 24px;
+      flex-wrap: wrap;
+    }
+    .tab-btn {
+      background: rgba(255,255,255,0.04);
+      border: 1px solid rgba(255,255,255,0.08);
+      color: #94a3b8;
+      padding: 10px 18px;
+      border-radius: 10px;
+      cursor: pointer;
+      font-size: 13px;
+      font-weight: 600;
+      transition: all 0.2s;
+    }
+    .tab-btn:hover { border-color: rgba(245, 158, 11, 0.3); color: #e2e8f0; }
+    .tab-btn.active {
+      background: rgba(245, 158, 11, 0.08);
+      border-color: rgba(245, 158, 11, 0.4);
+      color: #f59e0b;
+    }
+    .case-card {
+      background: rgba(255,255,255,0.02);
+      border: 1px solid rgba(255,255,255,0.06);
+      border-radius: 16px;
+      padding: 24px;
+      margin-bottom: 20px;
+    }
+    .case-card h2 {
+      font-size: 18px;
+      margin-bottom: 4px;
+    }
+    .risk-badge {
+      display: inline-block;
+      padding: 3px 10px;
+      border-radius: 20px;
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+    .risk-high { background: rgba(239,68,68,0.15); color: #ef4444; }
+    .risk-medium { background: rgba(245,158,11,0.15); color: #f59e0b; }
+    .risk-low { background: rgba(34,197,94,0.15); color: #22c55e; }
+    .meta-row {
+      display: flex;
+      gap: 16px;
+      margin-top: 12px;
+      flex-wrap: wrap;
+    }
+    .meta-item {
+      font-size: 12px;
+      color: #64748b;
+    }
+    .meta-item strong { color: #94a3b8; }
+    .signals-list {
+      margin-top: 16px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+    }
+    .signal-tag {
+      background: rgba(255,255,255,0.04);
+      border: 1px solid rgba(255,255,255,0.06);
+      padding: 4px 10px;
+      border-radius: 6px;
+      font-size: 11px;
+      color: #94a3b8;
+    }
+    .channels-section { margin-top: 24px; }
+    .channels-section h3 {
+      font-size: 15px;
+      font-weight: 700;
+      margin-bottom: 12px;
+      color: #f59e0b;
+    }
+    .channel-card {
+      background: rgba(255,255,255,0.02);
+      border: 1px solid rgba(255,255,255,0.06);
+      border-radius: 12px;
+      padding: 16px;
+      margin-bottom: 10px;
+      transition: border-color 0.2s;
+    }
+    .channel-card:hover { border-color: rgba(245, 158, 11, 0.25); }
+    .channel-name {
+      font-weight: 700;
+      font-size: 14px;
+      color: #e2e8f0;
+    }
+    .channel-link {
+      color: #60a5fa;
+      font-size: 13px;
+      text-decoration: none;
+    }
+    .channel-link:hover { text-decoration: underline; }
+    .channel-reason {
+      font-size: 12px;
+      color: #64748b;
+      margin-top: 4px;
+    }
+    .channel-how {
+      font-size: 12px;
+      color: #94a3b8;
+      margin-top: 6px;
+      padding: 8px 12px;
+      background: rgba(255,255,255,0.02);
+      border-radius: 8px;
+    }
+    .report-section { margin-top: 28px; }
+    .report-section h3 {
+      font-size: 15px;
+      font-weight: 700;
+      margin-bottom: 12px;
+      color: #e2e8f0;
+    }
+    .report-text {
+      background: rgba(0,0,0,0.3);
+      border: 1px solid rgba(255,255,255,0.06);
+      border-radius: 12px;
+      padding: 16px;
+      font-family: "SF Mono", "Fira Code", monospace;
+      font-size: 12px;
+      line-height: 1.6;
+      color: #94a3b8;
+      white-space: pre-wrap;
+      max-height: 400px;
+      overflow-y: auto;
+    }
+    .copy-btn {
+      margin-top: 10px;
+      background: rgba(245, 158, 11, 0.12);
+      border: 1px solid rgba(245, 158, 11, 0.3);
+      color: #f59e0b;
+      padding: 10px 20px;
+      border-radius: 10px;
+      cursor: pointer;
+      font-size: 13px;
+      font-weight: 600;
+      transition: all 0.2s;
+    }
+    .copy-btn:hover { background: rgba(245, 158, 11, 0.2); }
+    .copy-btn.copied { background: rgba(34, 197, 94, 0.15); border-color: rgba(34, 197, 94, 0.3); color: #22c55e; }
+    .disclaimer {
+      margin-top: 32px;
+      padding: 16px;
+      background: rgba(245, 158, 11, 0.04);
+      border: 1px solid rgba(245, 158, 11, 0.12);
+      border-radius: 12px;
+      font-size: 13px;
+      color: #94a3b8;
+      text-align: center;
+    }
+    .disclaimer strong { color: #f59e0b; }
+  </style>
+</head>
+<body>
+  <header class="header">
+    <h1><span>STING</span> Authority Reporting Routes</h1>
+    <p>Route scam evidence to the right official channels</p>
+  </header>
+
+  <div class="container">
+    <div class="scenario-tabs" id="tabs"></div>
+    <div id="case-display"></div>
+    <div class="disclaimer">
+      <strong>STING does not submit reports on your behalf.</strong>
+      You file with official channels. The links above connect you directly to verified government and platform reporting portals.
+    </div>
+  </div>
+
+  <script src="../src/scamSignals.js"></script>
+  <script>
+    const AUTHORITY_CHANNELS = {
+      FTC: { name: 'FTC ReportFraud', url: 'https://reportfraud.ftc.gov/', reason: 'Primary US consumer fraud reporting portal', howToFile: 'Visit reportfraud.ftc.gov, select the type of scam, and follow the guided form.' },
+      IC3: { name: 'FBI Internet Crime Complaint Center (IC3)', url: 'https://www.ic3.gov/', reason: 'FBI portal for internet-enabled crime', howToFile: 'File a complaint at ic3.gov. Include the URL, scam details, and any financial loss information.' },
+      CFPB: { name: 'Consumer Financial Protection Bureau', url: 'https://www.consumerfinance.gov/complaint/', reason: 'Reports involving banks, lenders, or financial products', howToFile: 'Submit a complaint at consumerfinance.gov/complaint.' },
+      FCC: { name: 'Federal Communications Commission', url: 'https://consumercomplaints.fcc.gov/', reason: 'Unwanted calls, spoofed numbers, and phone-based scams', howToFile: 'File a complaint at consumercomplaints.fcc.gov.' },
+      CARRIER_7726: { name: 'Forward to 7726 (SPAM)', url: '', reason: 'Report scam texts/calls directly to your wireless carrier', howToFile: 'Forward the suspicious text to 7726 (SPAM).' },
+      SEC: { name: 'Securities and Exchange Commission', url: 'https://www.sec.gov/tcr', reason: 'Investment fraud, securities violations, and crypto scams', howToFile: 'Submit a tip at sec.gov/tcr.' },
+      CFTC: { name: 'Commodity Futures Trading Commission', url: 'https://www.cftc.gov/complaint', reason: 'Crypto commodity fraud and futures/options scams', howToFile: 'File a complaint at cftc.gov/complaint.' },
+      IDENTITY_THEFT: { name: 'IdentityTheft.gov', url: 'https://www.identitytheft.gov/', reason: 'Identity theft recovery and reporting', howToFile: 'Visit identitytheft.gov to create a recovery plan.' },
+      ECONSUMER: { name: 'eConsumer.gov', url: 'https://econsumer.gov/', reason: 'Cross-border internet fraud', howToFile: 'File at econsumer.gov.' }
+    };
+
+    const scenarios = [
+      {
+        label: 'Bank Phishing',
+        input: {
+          hostname: 'secure-bank-verify-login.example.com',
+          title: 'Secure Bank Verification Center',
+          url: 'https://secure-bank-verify-login.example.com/verify',
+          text: 'URGENT: Your bank account has been suspended. Verify your identity within 24 hours. Enter your password and one-time security code. Do not contact your branch. Wire transfer required to unlock.'
+        },
+        channelKeys: ['FTC', 'IC3', 'CFPB']
+      },
+      {
+        label: 'Crypto Drain',
+        input: {
+          hostname: 'metamask-wallet-sync.example.xyz',
+          title: 'MetaMask Wallet Sync — Urgent Recovery',
+          url: 'https://metamask-wallet-sync.example.xyz/recover',
+          text: 'Enter your 12-word seed phrase to restore access. Recovery phrase verification needed immediately. Enter your private key. Bitcoin and Ethereum assets at risk. Act now — limited time.'
+        },
+        channelKeys: ['FTC', 'IC3', 'SEC', 'CFTC']
+      },
+      {
+        label: 'Phone Ransom',
+        input: {
+          hostname: '',
+          title: 'Voice Call Transcript',
+          url: '',
+          text: "We have your daughter. Do not call the police. Pay the ransom immediately. Wire the money to this bitcoin wallet within 2 hours or your child will be harmed. Do not hang up. Stay on the line."
+        },
+        channelKeys: ['FTC', 'IC3', 'FCC', 'CARRIER_7726']
+      }
+    ];
+
+    function analyzeCase(input) {
+      const result = CloakScamSignals.analyzeScamSurface(input);
+      return { ...input, ...result };
+    }
+
+    function buildPacketText(caseData, channels) {
+      const lines = [];
+      lines.push('='.repeat(55));
+      lines.push('STING AUTHORITY REPORT');
+      lines.push('='.repeat(55));
+      lines.push('');
+      lines.push('Generated: ' + new Date().toISOString());
+      lines.push('');
+      lines.push('--- SUMMARY ---');
+      lines.push('Risk: ' + caseData.risk + ' (' + caseData.score + '/100)');
+      lines.push('Signals: ' + caseData.findings.length + ' detected');
+      if (caseData.url) lines.push('URL: ' + caseData.url);
+      if (caseData.hostname) lines.push('Hostname: ' + caseData.hostname);
+      lines.push('');
+      lines.push('--- SIGNALS ---');
+      for (const f of caseData.findings) {
+        lines.push('  [' + f.type + '] ' + f.label + ': "' + f.evidence + '"');
+      }
+      lines.push('');
+      lines.push('--- RECOMMENDED CHANNELS ---');
+      for (let i = 0; i < channels.length; i++) {
+        const ch = channels[i];
+        lines.push((i+1) + '. ' + ch.name);
+        if (ch.url) lines.push('   ' + ch.url);
+        lines.push('   ' + ch.reason);
+      }
+      lines.push('');
+      lines.push('--- DISCLAIMER ---');
+      lines.push('STING does not submit reports on your behalf.');
+      lines.push('These are official channels where you can file.');
+      lines.push('='.repeat(55));
+      return lines.join('\n');
+    }
+
+    function renderScenario(idx) {
+      const s = scenarios[idx];
+      const caseData = analyzeCase(s.input);
+      const channels = s.channelKeys.map(function(k) { return AUTHORITY_CHANNELS[k]; });
+      const riskClass = caseData.risk === 'high' ? 'risk-high' : caseData.risk === 'medium' ? 'risk-medium' : 'risk-low';
+
+      let html = '<div class="case-card">';
+      html += '<h2>' + s.label + ' <span class="risk-badge ' + riskClass + '">' + caseData.risk + ' risk</span></h2>';
+      html += '<div class="meta-row">';
+      html += '<span class="meta-item"><strong>Score:</strong> ' + caseData.score + '/100</span>';
+      if (caseData.hostname) html += '<span class="meta-item"><strong>Hostname:</strong> ' + caseData.hostname + '</span>';
+      html += '<span class="meta-item"><strong>Signals:</strong> ' + caseData.findings.length + '</span>';
+      html += '</div>';
+      html += '<div class="signals-list">';
+      for (const f of caseData.findings) {
+        html += '<span class="signal-tag">' + f.label + '</span>';
+      }
+      html += '</div></div>';
+
+      html += '<div class="channels-section"><h3>Recommended Reporting Channels</h3>';
+      for (const ch of channels) {
+        html += '<div class="channel-card">';
+        html += '<div class="channel-name">' + ch.name + '</div>';
+        if (ch.url) html += '<a class="channel-link" href="' + ch.url + '" target="_blank" rel="noopener">' + ch.url + '</a>';
+        html += '<div class="channel-reason">' + ch.reason + '</div>';
+        html += '<div class="channel-how">' + ch.howToFile + '</div>';
+        html += '</div>';
+      }
+      html += '</div>';
+
+      const packetText = buildPacketText(caseData, channels);
+      html += '<div class="report-section"><h3>Copyable Report</h3>';
+      html += '<div class="report-text" id="report-text">' + packetText.replace(/</g, '&lt;').replace(/>/g, '&gt;') + '</div>';
+      html += '<button class="copy-btn" id="copy-btn" onclick="copyReport()">Copy Report</button>';
+      html += '</div>';
+
+      document.getElementById('case-display').innerHTML = html;
+
+      document.querySelectorAll('.tab-btn').forEach(function(btn, i) {
+        btn.classList.toggle('active', i === idx);
+      });
+    }
+
+    function copyReport() {
+      const text = document.getElementById('report-text').textContent;
+      navigator.clipboard.writeText(text).then(function() {
+        const btn = document.getElementById('copy-btn');
+        btn.textContent = 'Copied!';
+        btn.classList.add('copied');
+        setTimeout(function() {
+          btn.textContent = 'Copy Report';
+          btn.classList.remove('copied');
+        }, 2000);
+      }).catch(function() {
+        const el = document.getElementById('report-text');
+        const range = document.createRange();
+        range.selectNodeContents(el);
+        const sel = window.getSelection();
+        sel.removeAllRanges();
+        sel.addRange(range);
+      });
+    }
+
+    const tabsEl = document.getElementById('tabs');
+    scenarios.forEach(function(s, i) {
+      const btn = document.createElement('button');
+      btn.className = 'tab-btn';
+      btn.textContent = s.label;
+      btn.onclick = function() { renderScenario(i); };
+      tabsEl.appendChild(btn);
+    });
+
+    renderScenario(0);
+  </script>
+</body>
+</html>
