@@ -1,4 +1,5 @@
 import { lazy, Suspense } from "react";
+import { motion, AnimatePresence } from "framer-motion";
 import Navbar from "./components/Navbar";
 import Hero from "./components/Hero";
 
@@ -11,21 +12,36 @@ const SponsorShowcase = lazy(() => import("./components/SponsorShowcase"));
 const Architecture = lazy(() => import("./components/Architecture"));
 const Footer = lazy(() => import("./components/Footer"));
 
+function SectionDivider() {
+  return (
+    <div className="section-divider mx-6">
+      <motion.div
+        className="absolute inset-0"
+        initial={{ scaleX: 0 }}
+        whileInView={{ scaleX: 1 }}
+        viewport={{ once: true, margin: "-50px" }}
+        transition={{ duration: 1, ease: [0.25, 0.4, 0.25, 1] }}
+      />
+    </div>
+  );
+}
+
 export default function App() {
   return (
     <div className="relative min-h-screen">
       {/* Gradient mesh background — multi-layer */}
       <div className="gradient-mesh">
-        {/* Layer 1: slow (60s) */}
         <div className="mesh-orb-amber" />
         <div className="mesh-orb-teal" />
-        {/* Layer 2: mid-speed (30s) */}
         <div className="mesh-orb-purple" />
         <div className="mesh-orb-rose" />
       </div>
 
       {/* Film grain */}
       <div className="grain-overlay" />
+
+      {/* Cursor glow */}
+      <div className="cursor-glow" id="cursor-glow" />
 
       <Navbar />
       <main>
@@ -34,17 +50,17 @@ export default function App() {
           <div className="relative">
             <div className="pointer-events-none absolute inset-0 bg-gradient-to-b from-transparent via-honey/[0.01] to-transparent" />
             <Problem />
-            <div className="section-divider mx-6" />
+            <SectionDivider />
             <ProductFlow />
-            <div className="section-divider mx-6" />
+            <SectionDivider />
             <VoiceScanner />
-            <div className="section-divider mx-6" />
+            <SectionDivider />
             <InteractiveDemo />
-            <div className="section-divider mx-6" />
+            <SectionDivider />
             <HallOfFame />
-            <div className="section-divider mx-6" />
+            <SectionDivider />
             <SponsorShowcase />
-            <div className="section-divider mx-6" />
+            <SectionDivider />
             <Architecture />
           </div>
         </Suspense>

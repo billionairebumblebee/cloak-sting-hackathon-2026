@@ -1,3 +1,5 @@
+import { useRef } from "react";
+import { motion, useMotionValue, useTransform } from "framer-motion";
 import {
   Mic,
   ShoppingBag,
@@ -6,40 +8,123 @@ import {
   Clock,
   Bot,
 } from "lucide-react";
-import { FadeIn, StaggerContainer, StaggerItem, GlowCard, SectionLabel } from "./Motion";
+import { FadeIn, StaggerContainer, StaggerItem, SectionLabel } from "./Motion";
 
 const threats = [
   {
     icon: Mic,
     title: "AI voice clones",
     desc: "Deepfake calls impersonating your bank, your boss, your family. Indistinguishable from real.",
+    color: "#ef4444",
+    size: "normal",
   },
   {
     icon: ShoppingBag,
     title: "Fake storefronts",
     desc: "AI-generated product pages with stolen photos and prices too good to be real. Your money vanishes.",
+    color: "#f97316",
+    size: "normal",
   },
   {
     icon: KeyRound,
     title: "Cloned login pages",
     desc: "Pixel-perfect replicas of your bank or email login. One keystroke and your credentials are gone.",
+    color: "#dc2626",
+    size: "normal",
   },
   {
     icon: Headset,
     title: "Fake support agents",
     desc: "AI chatbots posing as customer service, engineered to extract your credentials and drain accounts.",
+    color: "#f59e0b",
+    size: "normal",
   },
   {
     icon: Clock,
     title: "Weaponized urgency",
     desc: '"Act now or lose everything" — engineered panic designed to short-circuit your judgment.',
+    color: "#ef4444",
+    size: "normal",
   },
   {
     icon: Bot,
     title: "AI-powered deception",
     desc: "Scammers weaponize the same AI you trust. Their fakes are getting undetectable. sting sees through them.",
+    color: "#dc2626",
+    size: "normal",
   },
 ];
+
+function ThreatCard({ threat }) {
+  const ref = useRef(null);
+  const mouseX = useMotionValue(0);
+  const mouseY = useMotionValue(0);
+
+  const rotateX = useTransform(mouseY, [-0.5, 0.5], [4, -4]);
+  const rotateY = useTransform(mouseX, [-0.5, 0.5], [-4, 4]);
+
+  const handleMouseMove = (e) => {
+    const rect = ref.current?.getBoundingClientRect();
+    if (!rect) return;
+    mouseX.set((e.clientX - rect.left) / rect.width - 0.5);
+    mouseY.set((e.clientY - rect.top) / rect.height - 0.5);
+  };
+
+  const handleMouseLeave = () => {
+    mouseX.set(0);
+    mouseY.set(0);
+  };
+
+  return (
+    <motion.div
+      ref={ref}
+      className="glass glass-hover group relative overflow-hidden rounded-2xl p-6 cursor-default"
+      style={{
+        rotateX,
+        rotateY,
+        transformStyle: "preserve-3d",
+        perspective: 1000,
+      }}
+      onMouseMove={handleMouseMove}
+      onMouseLeave={handleMouseLeave}
+      whileHover={{ scale: 1.02 }}
+      transition={{ duration: 0.2 }}
+    >
+      {/* Hover glow */}
+      <motion.div
+        className="pointer-events-none absolute -inset-px rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-500"
+        style={{
+          background: useTransform(
+            [mouseX, mouseY],
+            ([x, y]) =>
+              `radial-gradient(300px circle at ${(x + 0.5) * 100}% ${(y + 0.5) * 100}%, ${threat.color}10, transparent 60%)`
+          ),
+        }}
+      />
+
+      {/* Corner accent */}
+      <div
+        className="absolute top-0 right-0 h-20 w-20 rounded-bl-[40px] opacity-[0.03] transition-opacity duration-500 group-hover:opacity-[0.08]"
+        style={{ background: threat.color }}
+      />
+
+      <motion.div
+        className="relative z-10 mb-4 flex h-11 w-11 items-center justify-center rounded-xl"
+        style={{ backgroundColor: threat.color + "12" }}
+        whileHover={{ rotate: [0, -5, 5, 0] }}
+        transition={{ duration: 0.4 }}
+      >
+        <threat.icon size={19} strokeWidth={1.5} style={{ color: threat.color + "cc" }} />
+      </motion.div>
+      <h3 className="relative z-10 mb-2 text-[15px] font-semibold tracking-[-0.01em] text-text-primary">
+        {threat.title}
+      </h3>
+      <p className="relative z-10 text-[14px] leading-[1.65] text-text-secondary">
+        {threat.desc}
+      </p>
+    </motion.div>
+  );
+}
 
 export default function Problem() {
   return (
@@ -66,20 +151,10 @@ export default function Problem() {
           </FadeIn>
         </div>
 
-        <StaggerContainer className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3" stagger={0.06}>
+        <StaggerContainer className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3" stagger={0.08}>
           {threats.map((threat) => (
             <StaggerItem key={threat.title}>
-              <GlowCard className="p-6" glowColor="rgba(220, 38, 38, 0.06)">
-                <div className="mb-4 flex h-10 w-10 items-center justify-center rounded-xl bg-red-500/[0.06] text-red-400/80">
-                  <threat.icon size={18} strokeWidth={1.5} />
-                </div>
-                <h3 className="mb-2 text-[15px] font-semibold tracking-[-0.01em] text-text-primary">
-                  {threat.title}
-                </h3>
-                <p className="text-[14px] leading-[1.65] text-text-secondary">
-                  {threat.desc}
-                </p>
-              </GlowCard>
+              <ThreatCard threat={threat} />
             </StaggerItem>
           ))}
         </StaggerContainer>

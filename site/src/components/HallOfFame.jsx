@@ -1,18 +1,13 @@
-import { useState, useEffect, useMemo } from "react";
+import { useState, useMemo } from "react";
+import { motion, AnimatePresence } from "framer-motion";
 import { Globe, Mail, Phone, Flame, AlertTriangle, Database } from "lucide-react";
 import { scammerBlacklist } from "../data/demoData";
-import { FadeIn, StaggerContainer, StaggerItem, SectionLabel, GlowCard } from "./Motion";
+import { FadeIn, SectionLabel, GlowCard, CountUp } from "./Motion";
 
 const typeIcons = {
   domain: Globe,
   email: Mail,
   phone: Phone,
-};
-
-const typeLabels = {
-  domain: "Domain",
-  email: "Email",
-  phone: "Phone",
 };
 
 const riskColors = {
@@ -35,29 +30,6 @@ const filterTabs = [
   { key: "phone", label: "Phones" },
 ];
 
-function AnimatedCounter({ target }) {
-  const [count, setCount] = useState(0);
-
-  useEffect(() => {
-    let frame;
-    const duration = 2000;
-    const start = performance.now();
-
-    function tick(now) {
-      const elapsed = now - start;
-      const progress = Math.min(elapsed / duration, 1);
-      const eased = 1 - Math.pow(1 - progress, 3);
-      setCount(Math.floor(eased * target));
-      if (progress < 1) frame = requestAnimationFrame(tick);
-    }
-
-    frame = requestAnimationFrame(tick);
-    return () => cancelAnimationFrame(frame);
-  }, [target]);
-
-  return <span>{count.toLocaleString()}</span>;
-}
-
 function HeatIndicator({ reportCount, maxReports }) {
   const intensity = Math.min(reportCount / maxReports, 1);
   const flames = intensity > 0.7 ? 3 : intensity > 0.4 ? 2 : 1;
@@ -65,16 +37,16 @@ function HeatIndicator({ reportCount, maxReports }) {
   return (
     <div className="flex items-center gap-0.5">
       {Array.from({ length: flames }).map((_, i) => (
-        <div
+        <motion.div
           key={i}
-          className="animate-pulse-ring"
-          style={{ animationDelay: `${i * 0.2}s`, animationDuration: "1.5s" }}
+          animate={{ scale: [1, 1.2, 1], opacity: [0.6, 1, 0.6] }}
+          transition={{ duration: 1.5, repeat: Infinity, delay: i * 0.2 }}
         >
           <Flame
             size={12}
             className={intensity > 0.7 ? "text-red-400" : intensity > 0.4 ? "text-orange-400" : "text-yellow-500"}
           />
-        </div>
+        </motion.div>
       ))}
     </div>
   );
@@ -103,11 +75,9 @@ export default function HallOfFame() {
 
   return (
     <section id="hall-of-fame" className="relative px-6 py-28 sm:py-36">
-      {/* Ambient red glow */}
       <div className="pointer-events-none absolute top-1/4 left-1/2 h-[500px] w-[500px] -translate-x-1/2 rounded-full bg-red-500/[0.02] blur-[200px]" />
 
       <div className="mx-auto max-w-6xl">
-        {/* Header */}
         <div className="mb-16 text-center">
           <SectionLabel>Wall of Shame</SectionLabel>
           <FadeIn delay={0.1}>
@@ -127,19 +97,25 @@ export default function HallOfFame() {
         {/* Live counter */}
         <FadeIn delay={0.3}>
           <div className="mb-10 flex justify-center">
-            <div className="glass rounded-xl px-6 py-3 text-center">
+            <motion.div
+              className="glass rounded-xl px-6 py-3 text-center"
+              whileHover={{ scale: 1.02 }}
+            >
               <div className="flex items-center gap-2">
-                <div className="animate-pulse-ring" style={{ animationDuration: "2s" }}>
+                <motion.div
+                  animate={{ scale: [1, 1.2, 1] }}
+                  transition={{ duration: 2, repeat: Infinity }}
+                >
                   <AlertTriangle size={16} className="text-danger" />
-                </div>
+                </motion.div>
                 <span className="font-mono text-2xl font-bold text-text-primary">
-                  <AnimatedCounter target={totalReports} />
+                  <CountUp target={totalReports} />
                 </span>
                 <span className="text-[14px] text-text-secondary">
                   total reports filed
                 </span>
               </div>
-            </div>
+            </motion.div>
           </div>
         </FadeIn>
 
@@ -147,17 +123,26 @@ export default function HallOfFame() {
         <FadeIn delay={0.35}>
           <div className="mb-8 flex justify-center gap-2">
             {filterTabs.map((tab) => (
-              <button
+              <motion.button
                 key={tab.key}
                 onClick={() => setActiveFilter(tab.key)}
-                className={`min-h-[44px] rounded-xl px-5 py-2.5 text-[13px] font-semibold transition-all duration-300 hover:scale-[1.03] active:scale-[0.97] ${
+                className={`relative min-h-[44px] rounded-xl px-5 py-2.5 text-[13px] font-semibold transition-colors duration-300 ${
                   activeFilter === tab.key
-                    ? "border-2 border-danger/40 bg-danger/10 text-danger shadow-md shadow-red-500/10"
-                    : "border border-white/[0.06] bg-white/[0.03] text-text-secondary hover:border-white/[0.12] hover:bg-white/[0.05] hover:text-text-primary"
+                    ? "text-danger"
+                    : "border border-white/[0.06] bg-white/[0.03] text-text-secondary hover:text-text-primary"
                 }`}
+                whileHover={{ scale: 1.03 }}
+                whileTap={{ scale: 0.97 }}
               >
-                {tab.label}
-              </button>
+                {activeFilter === tab.key && (
+                  <motion.div
+                    className="absolute inset-0 rounded-xl border-2 border-danger/40 bg-danger/10"
+                    layoutId="filter-active"
+                    transition={{ type: "spring", stiffness: 300, damping: 30 }}
+                  />
+                )}
+                <span className="relative z-10">{tab.label}</span>
+              </motion.button>
             ))}
           </div>
         </FadeIn>
@@ -176,65 +161,66 @@ export default function HallOfFame() {
             </div>
 
             {/* Rows */}
-            {filtered.map((entry, i) => {
-              const Icon = typeIcons[entry.type];
-              const risk = riskColors[entry.riskLevel];
+            <AnimatePresence mode="popLayout">
+              {filtered.map((entry, i) => {
+                const Icon = typeIcons[entry.type];
+                const risk = riskColors[entry.riskLevel];
 
-              return (
-                <div
-                  key={entry.value}
-                  className="group grid grid-cols-[2rem_1fr_4.5rem_4rem_5.5rem_5.5rem] items-center gap-3 border-b border-white/[0.02] px-5 py-3 transition-all duration-300 hover:bg-red-500/[0.03] sm:grid-cols-[2.5rem_1fr_5rem_4.5rem_6rem_6.5rem]"
-                  style={{
-                    animation: `slideUp 0.25s ease ${i * 0.03}s both`,
-                  }}
-                >
-                  {/* Type icon */}
-                  <div className={`flex h-7 w-7 items-center justify-center rounded-lg ${risk.bg}`}>
-                    <Icon size={13} className={risk.text} />
-                  </div>
+                return (
+                  <motion.div
+                    key={entry.value}
+                    className="group grid grid-cols-[2rem_1fr_4.5rem_4rem_5.5rem_5.5rem] items-center gap-3 border-b border-white/[0.02] px-5 py-3 transition-colors duration-300 hover:bg-red-500/[0.03] sm:grid-cols-[2.5rem_1fr_5rem_4.5rem_6rem_6.5rem]"
+                    initial={{ opacity: 0, y: 10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, height: 0 }}
+                    transition={{ delay: i * 0.03, duration: 0.3 }}
+                    layout
+                  >
+                    <div className={`flex h-7 w-7 items-center justify-center rounded-lg ${risk.bg}`}>
+                      <Icon size={13} className={risk.text} />
+                    </div>
 
-                  {/* Value */}
-                  <span className="truncate font-mono text-[12px] text-text-primary group-hover:text-red-300 transition-colors duration-300">
-                    {entry.value}
-                  </span>
+                    <span className="truncate font-mono text-[12px] text-text-primary group-hover:text-red-300 transition-colors duration-300">
+                      {entry.value}
+                    </span>
 
-                  {/* Risk badge */}
-                  <span className={`inline-flex items-center rounded-md border px-2 py-0.5 text-[10px] font-semibold uppercase ${risk.text} ${risk.bg} ${risk.border}`}>
-                    {entry.riskLevel}
-                  </span>
+                    <span className={`inline-flex items-center rounded-md border px-2 py-0.5 text-[10px] font-semibold uppercase ${risk.text} ${risk.bg} ${risk.border}`}>
+                      {entry.riskLevel}
+                    </span>
 
-                  {/* Heat */}
-                  <HeatIndicator
-                    reportCount={entry.reportCount}
-                    maxReports={maxReports}
-                  />
+                    <HeatIndicator
+                      reportCount={entry.reportCount}
+                      maxReports={maxReports}
+                    />
 
-                  {/* First seen */}
-                  <span className="hidden text-[11px] text-text-muted sm:block">
-                    {new Date(entry.firstSeen).toLocaleDateString("en-US", {
-                      month: "short",
-                      day: "numeric",
-                      year: "2-digit",
-                    })}
-                  </span>
+                    <span className="hidden text-[11px] text-text-muted sm:block">
+                      {new Date(entry.firstSeen).toLocaleDateString("en-US", {
+                        month: "short",
+                        day: "numeric",
+                        year: "2-digit",
+                      })}
+                    </span>
 
-                  {/* Scam type */}
-                  <span className="text-[11px] text-text-secondary capitalize">
-                    {scamTypeLabels[entry.associatedScamType] || entry.associatedScamType}
-                  </span>
-                </div>
-              );
-            })}
+                    <span className="text-[11px] text-text-secondary capitalize">
+                      {scamTypeLabels[entry.associatedScamType] || entry.associatedScamType}
+                    </span>
+                  </motion.div>
+                );
+              })}
+            </AnimatePresence>
           </div>
         </FadeIn>
 
         {/* Redis callout */}
         <FadeIn delay={0.5}>
-          <GlowCard className="mt-10 p-6" glowColor="rgba(220, 38, 38, 0.06)">
+          <GlowCard className="mt-10 p-6">
             <div className="flex items-start gap-4">
-              <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-red-500/10">
+              <motion.div
+                className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-red-500/10"
+                whileHover={{ rotate: 5, scale: 1.1 }}
+              >
                 <Database size={17} className="text-red-400" />
-              </div>
+              </motion.div>
               <div>
                 <h4 className="mb-1.5 text-[13px] font-semibold text-text-primary">
                   Powered by Redis scam memory
