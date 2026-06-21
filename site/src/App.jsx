@@ -12,6 +12,7 @@ const SponsorShowcase = lazy(() => import("./components/SponsorShowcase"));
 
 const Footer = lazy(() => import("./components/Footer"));
 const ArsenalPage = lazy(() => import("./pages/ArsenalPage"));
+const PrivacyPolicy = lazy(() => import("./components/PrivacyPolicy"));
 
 function LandingPage() {
   return (
@@ -77,6 +78,7 @@ export default function App() {
         <Routes>
           <Route path="/" element={<LandingPage />} />
           <Route path="/arsenal/:slug" element={<ArsenalLayout />} />
+          <Route path="/privacy" element={<Suspense fallback={<div />}><PrivacyPolicy /></Suspense>} />
         </Routes>
       </div>
     </BrowserRouter>
