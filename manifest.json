@@ -4,9 +4,6 @@
   "version": "0.1.0",
   "description": "Ambient scam-defense warnings and shareable evidence receipts.",
   "permissions": ["storage", "activeTab", "scripting"],
-  "background": {
-    "service_worker": "src/background.js"
-  },
   "host_permissions": ["<all_urls>"],
   "background": {
     "service_worker": "src/background.js"
