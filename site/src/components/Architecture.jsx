@@ -39,14 +39,14 @@ export default function Architecture() {
           <SectionLabel>Architecture</SectionLabel>
           <FadeIn delay={0.1}>
             <h2 className="mb-5 text-4xl font-bold tracking-tight text-cream sm:text-5xl">
-              How the stack{" "}
-              <span className="text-text-secondary">fits together.</span>
+              The arsenal{" "}
+              <span className="text-text-secondary">behind the hunt.</span>
             </h2>
           </FadeIn>
           <FadeIn delay={0.2}>
             <p className="mx-auto max-w-md text-base text-text-secondary">
-              Each sponsor technology solves a specific problem in the pipeline
-              — not logo soup.
+              Each technology is a weapon in the pipeline — purpose-built to
+              detect, analyze, and convict.
             </p>
           </FadeIn>
         </div>

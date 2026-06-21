@@ -1,13 +1,13 @@
-import { Link2, Search, ShieldCheck } from "lucide-react";
+import { Crosshair, Scan, Gavel } from "lucide-react";
 import { motion } from "framer-motion";
 import { FadeIn, StaggerContainer, StaggerItem, SectionLabel } from "./Motion";
 
 const steps = [
   {
     num: "01",
-    icon: Link2,
-    title: "Paste or open",
-    desc: "Drop a suspicious link, forward a sketchy message, or let Sting scan the page you're on.",
+    icon: Crosshair,
+    title: "Acquire target",
+    desc: "Drop a suspicious link, forward a sketchy message, or let Sting lock onto the page you're on.",
     details: [
       "SMS messages",
       "Email links",
@@ -19,32 +19,32 @@ const steps = [
   },
   {
     num: "02",
-    icon: Search,
-    title: "Sting inspects",
-    desc: "Deterministic + AI analysis checks every signal a scammer tries to hide.",
+    icon: Scan,
+    title: "Sting hunts",
+    desc: "Deterministic + AI analysis tears apart every signal a scammer tries to hide. Nothing escapes.",
     details: [
-      "Domain age & shape",
+      "Domain forensics",
       "Pressure tactics",
       "Page claims vs reality",
-      "Risky redirects",
+      "Redirect traps",
       "Form behavior",
       "Impersonation patterns",
     ],
-    color: "#e6c200",
+    color: "#dc2626",
   },
   {
     num: "03",
-    icon: ShieldCheck,
-    title: "Verdict + receipt",
-    desc: "Get a plain-English explanation, risk score, evidence trail, and exactly what to do next.",
+    icon: Gavel,
+    title: "Verdict delivered",
+    desc: "Get a plain-English conviction, threat score, evidence dossier, and exactly how to strike back.",
     details: [
-      "Risk score & level",
+      "Threat score & level",
       "Signal breakdown",
-      "Plain-English explanation",
-      "Recommended next steps",
-      "Shareable evidence receipt",
+      "Plain-English verdict",
+      "Counter-strike steps",
+      "Shareable evidence dossier",
     ],
-    color: "#16a34a",
+    color: "#f5a623",
   },
 ];
 
@@ -57,13 +57,13 @@ export default function ProductFlow() {
           <FadeIn delay={0.1}>
             <h2 className="mb-5 text-4xl font-bold tracking-tight text-cream sm:text-5xl">
               Three steps.{" "}
-              <span className="text-text-secondary">Thirty seconds.</span>
+              <span className="gradient-text">Thirty seconds.</span>
             </h2>
           </FadeIn>
           <FadeIn delay={0.2}>
             <p className="mx-auto max-w-md text-base text-text-secondary">
-              The same checks a security analyst would run — explained so anyone
-              can understand.
+              The same forensic analysis a security team would run — delivered
+              so fast scammers don&apos;t see it coming.
             </p>
           </FadeIn>
         </div>
@@ -85,12 +85,12 @@ export default function ProductFlow() {
 
                 {/* Number + icon */}
                 <div className="mb-8 flex items-center gap-4">
-                  <span className="font-mono text-4xl font-bold text-white/[0.04]">
+                  <span className="font-mono text-4xl font-black text-white/[0.04]">
                     {step.num}
                   </span>
                   <motion.div
                     className="flex h-12 w-12 items-center justify-center rounded-xl"
-                    style={{ backgroundColor: step.color + "10" }}
+                    style={{ backgroundColor: step.color + "12" }}
                     whileHover={{ scale: 1.1, rotate: 5 }}
                     transition={{ type: "spring", stiffness: 300 }}
                   >

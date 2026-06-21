@@ -14,15 +14,15 @@ export default function Footer() {
               whileHover={{ scale: 1.03 }}
             >
               <StingLogo size={24} />
-              <span className="font-semibold text-cream">Sting</span>
+              <span className="font-bold text-cream">Sting</span>
             </motion.a>
             <div className="flex flex-col items-center gap-1.5 text-center sm:items-end sm:text-right">
-              <p className="text-[11px] text-text-muted">
+              <p className="text-[11px] font-medium text-text-muted">
                 Built at UC Berkeley AI Hackathon 2026
               </p>
               <p className="text-[10px] text-text-muted/60">
-                Clean-room implementation. All code and assets created during the
-                hacking period.
+                Clean-room implementation. Every line written during the hacking
+                period. Zero tolerance for fraud.
               </p>
             </div>
           </div>
