@@ -1,5 +1,7 @@
 (() => {
   const STORAGE_KEY = 'cloakStingLatestReceipt';
+  const HISTORY_KEY = 'cloakStingScanHistory';
+  const HISTORY_LIMIT = 25;
   const MIN_VISIBLE_SCORE = 35;
 
   function getPageText() {
@@ -24,8 +26,19 @@
     try {
       if (globalThis.chrome?.storage?.local) {
         chrome.storage.local.set({ [STORAGE_KEY]: receipt });
+        chrome.storage.local.get(HISTORY_KEY, (result) => {
+          const history = result[HISTORY_KEY] || [];
+          history.unshift(receipt);
+          if (history.length > HISTORY_LIMIT) history.length = HISTORY_LIMIT;
+          chrome.storage.local.set({ [HISTORY_KEY]: history });
+        });
       } else {
         localStorage.setItem(STORAGE_KEY, JSON.stringify(receipt));
+        let history = [];
+        try { history = JSON.parse(localStorage.getItem(HISTORY_KEY) || '[]'); } catch (_) {}
+        history.unshift(receipt);
+        if (history.length > HISTORY_LIMIT) history.length = HISTORY_LIMIT;
+        localStorage.setItem(HISTORY_KEY, JSON.stringify(history));
       }
     } catch (_) {}
   }
@@ -135,7 +148,80 @@
     saveReceipt(receipt);
     renderOverlay(receipt);
     requestScreenshot(receipt);
+    chrome.runtime?.sendMessage({ type: 'SCAN_RESULT', receipt });
   }
+
+  /* ── Link pre-scan on hover ── */
+
+  const TOOLTIP_ID = 'cloak-sting-link-tooltip';
+  const HOVER_DEBOUNCE_MS = 300;
+  let lastHoverCheck = 0;
+
+  function isSameOrigin(href) {
+    try {
+      return new URL(href, location.href).origin === location.origin;
+    } catch (_) {
+      return true;
+    }
+  }
+
+  function removeTooltip() {
+    document.getElementById(TOOLTIP_ID)?.remove();
+  }
+
+  function showLinkTooltip(anchor, reason) {
+    removeTooltip();
+    const tip = document.createElement('div');
+    tip.id = TOOLTIP_ID;
+    tip.setAttribute('role', 'tooltip');
+    const safeReason = escapeHtml(reason);
+    tip.innerHTML = `
+      <style>
+        #${TOOLTIP_ID}{position:fixed;z-index:2147483647;max-width:320px;padding:8px 12px;font:12px/1.4 -apple-system,BlinkMacSystemFont,"Inter","Segoe UI",sans-serif;color:#fff;background:#1a1a1a;border:1.5px solid #e85d3a;border-radius:10px;pointer-events:none;box-shadow:0 6px 20px rgba(0,0,0,.35)}
+        #${TOOLTIP_ID} .warn-icon{margin-right:5px}
+      </style>
+      <span class="warn-icon">\u26A0\uFE0F</span>Sting: Suspicious link \u2014 ${safeReason}
+    `;
+
+    const rect = anchor.getBoundingClientRect();
+    tip.style.left = `${Math.min(rect.left, window.innerWidth - 340)}px`;
+    tip.style.top = `${rect.bottom + 6}px`;
+
+    document.documentElement.appendChild(tip);
+  }
+
+  function handleLinkHover(event) {
+    const anchor = event.target.closest('a');
+    if (!anchor) return;
+
+    const href = anchor.getAttribute('href');
+    if (!href || href.startsWith('#')) return;
+    if (isSameOrigin(href)) return;
+
+    const now = Date.now();
+    if (now - lastHoverCheck < HOVER_DEBOUNCE_MS) return;
+    lastHoverCheck = now;
+
+    if (!globalThis.CloakScamSignals) return;
+    let hostname;
+    try {
+      hostname = new URL(href, location.href).hostname;
+    } catch (_) {
+      return;
+    }
+    const signals = globalThis.CloakScamSignals.hostnameSignals(hostname);
+    if (signals.length > 0) {
+      showLinkTooltip(anchor, signals[0].label);
+    }
+  }
+
+  function handleLinkOut(event) {
+    const anchor = event.target.closest('a');
+    if (anchor) removeTooltip();
+  }
+
+  document.addEventListener('mouseover', handleLinkHover, true);
+  document.addEventListener('mouseout', handleLinkOut, true);
 
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', run, { once: true });
   else run();

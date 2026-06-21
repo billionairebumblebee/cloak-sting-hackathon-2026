@@ -1,5 +1,4 @@
 import { useState, useEffect, useMemo } from "react";
-import { motion, AnimatePresence } from "framer-motion";
 import { Globe, Mail, Phone, Flame, AlertTriangle, Database } from "lucide-react";
 import { scammerBlacklist } from "../data/demoData";
 import { FadeIn, StaggerContainer, StaggerItem, SectionLabel, GlowCard } from "./Motion";
@@ -66,16 +65,16 @@ function HeatIndicator({ reportCount, maxReports }) {
   return (
     <div className="flex items-center gap-0.5">
       {Array.from({ length: flames }).map((_, i) => (
-        <motion.div
+        <div
           key={i}
-          animate={{ opacity: [0.6, 1, 0.6], scale: [0.9, 1.1, 0.9] }}
-          transition={{ duration: 1.5, delay: i * 0.2, repeat: Infinity }}
+          className="animate-pulse-ring"
+          style={{ animationDelay: `${i * 0.2}s`, animationDuration: "1.5s" }}
         >
           <Flame
             size={12}
             className={intensity > 0.7 ? "text-red-400" : intensity > 0.4 ? "text-orange-400" : "text-yellow-500"}
           />
-        </motion.div>
+        </div>
       ))}
     </div>
   );
@@ -130,12 +129,9 @@ export default function HallOfFame() {
           <div className="mb-10 flex justify-center">
             <div className="glass rounded-xl px-6 py-3 text-center">
               <div className="flex items-center gap-2">
-                <motion.div
-                  animate={{ scale: [1, 1.2, 1] }}
-                  transition={{ duration: 2, repeat: Infinity }}
-                >
+                <div className="animate-pulse-ring" style={{ animationDuration: "2s" }}>
                   <AlertTriangle size={16} className="text-danger" />
-                </motion.div>
+                </div>
                 <span className="font-mono text-2xl font-bold text-text-primary">
                   <AnimatedCounter target={totalReports} />
                 </span>
@@ -180,64 +176,55 @@ export default function HallOfFame() {
             </div>
 
             {/* Rows */}
-            <AnimatePresence mode="popLayout">
-              {filtered.map((entry, i) => {
-                const Icon = typeIcons[entry.type];
-                const risk = riskColors[entry.riskLevel];
+            {filtered.map((entry, i) => {
+              const Icon = typeIcons[entry.type];
+              const risk = riskColors[entry.riskLevel];
 
-                return (
-                  <motion.div
-                    key={entry.value}
-                    initial={{ opacity: 0, y: 8 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    exit={{ opacity: 0, y: -8 }}
-                    transition={{ duration: 0.25, delay: i * 0.03 }}
-                    className="group grid grid-cols-[2rem_1fr_4.5rem_4rem_5.5rem_5.5rem] items-center gap-3 border-b border-white/[0.02] px-5 py-3 transition-all duration-300 hover:bg-red-500/[0.03] sm:grid-cols-[2.5rem_1fr_5rem_4.5rem_6rem_6.5rem]"
-                    style={{
-                      boxShadow: "none",
-                    }}
-                    whileHover={{
-                      boxShadow: `inset 0 0 30px ${risk.glow}`,
-                    }}
-                  >
-                    {/* Type icon */}
-                    <div className={`flex h-7 w-7 items-center justify-center rounded-lg ${risk.bg}`}>
-                      <Icon size={13} className={risk.text} />
-                    </div>
+              return (
+                <div
+                  key={entry.value}
+                  className="group grid grid-cols-[2rem_1fr_4.5rem_4rem_5.5rem_5.5rem] items-center gap-3 border-b border-white/[0.02] px-5 py-3 transition-all duration-300 hover:bg-red-500/[0.03] sm:grid-cols-[2.5rem_1fr_5rem_4.5rem_6rem_6.5rem]"
+                  style={{
+                    animation: `slideUp 0.25s ease ${i * 0.03}s both`,
+                  }}
+                >
+                  {/* Type icon */}
+                  <div className={`flex h-7 w-7 items-center justify-center rounded-lg ${risk.bg}`}>
+                    <Icon size={13} className={risk.text} />
+                  </div>
 
-                    {/* Value */}
-                    <span className="truncate font-mono text-[12px] text-text-primary group-hover:text-red-300 transition-colors duration-300">
-                      {entry.value}
-                    </span>
+                  {/* Value */}
+                  <span className="truncate font-mono text-[12px] text-text-primary group-hover:text-red-300 transition-colors duration-300">
+                    {entry.value}
+                  </span>
 
-                    {/* Risk badge */}
-                    <span className={`inline-flex items-center rounded-md border px-2 py-0.5 text-[10px] font-semibold uppercase ${risk.text} ${risk.bg} ${risk.border}`}>
-                      {entry.riskLevel}
-                    </span>
+                  {/* Risk badge */}
+                  <span className={`inline-flex items-center rounded-md border px-2 py-0.5 text-[10px] font-semibold uppercase ${risk.text} ${risk.bg} ${risk.border}`}>
+                    {entry.riskLevel}
+                  </span>
 
-                    {/* Heat */}
-                    <HeatIndicator
-                      reportCount={entry.reportCount}
-                      maxReports={maxReports}
-                    />
+                  {/* Heat */}
+                  <HeatIndicator
+                    reportCount={entry.reportCount}
+                    maxReports={maxReports}
+                  />
 
-                    {/* First seen */}
-                    <span className="hidden text-[11px] text-text-muted sm:block">
-                      {new Date(entry.firstSeen).toLocaleDateString("en-US", {
-                        month: "short",
-                        day: "numeric",
-                        year: "2-digit",
-                      })}
-                    </span>
+                  {/* First seen */}
+                  <span className="hidden text-[11px] text-text-muted sm:block">
+                    {new Date(entry.firstSeen).toLocaleDateString("en-US", {
+                      month: "short",
+                      day: "numeric",
+                      year: "2-digit",
+                    })}
+                  </span>
 
-                    {/* Scam type */}
-                    <span className="text-[11px] text-text-secondary capitalize">
-                      {scamTypeLabels[entry.associatedScamType] || entry.associatedScamType}
-                    </span>
-                  </motion.div>
-                );
-              })}
-            </AnimatePresence>
+                  {/* Scam type */}
+                  <span className="text-[11px] text-text-secondary capitalize">
+                    {scamTypeLabels[entry.associatedScamType] || entry.associatedScamType}
+                  </span>
+                </div>
+              );
+            })}
           </div>
         </FadeIn>
 
