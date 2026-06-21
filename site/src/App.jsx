@@ -3,6 +3,7 @@ import Hero from "./components/Hero";
 import Problem from "./components/Problem";
 import ProductFlow from "./components/ProductFlow";
 import InteractiveDemo from "./components/InteractiveDemo";
+import HallOfFame from "./components/HallOfFame";
 import Architecture from "./components/Architecture";
 import Footer from "./components/Footer";
 
@@ -20,6 +21,7 @@ export default function App() {
           <Problem />
           <ProductFlow />
           <InteractiveDemo />
+          <HallOfFame />
           <Architecture />
         </div>
       </main>
