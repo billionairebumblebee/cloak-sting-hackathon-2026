@@ -1,11 +1,11 @@
-# Cloak Sting brand + pitch brief
+# cloak sting brand + pitch brief
 
 ## One-liner
-Cloak Sting is an ambient scam-defense layer that warns people before they type, pay, or trust — then turns the scam attempt into an evidence dossier their family, bank, or authorities can actually use.
+cloak sting is an ambient scam-defense layer that warns people before they type, pay, or trust — then turns the scam attempt into an evidence dossier their family, bank, or authorities can actually use.
 
 ## Core demo story
 1. Grandma opens a fake bank/shipping page.
-2. Cloak Sting detects urgency, impersonation, payment pressure, and credential grabs.
+2. cloak sting detects urgency, impersonation, payment pressure, and credential grabs.
 3. A calm overlay interrupts the scam in the danger moment.
 4. Cloak saves a threat receipt.
 5. The receipt becomes a case file / authority-ready dossier.

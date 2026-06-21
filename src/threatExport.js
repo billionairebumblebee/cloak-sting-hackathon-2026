@@ -1,5 +1,5 @@
 /**
- * Threat intelligence export for Cloak Sting.
+ * Threat intelligence export for cloak sting.
  *
  * Generates structured threat intelligence reports in multiple formats:
  *  - STIX 2.1 (Structured Threat Information Expression)
@@ -7,7 +7,7 @@
  *  - Human-readable summary
  *
  * These exports enable law enforcement, banks, and platform abuse teams
- * to action the evidence Cloak Sting collects.
+ * to action the evidence cloak sting collects.
  */
 
 function generateStixBundle(caseRecord) {
@@ -16,14 +16,14 @@ function generateStixBundle(caseRecord) {
 
   const objects = [];
 
-  // Identity — the reporter (Cloak Sting)
+  // Identity — the reporter (cloak sting)
   objects.push({
     type: 'identity',
     spec_version: '2.1',
     id: 'identity--cloak-sting-detector',
     created: now,
     modified: now,
-    name: 'Cloak Sting Scam Detector',
+    name: 'cloak sting Scam Detector',
     identity_class: 'system',
     description: 'Automated scam detection system from UC Berkeley AI Hackathon 2026'
   });

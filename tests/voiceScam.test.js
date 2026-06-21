@@ -139,7 +139,7 @@ test('pipeline: hostage/ransom transcript produces high risk dossier', async () 
   assert.ok(result.analysis.findings.some((f) => f.type === 'ransom'));
   assert.equal(result.caseRecord.source, 'cloak-sting-voice-pipeline');
   assert.ok(result.caseRecord.evidence.transcript.includes('ransom'));
-  assert.ok(result.dossier.markdown.includes('Cloak Sting'));
+  assert.ok(result.dossier.markdown.includes('cloak sting'));
   assert.ok(result.dossier.json.includes(result.caseRecord.id));
   assert.equal(result.caseRecord.voiceMetadata.detectedLanguage, 'en');
 });

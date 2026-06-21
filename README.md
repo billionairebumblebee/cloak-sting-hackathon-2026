@@ -14,7 +14,7 @@ cloak sting is a Chrome extension + voice analysis pipeline that detects scams i
 git clone https://github.com/billionairebumblebee/cloak-sting-hackathon-2026.git
 cd cloak-sting-hackathon-2026
 npm install
-npm test          # 169 tests pass — zero keys required
+npm test          # 177 tests pass — zero keys required
 npm run build     # packages extension ZIP
 ```
 
@@ -84,7 +84,7 @@ Every sponsor technology is integrated with real code, real tests, and graceful 
 | 8 | History tab shows past scans | Switch to History in popup | LIVE |
 | 9 | Voice pipeline processes fixture | `npm run demo` (voice section) | LIVE |
 | 10 | Threat export generates STIX/CSV | `npm run demo` (export section) | LIVE |
-| 11 | All 169 tests pass | `npm test` | LIVE |
+| 11 | All 177 tests pass | `npm test` | LIVE |
 | 12 | Eval criteria script runs | `node scripts/arize_eval_demo.js` | LIVE |
 | 13 | Sentry smoke test passes | `node scripts/sentry_smoke_demo.js` | LIVE |
 | 14 | Link pre-scan tooltip appears | Hover a link on any page | LIVE |
@@ -113,7 +113,7 @@ Open in browser after loading the extension:
 
 ## Test coverage
 
-169 tests across 15 test files covering:
+177 tests across 17 test files covering:
 - Scam signal detection (page + voice)
 - Typosquat / homoglyph analysis
 - Form credential harvesting

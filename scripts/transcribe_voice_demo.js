@@ -23,7 +23,7 @@ async function main() {
 
   const useLiveApi = audioInput && deepgramConfigured();
 
-  console.log('=== Cloak Sting — Voice Scam Demo ===\n');
+  console.log('=== cloak sting — Voice Scam Demo ===\n');
 
   let result;
 

@@ -1,4 +1,5 @@
 import { lazy, Suspense } from "react";
+import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Navbar from "./components/Navbar";
 import Hero from "./components/Hero";
 
@@ -10,23 +11,11 @@ const HallOfFame = lazy(() => import("./components/HallOfFame"));
 const SponsorShowcase = lazy(() => import("./components/SponsorShowcase"));
 const Architecture = lazy(() => import("./components/Architecture"));
 const Footer = lazy(() => import("./components/Footer"));
+const ArsenalPage = lazy(() => import("./pages/ArsenalPage"));
 
-export default function App() {
+function LandingPage() {
   return (
-    <div className="relative min-h-screen">
-      {/* Gradient mesh background — multi-layer */}
-      <div className="gradient-mesh">
-        {/* Layer 1: slow (60s) */}
-        <div className="mesh-orb-amber" />
-        <div className="mesh-orb-teal" />
-        {/* Layer 2: mid-speed (30s) */}
-        <div className="mesh-orb-purple" />
-        <div className="mesh-orb-rose" />
-      </div>
-
-      {/* Film grain */}
-      <div className="grain-overlay" />
-
+    <>
       <Navbar />
       <main>
         <Hero />
@@ -52,6 +41,46 @@ export default function App() {
       <Suspense>
         <Footer />
       </Suspense>
-    </div>
+    </>
+  );
+}
+
+function ArsenalLayout() {
+  return (
+    <>
+      <Navbar />
+      <Suspense>
+        <ArsenalPage />
+      </Suspense>
+      <Suspense>
+        <Footer />
+      </Suspense>
+    </>
+  );
+}
+
+export default function App() {
+  return (
+    <BrowserRouter>
+      <div className="relative min-h-screen">
+        {/* Gradient mesh background — multi-layer */}
+        <div className="gradient-mesh">
+          {/* Layer 1: slow (60s) */}
+          <div className="mesh-orb-amber" />
+          <div className="mesh-orb-teal" />
+          {/* Layer 2: mid-speed (30s) */}
+          <div className="mesh-orb-purple" />
+          <div className="mesh-orb-rose" />
+        </div>
+
+        {/* Film grain */}
+        <div className="grain-overlay" />
+
+        <Routes>
+          <Route path="/" element={<LandingPage />} />
+          <Route path="/arsenal/:slug" element={<ArsenalLayout />} />
+        </Routes>
+      </div>
+    </BrowserRouter>
   );
 }

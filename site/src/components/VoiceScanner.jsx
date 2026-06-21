@@ -44,7 +44,7 @@ function LiveTranscription({ segments, currentIndex }) {
       <div className="flex items-center gap-2 mb-3">
         <div className="h-2 w-2 rounded-full bg-red-500 animate-threat-blink" />
         <span className="text-[11px] font-medium tracking-widest text-red-400/80 uppercase">
-          Deepgram Live Transcription
+          Deepgram Transcription (fixture)
         </span>
       </div>
       <div className="space-y-0">
@@ -203,8 +203,8 @@ export default function VoiceScanner() {
           <FadeIn delay={0.2}>
             <p className="mx-auto max-w-lg text-[16px] leading-[1.7] text-text-secondary">
               Upload a recording or tap a scenario below. Deepgram transcribes
-              the call in real time, then sting analyzes every word for scam
-              signals.
+              the call (with API key), then sting analyzes every word for scam
+              signals. Demo uses fixture transcripts.
             </p>
           </FadeIn>
         </div>

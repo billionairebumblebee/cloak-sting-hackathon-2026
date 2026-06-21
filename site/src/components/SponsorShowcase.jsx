@@ -1,9 +1,11 @@
 import { useState, useEffect, useRef } from "react";
+import { Link } from "react-router-dom";
 import { FadeIn, StaggerContainer, StaggerItem, SectionLabel } from "./Motion";
 
 const sponsors = [
   {
     name: "Deepgram",
+    slug: "deepgram",
     color: "#13ef93",
     status: "FALLBACK",
     role: "Voice Intelligence",
@@ -13,15 +15,17 @@ const sponsors = [
   },
   {
     name: "Anthropic",
+    slug: "anthropic",
     color: "#d97706",
     status: "FALLBACK",
     role: "Explanation Layer",
-    detail: "Claude generates grounded plain-English explanations from deterministic signal data. Without API key, a local template engine produces the same explanation structure from case findings.",
+    detail: "Claude generates grounded plain-English explanations from deterministic signal data. Without API key, a local template engine produces the same explanation structure from case findings. Claude is not the detector.",
     stats: "5-criteria eval \u2022 Deterministic fallback \u2022 Not the detector",
     files: ["src/anthropicExplain.js", "src/arizeEvalCriteria.js"],
   },
   {
     name: "Browserbase",
+    slug: "browserbase",
     color: "#6366f1",
     status: "SEAM",
     role: "Isolated Link Inspection",
@@ -31,6 +35,7 @@ const sponsors = [
   },
   {
     name: "Redis",
+    slug: "redis",
     color: "#dc2626",
     status: "FALLBACK",
     role: "Threat Memory",
@@ -40,6 +45,7 @@ const sponsors = [
   },
   {
     name: "Sentry",
+    slug: "sentry",
     color: "#362d59",
     status: "FALLBACK",
     role: "Reliability Monitor",
@@ -49,6 +55,7 @@ const sponsors = [
   },
   {
     name: "Fetch.ai / ASI:One",
+    slug: "asi-one",
     color: "#3b82f6",
     status: "LOCAL",
     role: "Agent Coordination",
@@ -58,6 +65,7 @@ const sponsors = [
   },
   {
     name: "Arize / Phoenix",
+    slug: "arize",
     color: "#f97316",
     status: "LOCAL",
     role: "Eval Observability",
@@ -122,7 +130,7 @@ export default function SponsorShowcase() {
         <FadeIn delay={0.3}>
           <div className="mb-16 grid grid-cols-2 gap-4 sm:grid-cols-4">
             {[
-              { label: "Tests Passing", value: 169, suffix: "" },
+              { label: "Tests Passing", value: 177, suffix: "" },
               { label: "Source Files", value: 20, suffix: "" },
               { label: "Scam Patterns", value: 10, suffix: "" },
               { label: "Sponsor APIs", value: 7, suffix: "" },
@@ -146,50 +154,55 @@ export default function SponsorShowcase() {
         <StaggerContainer className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3" stagger={0.06}>
           {sponsors.map((s) => (
             <StaggerItem key={s.name}>
-              <div className="glass group rounded-2xl p-6 transition-all duration-300 hover:scale-[1.02]">
-                <div className="mb-4 flex items-center justify-between">
-                  <div className="flex items-center gap-3">
-                    <div
-                      className="h-3 w-3 rounded-full"
-                      style={{ backgroundColor: s.color }}
-                    />
-                    <h3 className="text-[14px] font-bold text-text-primary">
-                      {s.name}
-                    </h3>
-                  </div>
-                  <span
-                    className="rounded-md px-2 py-0.5 text-[9px] font-bold tracking-widest uppercase"
-                    style={{
-                      backgroundColor: s.color + "15",
-                      color: s.color,
-                    }}
-                  >
-                    {s.status}
-                  </span>
-                </div>
-                <p
-                  className="mb-2 text-[11px] font-semibold uppercase tracking-wider"
-                  style={{ color: s.color + "90" }}
-                >
-                  {s.role}
-                </p>
-                <p className="mb-3 text-[12px] leading-[1.65] text-text-secondary">
-                  {s.detail}
-                </p>
-                <p className="mb-3 text-[10px] font-medium text-text-muted">
-                  {s.stats}
-                </p>
-                <div className="flex flex-wrap gap-1">
-                  {s.files.map((f) => (
+              <Link to={`/arsenal/${s.slug}`} className="block">
+                <div className="glass group rounded-2xl p-6 transition-all duration-300 hover:scale-[1.02] hover:ring-1 hover:ring-white/[0.08]">
+                  <div className="mb-4 flex items-center justify-between">
+                    <div className="flex items-center gap-3">
+                      <div
+                        className="h-3 w-3 rounded-full"
+                        style={{ backgroundColor: s.color }}
+                      />
+                      <h3 className="text-[14px] font-bold text-text-primary">
+                        {s.name}
+                      </h3>
+                    </div>
                     <span
-                      key={f}
-                      className="rounded bg-white/[0.04] px-2 py-0.5 font-mono text-[9px] text-text-muted"
+                      className="rounded-md px-2 py-0.5 text-[9px] font-bold tracking-widest uppercase"
+                      style={{
+                        backgroundColor: s.color + "15",
+                        color: s.color,
+                      }}
                     >
-                      {f}
+                      {s.status}
                     </span>
-                  ))}
+                  </div>
+                  <p
+                    className="mb-2 text-[11px] font-semibold uppercase tracking-wider"
+                    style={{ color: s.color + "90" }}
+                  >
+                    {s.role}
+                  </p>
+                  <p className="mb-3 text-[12px] leading-[1.65] text-text-secondary">
+                    {s.detail}
+                  </p>
+                  <p className="mb-3 text-[10px] font-medium text-text-muted">
+                    {s.stats}
+                  </p>
+                  <div className="flex flex-wrap gap-1">
+                    {s.files.map((f) => (
+                      <span
+                        key={f}
+                        className="rounded bg-white/[0.04] px-2 py-0.5 font-mono text-[9px] text-text-muted"
+                      >
+                        {f}
+                      </span>
+                    ))}
+                  </div>
+                  <p className="mt-3 text-[10px] font-medium text-honey opacity-0 transition-opacity group-hover:opacity-100">
+                    view full proof →
+                  </p>
                 </div>
-              </div>
+              </Link>
             </StaggerItem>
           ))}
         </StaggerContainer>

@@ -15,7 +15,7 @@ function renderMarkdownDossier(caseRecord) {
       `- Reporting note: ${caseRecord.explanation.reportingNote || ''}\n\n`
     : '';
 
-  return `# Cloak Sting Evidence Dossier\n\n` +
+  return `# cloak sting Evidence Dossier\n\n` +
     explanation +
     `## Case Summary\n\n` +
     `- Case ID: ${caseRecord.id}\n` +

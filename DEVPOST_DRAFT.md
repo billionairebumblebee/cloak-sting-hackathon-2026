@@ -1,12 +1,12 @@
-# Cloak Sting
+# cloak sting
 
 ## Elevator Pitch
 
-Cloak Sting is a Chrome extension that detects scam patterns in real time — urgency, payment pressure, credential grabs, impersonation — and interrupts the user with a calm warning overlay before they type, pay, or trust. Every scam attempt becomes a shareable evidence dossier for family, banks, or authorities.
+cloak sting is a Chrome extension that detects scam patterns in real time — urgency, payment pressure, credential grabs, impersonation — and interrupts the user with a calm warning overlay before they type, pay, or trust. Every scam attempt becomes a shareable evidence dossier for family, banks, or authorities.
 
 ## What It Does
 
-Cloak Sting runs silently on every page. When it detects scam signals (urgency language, unusual payment methods, trusted-institution impersonation, secrecy pressure, credential harvesting), it surfaces a non-panic overlay grading the threat as high/medium risk with specific evidence. The user can copy a structured receipt, dismiss the warning, or save the case for later reporting.
+cloak sting runs silently on every page. When it detects scam signals (urgency language, unusual payment methods, trusted-institution impersonation, secrecy pressure, credential harvesting), it surfaces a non-panic overlay grading the threat as high/medium risk with specific evidence. The user can copy a structured receipt, dismiss the warning, or save the case for later reporting.
 
 Key capabilities implemented during this hackathon:
 
@@ -25,7 +25,7 @@ Built from scratch during the hackathon in a clean repo. No code carried from pr
 - **Chrome Extension (Manifest V3)**: Content script reads DOM text, input fields, URL/hostname; injects warning overlay when risk threshold met
 - **Case persistence**: Node.js Redis client (official `redis` package v6) with automatic fallback to local JSON
 - **Browserbase integration**: Creates isolated browser sessions via API to safely inspect suspicious links and extract evidence without user exposure
-- **Testing**: Node.js built-in test runner (`node --test`), 29 tests covering signal detection, case storage, dossier rendering, and fixture classification
+- **Testing**: Node.js built-in test runner (`node --test`), 177 tests across 17 files covering signal detection, case storage, dossier rendering, fixture classification, accessibility, and sponsor integration paths
 - **Packaging**: Python script zips the extension for Chrome Web Store or unpacked loading
 
 ## Sponsor Usage
