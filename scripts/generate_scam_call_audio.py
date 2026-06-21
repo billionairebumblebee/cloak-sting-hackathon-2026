@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Generate phone-quality scam-call demo MP3s for cloak sting.
+"""Generate phone-quality scam-call demo MP3s for cloak STING.
 
 Uses edge-tts for phrase-level speech, explicit ffmpeg silence clips for pauses,
 and a final phone-line filter chain for mono 128kbps output.

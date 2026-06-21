@@ -1,5 +1,5 @@
 /**
- * Arize eval criteria for cloak sting explanation quality.
+ * Arize eval criteria for cloak STING explanation quality.
  *
  * Each criterion returns { pass: boolean, reason: string }.
  * Used by scripts/arize_eval_demo.js and tests/arizeEval.test.js.

@@ -1,4 +1,4 @@
-# cloak sting product surfaces plan
+# cloak STING product surfaces plan
 
 ## Current hackathon truth
 

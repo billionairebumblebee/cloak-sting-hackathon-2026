@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 /**
- * full_demo.js — One-click showcase of every cloak sting capability.
+ * full_demo.js — One-click showcase of every cloak STING capability.
  *
  * Runs without any API keys. Demonstrates:
  *  1. Page scam signal detection (9 demo scenarios)

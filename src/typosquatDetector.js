@@ -1,5 +1,5 @@
 /**
- * Typosquat & homoglyph detector for cloak sting.
+ * Typosquat & homoglyph detector for cloak STING.
  *
  * Detects domains that impersonate well-known brands via:
  *  - Character substitution (paypa1.com → paypal.com)

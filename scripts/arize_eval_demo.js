@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 
 /**
- * Arize eval/proof script for cloak sting scam explanations.
+ * Arize eval/proof script for cloak STING scam explanations.
  *
  * Runs scam fixtures through:
  *   1. Deterministic scam signal engine
@@ -67,7 +67,7 @@ const FIXTURES = [
 //
 // Shows how Arize eval feedback improved explanation quality.
 // "Before" = a hypothetical bad explanation that fails eval criteria.
-// "After"  = the actual cloak sting explanation that passes all criteria.
+// "After"  = the actual cloak STING explanation that passes all criteria.
 
 function runBeforeAfterDemo(caseRecord) {
   const beforeExplanation = {
@@ -162,7 +162,7 @@ async function main() {
   const reportPath = path.join(process.cwd(), 'data', 'arize-eval-report.json');
   fs.mkdirSync(path.dirname(reportPath), { recursive: true });
   fs.writeFileSync(reportPath, JSON.stringify(report, null, 2));
-  console.log(`\n=== cloak sting Arize Eval Report ===`);
+  console.log(`\n=== cloak STING Arize Eval Report ===`);
   console.log(`Eval report written to ${reportPath}`);
   console.log(`${passCount}/${results.length} fixtures passed all 5 checks (${report.passRate})\n`);
 

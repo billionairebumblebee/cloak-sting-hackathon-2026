@@ -190,7 +190,7 @@
     root.id = 'cloak-sting-overlay';
     root.setAttribute('role', 'alertdialog');
     root.setAttribute('aria-modal', 'true');
-    root.setAttribute('aria-label', 'Scam warning from cloak sting');
+    root.setAttribute('aria-label', 'Scam warning from cloak STING');
     root.setAttribute('aria-describedby', 'cloak-sting-advice');
     root.setAttribute('tabindex', '-1');
 

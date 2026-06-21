@@ -1,8 +1,10 @@
-# cloak sting — UC Berkeley AI Hackathon 2026
+# cloak STING — UC Berkeley AI Hackathon 2026
+
+**STING = Scam Tracking & Intelligence Network Guard**
 
 **Ambient scam-defense that protects the people who need it most.**
 
-cloak sting is a Chrome extension + voice analysis pipeline that detects scams in real time — fake bank pages, crypto seed phrase harvesting, IRS impersonation calls, grandparent scams, romance fraud, and more. It generates evidence dossiers shareable with banks, law enforcement, and family members.
+cloak STING is a Chrome extension + voice analysis pipeline that detects scams in real time — fake bank pages, crypto seed phrase harvesting, IRS impersonation calls, grandparent scams, romance fraud, and more. It generates evidence dossiers shareable with banks, law enforcement, and family members.
 
 > *"Scammers picked the wrong target."*
 
@@ -114,4 +116,4 @@ REDIS_API_KEY=...
 
 This repository is intentionally separate from prior Cloak extension repos. Built from scratch for the hackathon submission window.
 
-Safety boundary: cloak sting stores observed evidence and public technical indicators. It does not claim to identify private individuals or encourage vigilante action.
+Safety boundary: cloak STING stores observed evidence and public technical indicators. It does not claim to identify private individuals or encourage vigilante action.

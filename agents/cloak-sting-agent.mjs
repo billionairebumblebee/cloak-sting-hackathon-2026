@@ -1,5 +1,5 @@
 /**
- * cloak sting — ASI:One / Agentverse agent wrapper.
+ * cloak STING — ASI:One / Agentverse agent wrapper.
  *
  * Minimal HTTP server exposing the scam-detection pipeline as an
  * Agentverse-compatible agent with standard routes:
@@ -129,7 +129,7 @@ const server = createServer(async (req, res) => {
 });
 
 server.listen(PORT, () => {
-  console.log(`cloak sting agent listening on http://localhost:${PORT}`);
+  console.log(`cloak STING agent listening on http://localhost:${PORT}`);
   console.log('Routes: /status, /.well-known/agent.json, /chat, /analyze-threat');
 });
 

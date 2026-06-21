@@ -11,7 +11,7 @@ function buildGroundedExplanation(caseRecord) {
   const risk = `${caseRecord.risk || 'unknown'} risk (${Number(caseRecord.score || 0)}/100)`;
   return {
     provider: 'deterministic-local',
-    summary: `cloak sting marked this as ${risk} based on observed signals: ${topFindings}.`,
+    summary: `cloak STING marked this as ${risk} based on observed signals: ${topFindings}.`,
     whyItMatters: 'The warning is based on page text, URL/domain patterns, payment or credential pressure, and other observed evidence — not on guessing who is behind it.',
     safeNextSteps: caseRecord.advice || 'Pause, do not share money/passwords/codes, and verify through an official app, typed website, or phone number from a trusted source.',
     reportingNote: 'If you report it, include the case ID, URL, timestamp, observed signals, and any screenshot/transcript you personally captured.'

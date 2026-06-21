@@ -1,4 +1,4 @@
-# cloak sting demo / QA handoff
+# cloak STING demo / QA handoff
 
 ## Product loop to demo
 
@@ -27,7 +27,7 @@ Ask Simular to behave like a rushed nontechnical user and test these paths:
 1. **Bank login scam**
    - Open `demo/fake-bank-login.html`.
    - Try to continue as if trying to unlock an account.
-   - Expected: cloak sting interrupts with high-risk reasoning before sensitive submission.
+   - Expected: cloak STING interrupts with high-risk reasoning before sensitive submission.
 
 2. **Shipping fee scam**
    - Open `demo/fake-shipping-fee.html`.

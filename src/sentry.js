@@ -1,5 +1,5 @@
 /**
- * Lightweight Sentry envelope capture for cloak sting.
+ * Lightweight Sentry envelope capture for cloak STING.
  *
  * Reads SENTRY_DSN from env/config only — never hardcoded.
  * Builds a minimal Sentry envelope (event item) and POSTs it

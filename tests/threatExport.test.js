@@ -33,7 +33,7 @@ test('STIX bundle contains identity', () => {
   const bundle = generateStixBundle(caseRecord);
   const identity = bundle.objects.find((o) => o.type === 'identity');
   assert.ok(identity);
-  assert.equal(identity.name, 'cloak sting Scam Detector');
+  assert.equal(identity.name, 'cloak STING Scam Detector');
 });
 
 test('STIX bundle contains indicator with risk labels', () => {

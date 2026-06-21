@@ -1,8 +1,8 @@
-# Arize Eval Proof — cloak sting Scam Explanations
+# Arize Eval Proof — cloak STING Scam Explanations
 
 ## Booth Summary (for judges)
 
-**What Arize does here:** Arize is the eval/observability proof layer for cloak sting's AI explanations. It does **not** replace the core scam detector — it evaluates whether the AI explanation is honest, grounded, safe, and clear.
+**What Arize does here:** Arize is the eval/observability proof layer for cloak STING's AI explanations. It does **not** replace the core scam detector — it evaluates whether the AI explanation is honest, grounded, safe, and clear.
 
 **How Arize improved the app:** We built an eval harness with 5 criteria (groundedness, safe action, no overclaiming, no secrets, clarity). Running these evals on explanation output exposed failure modes — overclaiming, jargon-heavy language, missing safe actions — and drove concrete improvements. The before/after demo shows a hypothetical v0 explanation failing 3/5 criteria vs. the current Arize-guided explanation passing 5/5.
 
@@ -14,7 +14,7 @@
 
 ## What this evaluates
 
-cloak sting's AI explanation layer (`src/anthropicExplain.js`) takes deterministic scam findings and produces a consumer-safety explanation via Anthropic Claude. When the API key is unavailable, a local deterministic fallback generates the explanation instead.
+cloak STING's AI explanation layer (`src/anthropicExplain.js`) takes deterministic scam findings and produces a consumer-safety explanation via Anthropic Claude. When the API key is unavailable, a local deterministic fallback generates the explanation instead.
 
 This eval layer checks that **explanations are honest, grounded, and safe** — regardless of which provider produced them.
 
@@ -47,7 +47,7 @@ The script includes a concrete before/after comparison on the fake-bank-login fi
 - Fails: noOverclaim, clarity, safeAction (vague)
 
 **AFTER (Arize-guided, current code):**
-- Grounded: "cloak sting marked this as high risk based on observed signals: Urgency pressure, ..."
+- Grounded: "cloak STING marked this as high risk based on observed signals: Urgency pressure, ..."
 - Safe action: "Pause, do not share money/passwords/codes, verify through an official app..."
 - No overclaim: "The warning is based on page text, URL/domain patterns... not on guessing who is behind it."
 - Clear language: no jargon, normal-person words

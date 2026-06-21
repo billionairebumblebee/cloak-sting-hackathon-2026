@@ -11,7 +11,7 @@
 
 ## 0:00–0:30 — Hook
 
-> "Scammers win because the warning arrives after the money is gone. cloak sting catches the pattern and warns you before you type, pay, or trust."
+> "Scammers win because the warning arrives after the money is gone. cloak STING catches the pattern and warns you before you type, pay, or trust."
 
 Show Chrome on a normal page (google.com). Point out: no interruption, quiet watch mode.
 
@@ -23,12 +23,12 @@ Switch to `demo/fake-bank-login.html` tab.
 
 **What judges see:**
 - Page loads with a fake "Secure Bank Verification Center"
-- cloak sting overlay appears automatically (top-right corner)
+- cloak STING overlay appears automatically (top-right corner)
 - Shows: HIGH RISK, score, specific signals found (urgency, credential grab, secrecy pressure)
 - Advice: "Pause. Do not pay, enter passwords, or call numbers on this page."
 
 **Say:**
-> "Grandma opens this page from a phishing link. Before she types her password, cloak sting catches 5+ scam signals and blocks visually. No API call, no delay — deterministic detection in the browser."
+> "Grandma opens this page from a phishing link. Before she types her password, cloak STING catches 5+ scam signals and blocks visually. No API call, no delay — deterministic detection in the browser."
 
 Click "Copy receipt" → paste into a text editor to show the structured evidence output.
 
@@ -91,7 +91,7 @@ node scripts/inspect_link_demo.js
 
 ## 4:45–5:00 — Close
 
-> "cloak sting: stop the scam before the click becomes a crisis. Protect before the mistake, preserve proof after the attempt."
+> "cloak STING: stop the scam before the click becomes a crisis. Protect before the mistake, preserve proof after the attempt."
 
 ---
 
