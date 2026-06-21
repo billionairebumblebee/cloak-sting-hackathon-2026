@@ -27,16 +27,33 @@ function escapeHtml(value) {
   }[char]));
 }
 
+function verdictText(risk) {
+  if (risk === 'high') return 'Looks like a scam';
+  if (risk === 'medium') return 'Looks suspicious';
+  return 'Looks safe';
+}
+
 function formatReceipt(receipt) {
-  if (!receipt) return 'No Sting receipt yet.';
+  if (!receipt) return 'No scam receipt yet.';
   return [
-    'Sting Threat Receipt',
-    `Risk: ${receipt.risk} (${receipt.score}/100)`,
+    'CLOAK STING - SCAM WARNING RECEIPT',
+    '------------------------------------',
+    `Verdict: ${verdictText(receipt.risk)} (${receipt.score}/100)`,
     `Page: ${receipt.title || receipt.hostname}`,
     `URL: ${receipt.url}`,
-    `Advice: ${receipt.advice}`,
-    'Signals:',
-    ...receipt.findings.map((f) => `- ${f.label}: ${f.evidence}`)
+    '',
+    `ADVICE: ${receipt.advice}`,
+    '',
+    'WARNING SIGNALS:',
+    ...receipt.findings.map((f) => `  - ${f.label}: ${f.evidence}`),
+    '',
+    'WHAT TO DO:',
+    '  - Do NOT send money, gift cards, or crypto',
+    '  - Report to your bank if you shared financial info',
+    '  - File a report: reportfraud.ftc.gov or ic3.gov',
+    '  - Tell a family member or friend',
+    '',
+    `Captured: ${receipt.analyzedAt || new Date().toISOString()}`
   ].join('\n');
 }
 

@@ -3,6 +3,7 @@
   const HISTORY_KEY = 'cloakStingScanHistory';
   const HISTORY_LIMIT = 25;
   const MIN_VISIBLE_SCORE = 35;
+  const BLOCK_SCORE = 50;
 
   function getPageText() {
     const bodyText = document.body ? document.body.innerText : '';
@@ -47,14 +48,118 @@
     document.getElementById('cloak-sting-overlay')?.remove();
   }
 
+  function blockPageInputs() {
+    if (document.getElementById('cloak-sting-input-shield')) return;
+    const shield = document.createElement('div');
+    shield.id = 'cloak-sting-input-shield';
+    shield.innerHTML = `
+      <style>
+        #cloak-sting-input-shield {
+          position: fixed;
+          inset: 0;
+          z-index: 2147483646;
+          background: rgba(0, 0, 0, 0.35);
+          backdrop-filter: blur(2px);
+          -webkit-backdrop-filter: blur(2px);
+          cursor: not-allowed;
+          animation: cloakShieldIn 0.3s ease-out;
+        }
+        @keyframes cloakShieldIn {
+          from { opacity: 0; }
+          to { opacity: 1; }
+        }
+      </style>
+    `;
+    shield.addEventListener('click', (e) => {
+      e.preventDefault();
+      e.stopPropagation();
+    }, true);
+    document.documentElement.appendChild(shield);
+  }
+
+  function unblockPageInputs() {
+    document.getElementById('cloak-sting-input-shield')?.remove();
+  }
+
+  function verdictText(risk) {
+    if (risk === 'high') return 'Looks like a scam';
+    if (risk === 'medium') return 'Looks suspicious';
+    return 'Looks safe';
+  }
+
+  function riskColor(risk) {
+    if (risk === 'high') return { border: '#dc2626', text: '#fca5a5', glow: 'rgba(220,38,38,0.3)' };
+    if (risk === 'medium') return { border: '#f59e0b', text: '#fcd34d', glow: 'rgba(245,158,11,0.3)' };
+    return { border: '#22c55e', text: '#86efac', glow: 'rgba(34,197,94,0.3)' };
+  }
+
+  function showPersistentStrip(receipt) {
+    const existing = document.getElementById('cloak-sting-strip');
+    if (existing) return;
+    const colors = riskColor(receipt.risk);
+    const strip = document.createElement('div');
+    strip.id = 'cloak-sting-strip';
+    strip.innerHTML = `
+      <style>
+        #cloak-sting-strip {
+          position: fixed;
+          top: 0; left: 0; right: 0;
+          z-index: 2147483645;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          gap: 10px;
+          padding: 8px 16px;
+          background: rgba(13, 13, 15, 0.95);
+          border-bottom: 2px solid ${colors.border};
+          font: 14px/1.3 -apple-system, BlinkMacSystemFont, "Inter", "Segoe UI", sans-serif;
+          color: ${colors.text};
+          backdrop-filter: blur(10px);
+          -webkit-backdrop-filter: blur(10px);
+          animation: cloakStripIn 0.2s ease-out;
+        }
+        @keyframes cloakStripIn {
+          from { transform: translateY(-100%); }
+          to { transform: translateY(0); }
+        }
+        #cloak-sting-strip .strip-text { font-weight: 700; }
+        #cloak-sting-strip button {
+          background: ${colors.border};
+          color: white;
+          border: none;
+          border-radius: 6px;
+          padding: 4px 12px;
+          font-size: 12px;
+          font-weight: 700;
+          cursor: pointer;
+          transition: opacity 0.15s;
+        }
+        #cloak-sting-strip button:hover { opacity: 0.85; }
+      </style>
+      <span class="strip-text">\u26A0 This page was flagged: ${escapeHtml(verdictText(receipt.risk))}</span>
+      <button data-cloak-strip="show">Show warning</button>
+    `;
+    strip.addEventListener('click', (e) => {
+      if (e.target?.dataset?.cloakStrip === 'show') {
+        strip.remove();
+        renderOverlay(receipt);
+      }
+    });
+    document.documentElement.appendChild(strip);
+  }
+
   function renderOverlay(receipt) {
     removeExistingOverlay();
     if (receipt.score < MIN_VISIBLE_SCORE) return;
 
+    const shouldBlock = receipt.score >= BLOCK_SCORE;
+    if (shouldBlock) blockPageInputs();
+
     const root = document.createElement('section');
     root.id = 'cloak-sting-overlay';
     root.setAttribute('role', 'dialog');
-    root.setAttribute('aria-label', 'cloak sting scam warning');
+    root.setAttribute('aria-label', 'Scam warning from Cloak Sting');
+    root.setAttribute('aria-describedby', 'cloak-sting-advice');
 
     const findingItems = receipt.findings
       .slice(0, 4)
@@ -80,20 +185,29 @@
       </style>
       <div class="bar"></div>
       <div class="inner">
-        <h2>&#9888;&#65039; Warning — this page looks suspicious</h2>
-        <div class="risk">${escapeHtml(receipt.risk)} risk · ${receipt.score}/100</div>
-        <p style="font-size:15px;line-height:1.5">${escapeHtml(receipt.advice)}</p>
+        <h2>\u{1F6E1} ${verdictText(receipt.risk)}</h2>
+        <div class="risk">\u26A0 ${escapeHtml(receipt.risk)} risk</div>
+        <p style="font-size:15px;line-height:1.5" id="cloak-sting-advice">${escapeHtml(receipt.advice)}</p>
         <ul>${findingItems}</ul>
         <div class="actions">
-          <button class="primary" data-cloak-action="copy">Copy receipt</button>
-          <button class="ghost" data-cloak-action="dismiss">Dismiss</button>
+          <button class="primary" style="background:#dc2626" data-cloak-action="leave">\u2190 Leave this page</button>
+          <button class="primary" data-cloak-action="copy">Copy receipt to report</button>
+          <button class="ghost" data-cloak-action="dismiss">Hide warning (I understand the risk)</button>
         </div>
       </div>
     `;
 
     root.addEventListener('click', async (event) => {
       const action = event.target?.dataset?.cloakAction;
-      if (action === 'dismiss') root.remove();
+      if (action === 'dismiss') {
+        root.remove();
+        unblockPageInputs();
+        showPersistentStrip(receipt);
+      }
+      if (action === 'leave') {
+        if (history.length > 1) history.back();
+        else location.href = 'about:blank';
+      }
       if (action === 'copy') {
         await navigator.clipboard?.writeText(formatReceipt(receipt));
         event.target.textContent = 'Copied';
@@ -109,14 +223,18 @@
 
   function formatReceipt(receipt) {
     const lines = [
-      `cloak sting receipt`,
-      `Risk: ${receipt.risk} (${receipt.score}/100)`,
+      'CLOAK STING - SCAM WARNING RECEIPT',
+      '------------------------------------',
+      `Verdict: ${verdictText(receipt.risk)} (${receipt.score}/100)`,
       `Page: ${receipt.title || receipt.hostname}`,
       `URL: ${receipt.url}`,
-      `Advice: ${receipt.advice}`,
-      `Signals:`
+      '',
+      `ADVICE: ${receipt.advice}`,
+      '',
+      'WARNING SIGNALS:'
     ];
-    for (const finding of receipt.findings) lines.push(`- ${finding.label}: ${finding.evidence}`);
+    for (const finding of receipt.findings) lines.push(`  - ${finding.label}: ${finding.evidence}`);
+    lines.push('', 'WHAT TO DO:', '  - Do NOT send money, gift cards, or crypto', '  - Report to your bank if you shared financial info', '  - File a report: reportfraud.ftc.gov or ic3.gov', '  - Tell a family member or friend', '', `Captured: ${receipt.analyzedAt || new Date().toISOString()}`);
     return lines.join('\n');
   }
 
