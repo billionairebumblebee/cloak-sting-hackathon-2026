@@ -3,16 +3,15 @@ import { Link } from "react-router-dom";
 import { FadeIn, StaggerContainer, StaggerItem, SectionLabel } from "./Motion";
 import { playClick } from "../utils/sounds";
 
-const sponsors = [
+const integrations = [
   {
     name: "Deepgram",
     slug: "deepgram",
     color: "#13ef93",
     status: "FALLBACK",
     role: "Voice Intelligence",
-    detail: "Nova-3 real-time STT turns scam calls into analyzable text. Without API key, fixture transcripts power the same pipeline end-to-end.",
-    stats: "3 audio fixtures \u2022 8-family voice matcher \u2022 Live with key",
-    files: ["src/deepgramSTT.js", "src/voiceScamPipeline.js", "src/voicePatterns.js"],
+    detail: "Nova-3 STT turns scam calls into analyzable text. Catches voice scams most tools ignore entirely.",
+    files: ["src/deepgramSTT.js", "src/voiceScamPipeline.js"],
   },
   {
     name: "Anthropic",
@@ -20,9 +19,8 @@ const sponsors = [
     color: "#d97706",
     status: "FALLBACK",
     role: "Explanation Layer",
-    detail: "Claude turns raw detector findings into calm, plain-English safety explanations. Not the detector — the translator that makes warnings useful for real people.",
-    stats: "5-criteria eval \u2022 Deterministic fallback \u2022 Safety translator",
-    files: ["src/anthropicExplain.js", "src/arizeEvalCriteria.js"],
+    detail: "Claude translates raw detector output into calm, plain-English safety explanations anyone can understand.",
+    files: ["src/anthropicExplain.js"],
   },
   {
     name: "Browserbase",
@@ -30,8 +28,7 @@ const sponsors = [
     color: "#6366f1",
     status: "SEAM",
     role: "Isolated Link Inspection",
-    detail: "The 'bomb squad robot' for suspicious links — opens dangerous URLs in a remote sandboxed browser so your device never touches the scam site.",
-    stats: "Sandboxed detonation \u2022 Evidence extraction \u2022 Live with key",
+    detail: "The bomb squad robot — opens dangerous URLs in a sandboxed cloud browser so your device stays safe.",
     files: ["src/browserbaseInspect.js"],
   },
   {
@@ -40,8 +37,7 @@ const sponsors = [
     color: "#dc2626",
     status: "FALLBACK",
     role: "Threat Memory",
-    detail: "Scam memory that turns individual warnings into collective protection. One person's scam encounter becomes data that protects the next victim.",
-    stats: "3 backends \u2022 Auto-fallback \u2022 Zero-config demo",
+    detail: "Scam memory that turns one person's encounter into protection for the next victim.",
     files: ["src/caseStore.js"],
   },
   {
@@ -50,9 +46,8 @@ const sponsors = [
     color: "#f97316",
     status: "LOCAL",
     role: "Eval Observability",
-    detail: "Proves the AI explanation layer is safe: grounded in evidence, action-oriented, never overclaiming, secret-free, and clear to normal people.",
-    stats: "5 eval criteria \u2022 Before/after proof \u2022 Regression checks",
-    files: ["src/arizeEvalCriteria.js", "scripts/arize_eval_demo.js"],
+    detail: "5-criteria eval proves AI explanations are grounded, safe, and never overclaiming.",
+    files: ["src/arizeEvalCriteria.js"],
   },
   {
     name: "Sentry",
@@ -60,9 +55,8 @@ const sponsors = [
     color: "#362d59",
     status: "FALLBACK",
     role: "Reliability Monitor",
-    detail: "A protection product can't silently break. Sentry captures errors and edge cases so the scanner never fails at the worst possible moment.",
-    stats: "Custom envelope \u2022 Local fallback \u2022 20 tests",
-    files: ["src/sentry.js", "scripts/sentry_smoke_demo.js"],
+    detail: "A protection product can't silently break. Captures errors so the scanner never fails when it matters most.",
+    files: ["src/sentry.js"],
   },
   {
     name: "The Token Company",
@@ -70,9 +64,8 @@ const sponsors = [
     color: "#06b6d4",
     status: "LOCAL",
     role: "Token Compression",
-    detail: "Risk-preserving compression: 66% fewer tokens while keeping every decision-critical fact intact. Proves quality maintained with Arize eval.",
-    stats: "66% reduction \u2022 5/5 eval maintained \u2022 Deterministic",
-    files: ["src/tokenCompress.js", "scripts/token_compress_demo.js"],
+    detail: "Risk-preserving compression: 66% fewer tokens while keeping every decision-critical fact intact.",
+    files: ["src/tokenCompress.js"],
   },
   {
     name: "Fetch.ai / ASI:One",
@@ -80,9 +73,8 @@ const sponsors = [
     color: "#3b82f6",
     status: "LOCAL",
     role: "Agent Coordination",
-    detail: "Exposes sting as an agent-callable service. Other agents can request scam analysis via /analyze-threat without building their own detector.",
-    stats: "4 endpoints \u2022 8 tests \u2022 Agent-ready protocol",
-    files: ["src/asiOneWrapper.js", "agents/sting-agent.mjs"],
+    detail: "Exposes sting as an agent-callable service. Other agents can request scam analysis without building their own detector.",
+    files: ["src/asiOneWrapper.js"],
   },
   {
     name: "Simular",
@@ -90,8 +82,7 @@ const sponsors = [
     color: "#10b981",
     status: "CLOUD QA",
     role: "Autonomous QA Agent",
-    detail: "Tested our live product like a real user. Surfaced 19 actionable findings across 3 personas: accessibility bugs, UX issues, and edge cases we'd have missed.",
-    stats: "19 findings \u2022 3 personas \u2022 Autonomous testing",
+    detail: "Tested the live product across 3 personas. Surfaced 19 actionable findings we'd have missed.",
     files: ["QA_REPORT.md"],
   },
   {
@@ -99,12 +90,38 @@ const sponsors = [
     slug: "pika-midjourney",
     color: "#a855f7",
     status: "SUPPORT",
-    role: "Design & Demo Support",
-    detail: "Visual polish that makes judges notice in the first 3 seconds. Professional assets, demo materials, and pitch presentation quality.",
-    stats: "Site assets \u2022 Demo visuals \u2022 Pitch polish",
-    files: ["site/ (visual assets)"],
+    role: "Design & Demo",
+    detail: "Visual polish that makes judges notice in the first 3 seconds. Professional assets and demo quality.",
+    files: ["site/"],
+  },
+  {
+    name: "OpenAI Codex",
+    slug: null,
+    color: "#00a67e",
+    status: "DEV TOOL",
+    role: "AI Pair Programming",
+    detail: "Accelerated implementation of detection heuristics, test fixtures, and scam pattern databases across the entire codebase.",
+    files: ["(whole codebase)"],
+  },
+  {
+    name: "Devin (Cognition)",
+    slug: null,
+    color: "#ff6b35",
+    status: "DEV TOOL",
+    role: "AI Software Engineer",
+    detail: "Built site, extension, CI pipeline, sponsor integrations, and 192 tests. The engineering backbone of this project.",
+    files: ["(whole project)"],
   },
 ];
+
+const statusColors = {
+  FALLBACK: { bg: "bg-amber-500/10", text: "text-amber-400", border: "border-amber-500/20" },
+  SEAM: { bg: "bg-indigo-500/10", text: "text-indigo-400", border: "border-indigo-500/20" },
+  LOCAL: { bg: "bg-cyan-500/10", text: "text-cyan-400", border: "border-cyan-500/20" },
+  "CLOUD QA": { bg: "bg-green-500/10", text: "text-green-400", border: "border-green-500/20" },
+  SUPPORT: { bg: "bg-purple-500/10", text: "text-purple-400", border: "border-purple-500/20" },
+  "DEV TOOL": { bg: "bg-rose-500/10", text: "text-rose-400", border: "border-rose-500/20" },
+};
 
 function AnimatedCount({ end, duration = 2000, suffix = "" }) {
   const [count, setCount] = useState(0);
@@ -135,24 +152,100 @@ function AnimatedCount({ end, duration = 2000, suffix = "" }) {
   return <span ref={ref}>{count}{suffix}</span>;
 }
 
+function IntegrationCard({ item }) {
+  const colors = statusColors[item.status] || statusColors.LOCAL;
+
+  const inner = (
+    <div className="glass group relative overflow-hidden rounded-2xl p-6 transition-all duration-300 hover:scale-[1.02] hover:ring-1 hover:ring-white/[0.08]">
+      {/* Accent glow */}
+      <div
+        className="pointer-events-none absolute -right-8 -top-8 h-24 w-24 rounded-full opacity-20 blur-2xl transition-opacity group-hover:opacity-40"
+        style={{ backgroundColor: item.color }}
+      />
+
+      <div className="relative">
+        {/* Header */}
+        <div className="mb-4 flex items-center justify-between">
+          <div className="flex items-center gap-3">
+            <div
+              className="h-3 w-3 rounded-full shadow-lg"
+              style={{ backgroundColor: item.color, boxShadow: `0 0 8px ${item.color}40` }}
+            />
+            <h3 className="text-[15px] font-bold text-text-primary">
+              {item.name}
+            </h3>
+          </div>
+          <span
+            className={`rounded-md border px-2 py-0.5 text-[9px] font-bold tracking-widest uppercase ${colors.bg} ${colors.text} ${colors.border}`}
+          >
+            {item.status}
+          </span>
+        </div>
+
+        {/* Role */}
+        <p
+          className="mb-3 text-[11px] font-bold uppercase tracking-wider"
+          style={{ color: item.color }}
+        >
+          {item.role}
+        </p>
+
+        {/* Description */}
+        <p className="mb-4 text-[13px] leading-[1.7] text-text-secondary">
+          {item.detail}
+        </p>
+
+        {/* Files */}
+        <div className="flex flex-wrap gap-1.5">
+          {item.files.map((f) => (
+            <span
+              key={f}
+              className="rounded-md bg-white/[0.04] px-2 py-0.5 font-mono text-[10px] text-text-muted"
+            >
+              {f}
+            </span>
+          ))}
+        </div>
+
+        {/* Hover hint */}
+        {item.slug && (
+          <p className="mt-4 text-[11px] font-medium text-honey opacity-0 transition-opacity duration-300 group-hover:opacity-100">
+            view full proof →
+          </p>
+        )}
+      </div>
+    </div>
+  );
+
+  if (item.slug) {
+    return (
+      <Link to={`/arsenal/${item.slug}`} className="block" onClick={playClick}>
+        {inner}
+      </Link>
+    );
+  }
+  return inner;
+}
+
 export default function SponsorShowcase() {
   return (
-    <section id="sponsors" className="relative px-6 py-28 sm:py-36">
+    <section id="arsenal" className="relative px-6 py-28 sm:py-36">
       <div className="pointer-events-none absolute left-1/2 top-0 h-[500px] w-[500px] -translate-x-1/2 rounded-full bg-honey/[0.02] blur-[200px]" />
 
       <div className="mx-auto max-w-6xl">
+        {/* Header */}
         <div className="mb-16 text-center">
-          <SectionLabel>Sponsor Integrations</SectionLabel>
+          <SectionLabel>The Arsenal</SectionLabel>
           <FadeIn delay={0.1}>
             <h2 className="mb-5 text-[clamp(2.25rem,4.5vw,3.5rem)] font-extrabold leading-[1.08] tracking-[-0.03em] text-text-primary">
-              every sponsor.{" "}
-              <span className="gradient-text">honestly integrated.</span>
+              12 integrations.{" "}
+              <span className="gradient-text">zero logo soup.</span>
             </h2>
           </FadeIn>
           <FadeIn delay={0.2}>
             <p className="mx-auto max-w-lg text-[16px] leading-[1.7] text-text-secondary">
-              no fake claims. each sponsor is woven into the pipeline with real code and tests.
-              without API keys, every path degrades gracefully to a local fallback.
+              every tool maps to one stage of the scam-defense pipeline.
+              without API keys, each path degrades gracefully to a local fallback.
             </p>
           </FadeIn>
         </div>
@@ -161,17 +254,17 @@ export default function SponsorShowcase() {
         <FadeIn delay={0.3}>
           <div className="mb-16 grid grid-cols-2 gap-4 sm:grid-cols-4">
             {[
-              { label: "Tests Passing", value: 192, suffix: "" },
-              { label: "Source Files", value: 22, suffix: "" },
-              { label: "Scam Patterns", value: 10, suffix: "" },
-              { label: "Sponsor Integrations", value: 10, suffix: "" },
+              { label: "Tests Passing", value: 192 },
+              { label: "Source Files", value: 22 },
+              { label: "Scam Patterns", value: 10 },
+              { label: "Integrations", value: 12 },
             ].map((stat) => (
               <div
                 key={stat.label}
                 className="glass rounded-2xl p-5 text-center"
               >
                 <div className="font-mono text-3xl font-bold text-honey">
-                  <AnimatedCount end={stat.value} suffix={stat.suffix} />
+                  <AnimatedCount end={stat.value} />
                 </div>
                 <div className="mt-1 text-[12px] font-medium text-text-secondary">
                   {stat.label}
@@ -181,62 +274,69 @@ export default function SponsorShowcase() {
           </div>
         </FadeIn>
 
-        {/* Sponsor cards */}
-        <StaggerContainer className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3" stagger={0.06}>
-          {sponsors.map((s) => (
-            <StaggerItem key={s.name}>
-              <Link to={`/arsenal/${s.slug}`} className="block" onClick={playClick}>
-                <div className="glass group rounded-2xl p-6 transition-all duration-300 hover:scale-[1.02] hover:ring-1 hover:ring-white/[0.08]">
-                  <div className="mb-4 flex items-center justify-between">
-                    <div className="flex items-center gap-3">
-                      <div
-                        className="h-3 w-3 rounded-full"
-                        style={{ backgroundColor: s.color }}
-                      />
-                      <h3 className="text-[14px] font-bold text-text-primary">
-                        {s.name}
-                      </h3>
-                    </div>
-                    <span
-                      className="rounded-md px-2 py-0.5 text-[9px] font-bold tracking-widest uppercase"
-                      style={{
-                        backgroundColor: s.color + "15",
-                        color: s.color,
-                      }}
-                    >
-                      {s.status}
-                    </span>
-                  </div>
-                  <p
-                    className="mb-2 text-[11px] font-semibold uppercase tracking-wider"
-                    style={{ color: s.color + "90" }}
+        {/* Pipeline visualization */}
+        <FadeIn delay={0.35}>
+          <div className="mb-12 overflow-x-auto">
+            <div className="flex items-center justify-center gap-1 min-w-max px-4 py-4">
+              {[
+                { label: "Input", color: null },
+                { label: "Deepgram", color: "#13ef93" },
+                { label: "Browserbase", color: "#6366f1" },
+                { label: "Detect", color: null },
+                { label: "Claude", color: "#d97706" },
+                { label: "Arize", color: "#f97316" },
+                { label: "Redis", color: "#dc2626" },
+                { label: "Sentry", color: "#362d59" },
+                { label: "Verdict", color: null },
+              ].map((step, i, arr) => (
+                <div key={i} className="flex items-center gap-1">
+                  <span
+                    className={`rounded-lg px-3 py-1.5 font-mono text-[11px] font-medium ${
+                      step.color
+                        ? ""
+                        : "border border-white/[0.06] bg-white/[0.02] text-text-muted"
+                    }`}
+                    style={
+                      step.color
+                        ? {
+                            backgroundColor: step.color + "15",
+                            color: step.color,
+                            border: `1px solid ${step.color}25`,
+                          }
+                        : {}
+                    }
                   >
-                    {s.role}
-                  </p>
-                  <p className="mb-3 text-[12px] leading-[1.65] text-text-secondary">
-                    {s.detail}
-                  </p>
-                  <p className="mb-3 text-[10px] font-medium text-text-muted">
-                    {s.stats}
-                  </p>
-                  <div className="flex flex-wrap gap-1">
-                    {s.files.map((f) => (
-                      <span
-                        key={f}
-                        className="rounded bg-white/[0.04] px-2 py-0.5 font-mono text-[9px] text-text-muted"
-                      >
-                        {f}
-                      </span>
-                    ))}
-                  </div>
-                  <p className="mt-3 text-[10px] font-medium text-honey opacity-0 transition-opacity group-hover:opacity-100">
-                    view full proof →
-                  </p>
+                    {step.label}
+                  </span>
+                  {i < arr.length - 1 && (
+                    <span className="text-[11px] text-white/10">→</span>
+                  )}
                 </div>
-              </Link>
+              ))}
+            </div>
+          </div>
+        </FadeIn>
+
+        {/* Integration cards */}
+        <StaggerContainer className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3" stagger={0.05}>
+          {integrations.map((item) => (
+            <StaggerItem key={item.name}>
+              <IntegrationCard item={item} />
             </StaggerItem>
           ))}
         </StaggerContainer>
+
+        {/* Legend */}
+        <FadeIn delay={0.8}>
+          <div className="mt-12 flex flex-wrap items-center justify-center gap-4 text-[11px] text-text-muted">
+            {Object.entries(statusColors).map(([label, colors]) => (
+              <div key={label} className="flex items-center gap-1.5">
+                <span className={`inline-block h-2 w-2 rounded-full ${colors.bg} border ${colors.border}`} />
+                <span>{label}</span>
+              </div>
+            ))}
+          </div>
+        </FadeIn>
       </div>
     </section>
   );
