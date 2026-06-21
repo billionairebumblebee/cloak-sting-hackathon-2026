@@ -256,4 +256,58 @@ export const arsenalSponsors = [
       "This is support/design tooling — be upfront about that",
     ],
   },
+  {
+    slug: "codex",
+    name: "OpenAI Codex",
+    color: "#00a67e",
+    status: "DEV TOOL",
+    tagline: "AI pair programming that accelerated every module",
+    role: "AI Pair Programming",
+    whatItDoes:
+      "Used throughout development to accelerate implementation of detection heuristics, scam pattern databases, test fixture generation, and utility modules. Codex served as a coding copilot for writing the deterministic signal analysis, voice pattern matching, form field detection, and typosquat algorithms. It didn't write the architecture — it accelerated the implementation of designs we already planned.",
+    codePaths: [
+      "src/scamSignals.js",
+      "src/voicePatterns.js",
+      "src/formAnalyzer.js",
+      "src/typosquatDetector.js",
+      "tests/ (fixture generation)",
+    ],
+    demoCommand: "n/a — development tool, not runtime",
+    liveStatus: "Used during development to accelerate code authoring.",
+    fallbackStatus: "All generated code is committed, reviewed, and tested. No runtime dependency.",
+    whyDeservesPrize:
+      "Codex made it possible to build a comprehensive scam detection system — 10 scam pattern families, 8 voice scam fixtures, form field analysis, and typosquat detection — in hackathon time. The speed-to-quality ratio is the proof: 197 tests passing on code that would normally take weeks to write.",
+    doNotClaim: [
+      "Do not claim Codex runs at runtime or in the extension",
+      "Do not imply AI wrote the architecture — it accelerated implementation",
+      "All code was reviewed and tested by the team",
+    ],
+  },
+  {
+    slug: "devin",
+    name: "Devin (Cognition)",
+    color: "#ff6b35",
+    status: "DEV TOOL",
+    tagline: "The AI software engineer that built the entire project",
+    role: "AI Software Engineer",
+    whatItDoes:
+      "Devin handled full-stack engineering: built the React site from scratch (Vite + Tailwind + Framer Motion), created the Chrome extension with Manifest V3, implemented all sponsor integrations, wrote 197 tests, set up CI/CD, resolved merge conflicts, handled the rebranding, designed the popup UI, added sound effects, and created per-sponsor arsenal proof pages. Devin operated as a full team member — not just autocomplete, but autonomous multi-file engineering with PR creation and CI verification.",
+    codePaths: [
+      "site/ (entire React app)",
+      "src/ (extension source)",
+      "tests/ (full test suite)",
+      "scripts/ (demo harnesses)",
+      ".github/ (CI pipeline)",
+    ],
+    demoCommand: "n/a — development tool, not runtime",
+    liveStatus: "Used as primary engineer throughout the hackathon.",
+    fallbackStatus: "All code is committed, tested, and deployed. No runtime dependency on Devin.",
+    whyDeservesPrize:
+      "Devin is the reason this project exists at this scope. A solo hackathon team shipped a full Chrome extension, a polished React site with 7 interactive sections, 12 sponsor integrations, 197 passing tests, and a live Vercel deployment — all in hackathon time. That's only possible with an AI engineer handling autonomous multi-file development, CI iteration, and end-to-end delivery.",
+    doNotClaim: [
+      "Do not claim Devin runs at runtime or in the extension",
+      "Do not imply the product depends on Devin to function",
+      "Devin is a development tool — all shipped code runs independently",
+    ],
+  },
 ];

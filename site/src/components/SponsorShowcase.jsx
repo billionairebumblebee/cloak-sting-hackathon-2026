@@ -96,7 +96,7 @@ const integrations = [
   },
   {
     name: "OpenAI Codex",
-    slug: null,
+    slug: "codex",
     color: "#00a67e",
     status: "DEV TOOL",
     role: "AI Pair Programming",
@@ -105,11 +105,11 @@ const integrations = [
   },
   {
     name: "Devin (Cognition)",
-    slug: null,
+    slug: "devin",
     color: "#ff6b35",
     status: "DEV TOOL",
     role: "AI Software Engineer",
-    detail: "Built site, extension, CI pipeline, sponsor integrations, and 192 tests. The engineering backbone of this project.",
+    detail: "Built site, extension, CI pipeline, sponsor integrations, and 197 tests. The engineering backbone of this project.",
     files: ["(whole project)"],
   },
 ];
@@ -239,7 +239,7 @@ export default function SponsorShowcase() {
           <FadeIn delay={0.1}>
             <h2 className="mb-5 text-[clamp(2.25rem,4.5vw,3.5rem)] font-extrabold leading-[1.08] tracking-[-0.03em] text-text-primary">
               12 integrations.{" "}
-              <span className="gradient-text">zero logo soup.</span>
+              <span className="gradient-text">one pipeline.</span>
             </h2>
           </FadeIn>
           <FadeIn delay={0.2}>
