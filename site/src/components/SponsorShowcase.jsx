@@ -156,14 +156,14 @@ function IntegrationCard({ item }) {
   const colors = statusColors[item.status] || statusColors.LOCAL;
 
   const inner = (
-    <div className="glass group relative overflow-hidden rounded-2xl p-6 transition-all duration-300 hover:scale-[1.02] hover:ring-1 hover:ring-white/[0.08]">
+    <div className="glass group relative flex h-full flex-col overflow-hidden rounded-2xl p-6 transition-all duration-300 hover:scale-[1.02] hover:ring-1 hover:ring-white/[0.08]">
       {/* Accent glow */}
       <div
         className="pointer-events-none absolute -right-8 -top-8 h-24 w-24 rounded-full opacity-20 blur-2xl transition-opacity group-hover:opacity-40"
         style={{ backgroundColor: item.color }}
       />
 
-      <div className="relative">
+      <div className="relative flex flex-1 flex-col">
         {/* Header */}
         <div className="mb-4 flex items-center justify-between">
           <div className="flex items-center gap-3">
@@ -191,7 +191,7 @@ function IntegrationCard({ item }) {
         </p>
 
         {/* Description */}
-        <p className="mb-4 text-[13px] leading-[1.7] text-text-secondary">
+        <p className="mb-4 flex-1 text-[13px] leading-[1.7] text-text-secondary">
           {item.detail}
         </p>
 
@@ -219,7 +219,7 @@ function IntegrationCard({ item }) {
 
   if (item.slug) {
     return (
-      <Link to={`/arsenal/${item.slug}`} className="block" onClick={playClick}>
+      <Link to={`/arsenal/${item.slug}`} className="block h-full" onClick={playClick}>
         {inner}
       </Link>
     );
@@ -318,9 +318,9 @@ export default function SponsorShowcase() {
         </FadeIn>
 
         {/* Integration cards */}
-        <StaggerContainer className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3" stagger={0.05}>
+        <StaggerContainer className="grid grid-rows-[auto] gap-4 sm:grid-cols-2 lg:grid-cols-3" stagger={0.05}>
           {integrations.map((item) => (
-            <StaggerItem key={item.name}>
+            <StaggerItem key={item.name} className="h-full">
               <IntegrationCard item={item} />
             </StaggerItem>
           ))}
