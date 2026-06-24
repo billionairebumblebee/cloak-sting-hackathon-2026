@@ -18,14 +18,22 @@ export default function Footer() {
                 sting
               </span>
             </a>
-            <div className="flex flex-col items-center gap-1.5 text-center sm:items-end sm:text-right">
-              <p className="text-[12px] font-medium text-text-secondary">
-                Built at UC Berkeley AI Hackathon 2026
-              </p>
-              <p className="text-[11px] text-text-muted">
-                Clean-room implementation. Every line written during the hacking
-                period. Zero tolerance for fraud.
-              </p>
+            <div className="flex flex-col items-center gap-3 text-center sm:items-end sm:text-right">
+              <a
+                href="#legal"
+                className="text-[12px] font-semibold text-honey/80 transition hover:text-honey"
+              >
+                Safety disclaimer, privacy & terms
+              </a>
+              <div>
+                <p className="text-[12px] font-medium text-text-secondary">
+                  Built at UC Berkeley AI Hackathon 2026
+                </p>
+                <p className="text-[11px] text-text-muted">
+                  Clean-room implementation. Every line written during the hacking
+                  period. Zero tolerance for fraud.
+                </p>
+              </div>
             </div>
           </div>
         </FadeIn>
