@@ -48,13 +48,31 @@ Ask Simular to behave like a rushed nontechnical user and test these paths:
    - Run `node scripts/voice_scam_demo.js` with no key.
    - Expected: fallback transcript still produces a case/dossier and clearly says Deepgram setup is missing.
 
+## Sponsor integration status (truthful)
+
+| Sponsor | Status | Notes |
+|---|---|---|
+| **Anthropic** | Implemented / live demo works | `src/anthropicExplain.js` — Claude grounded explanation. Falls back locally without `ANTHROPIC_API_KEY`. |
+| **Browserbase** | Implemented / live session demo works | `src/browserbaseInspect.js` — isolated link inspection. Requires `BROWSERBASE_API_KEY` + `BROWSERBASE_PROJECT_ID`. |
+| **Deepgram** | Implemented / live only if audio proof lands | `src/deepgramSTT.js` + `src/voiceScamPipeline.js`. Falls back to sample transcripts without `DEEPGRAM_API_KEY`. |
+| **Redis** | Implemented / local fallback unless live Redis configured | `src/caseStore.js` — Redis Cloud client/REST with local JSON fallback. |
+| **Sentry** | Implemented / live only if `SENTRY_DSN` configured | `src/sentry.js` — lightweight envelope capture, no `@sentry/node`. |
+| **Simular** | QA/testing | Fixture pages + `docs/SIMULAR_TEST_HANDOFF.md` for tester validation. |
+
 ## Judge-safe sponsor story
 
 - **Redis:** case database and evidence dossier export, not just caching.
 - **Browserbase:** suspicious links can be inspected in an isolated browser session before the user opens them.
 - **Anthropic:** explains deterministic findings in human language; not the detector of record.
 - **Deepgram:** turns voicemail/family-emergency/bank-call scams into the same receipt/dossier pipeline.
+- **Sentry:** lightweight reliability envelope for scam-detection events; no heavy SDK.
 - **Simular:** tester can validate the user journey and catch unsafe claims or broken warning paths.
+
+## Demo resources
+
+- **90-second demo script:** [`docs/DEMO_SCRIPT_90s.md`](DEMO_SCRIPT_90s.md)
+- **Devpost draft:** [`docs/DEVPOST_DRAFT.md`](DEVPOST_DRAFT.md)
+- **Red-team fixture QA:** [`docs/SIMULAR_TEST_HANDOFF.md`](SIMULAR_TEST_HANDOFF.md)
 
 ## Build verification
 
